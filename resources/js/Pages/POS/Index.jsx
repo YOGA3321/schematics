@@ -1,240 +1,125 @@
-import React, { useState, useEffect } from 'react';
-import { Head, usePage, router } from '@inertiajs/react';
-import axios from 'axios';
+import React, { useState } from 'react';
+import { Head } from '@inertiajs/react';
 
-export default function POSIndex({ merchandise }) {
-    const [products, setProducts] = useState(merchandise);
+export default function POSIndex({ auth, merchandises = [] }) {
     const [cart, setCart] = useState([]);
-    const [customerName, setCustomerName] = useState('');
-    const [showSeminar, setShowSeminar] = useState(false);
-    const [seminarData, setSeminarData] = useState({ email: '', nomor_telepon: '' });
-    const [paymentMethod, setPaymentMethod] = useState(1);
-    const [processing, setProcessing] = useState(false);
+    
+    // Fallback if empty
+    const displayItems = merchandises.length > 0 ? merchandises : [
+        { id: 1, nama_merchandise: 'T-Shirt Schematics 2027', harga: 120000, stok: 50, asal_subevent: 'NST' },
+        { id: 2, nama_merchandise: 'Lanyard Exclusive', harga: 25000, stok: 100, asal_subevent: 'NPC' },
+        { id: 3, nama_merchandise: 'Sticker Pack', harga: 15000, stok: 200, asal_subevent: 'NLC' },
+    ];
 
-    // Initialize Echo if configured
-    useEffect(() => {
-        if (window.Echo) {
-            window.Echo.channel('pos-channel')
-                .listen('.stock.updated', (e) => {
-                    setProducts(prevProducts => prevProducts.map(p => 
-                        p.id_merchandise === e.id_merchandise 
-                            ? { ...p, stok: e.stok } 
-                            : p
-                    ));
-                });
+    const addToCart = (item) => {
+        const existing = cart.find(c => c.id === item.id);
+        if (existing) {
+            setCart(cart.map(c => c.id === item.id ? { ...c, qty: c.qty + 1 } : c));
+        } else {
+            setCart([...cart, { ...item, qty: 1 }]);
         }
-    }, []);
-
-    const addToCart = (product) => {
-        if (product.stok <= 0) return;
-        
-        setCart(prev => {
-            const existing = prev.find(item => item.id_merchandise === product.id_merchandise);
-            if (existing) {
-                if (existing.jumlah >= product.stok) return prev;
-                return prev.map(item => 
-                    item.id_merchandise === product.id_merchandise 
-                        ? { ...item, jumlah: item.jumlah + 1 } 
-                        : item
-                );
-            }
-            return [...prev, { ...product, jumlah: 1 }];
-        });
-    };
-
-    const updateQuantity = (id, delta) => {
-        setCart(prev => {
-            return prev.map(item => {
-                if (item.id_merchandise === id) {
-                    const product = products.find(p => p.id_merchandise === id);
-                    const newQty = Math.max(1, Math.min(item.jumlah + delta, product.stok));
-                    return { ...item, jumlah: newQty };
-                }
-                return item;
-            });
-        });
     };
 
     const removeFromCart = (id) => {
-        setCart(prev => prev.filter(item => item.id_merchandise !== id));
+        setCart(cart.filter(c => c.id !== id));
     };
 
-    const totalItems = cart.reduce((acc, item) => acc + item.jumlah, 0);
-    const grandTotal = cart.reduce((acc, item) => acc + (item.harga_merchandise * item.jumlah), 0);
-
-    const handleCheckout = async () => {
-        if (!customerName || cart.length === 0) return;
-        setProcessing(true);
-        
-        try {
-            await axios.post('/api/checkout', {
-                pembeli: { nama_lengkap: customerName },
-                seminar: showSeminar ? seminarData : null,
-                id_metode: paymentMethod,
-                cart: cart.map(item => ({
-                    id_merchandise: item.id_merchandise,
-                    jumlah: item.jumlah
-                }))
-            });
-            
-            // Success
-            alert('Transaksi Berhasil!');
-            setCart([]);
-            setCustomerName('');
-            setShowSeminar(false);
-            setSeminarData({ email: '', nomor_telepon: '' });
-        } catch (error) {
-            alert('Gagal checkout: ' + (error.response?.data?.message || error.message));
-        } finally {
-            setProcessing(false);
-        }
-    };
+    const total = cart.reduce((sum, item) => sum + (item.harga * item.qty), 0);
 
     return (
-        <div className="bg-surface text-on-surface h-screen overflow-hidden flex flex-col font-body-md text-body-md">
-            <Head title="Schematics POS Dashboard" />
+        <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900">
+            <Head title="POS Dashboard - Schematics" />
             
-            {/* TopNavBar */}
-            <header className="bg-surface border-b border-outline-variant shadow-sm flex justify-between items-center h-16 px-8 w-full flex-shrink-0 z-10">
-                <div className="flex items-center gap-4">
-                    <span className="font-headline-md font-bold text-primary">Schematics POS</span>
+            {/* Header */}
+            <header className="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center sticky top-0 z-20 shadow-sm">
+                <div>
+                    <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Schematics POS</h1>
+                    <p className="text-sm text-slate-500 font-medium mt-1">Cashier: <span className="text-cyan-600">{auth?.user?.nama || 'Admin'}</span></p>
                 </div>
-                <div className="flex items-center gap-6">
-                    <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold">KS</div>
-                        <span className="font-medium">Kasir Terminal</span>
-                    </div>
+                <div className="flex gap-4">
+                    <button className="px-5 py-2.5 bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-lg font-semibold transition-colors">
+                        Laporan
+                    </button>
+                    <button className="px-5 py-2.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg font-semibold transition-colors">
+                        Logout
+                    </button>
                 </div>
             </header>
 
-            {/* Main */}
-            <div className="flex flex-1 overflow-hidden">
-                {/* Left Nav */}
-                <nav className="bg-surface-container-low border-r border-outline-variant flex flex-col py-6 w-64 flex-shrink-0">
-                    <div className="px-4 pb-4 border-b border-outline-variant mb-2">
-                        <h2 className="text-xl font-bold">Management</h2>
+            <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+                {/* Product Grid */}
+                <main className="flex-1 p-6 overflow-y-auto no-scrollbar">
+                    <div className="mb-6 flex gap-3">
+                        <input 
+                            type="text" 
+                            placeholder="Cari merchandise..." 
+                            className="flex-1 px-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none shadow-sm"
+                        />
+                        <button className="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl font-bold transition-colors shadow-sm">
+                            Cari
+                        </button>
                     </div>
-                    <div className="flex-1 flex flex-col gap-1 px-2">
-                        <a href="#" className="bg-secondary-container text-on-secondary-container font-bold rounded-lg flex items-center gap-4 px-4 py-3">
-                            <span>Cashier Dashboard</span>
-                        </a>
-                    </div>
-                </nav>
 
-                {/* Product Panel */}
-                <main className="flex-1 flex flex-col min-w-0 bg-background">
-                    <div className="flex-1 overflow-y-auto p-6 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 content-start">
-                        {products.map(product => (
-                            <button 
-                                key={product.id_merchandise}
-                                onClick={() => addToCart(product)}
-                                disabled={product.stok <= 0}
-                                className={`bg-surface-container-lowest border ${product.stok <= 0 ? 'border-red-300 opacity-50' : 'border-outline-variant hover:shadow-md'} rounded-lg overflow-hidden flex flex-col text-left transition-all active:scale-95`}
+                    <h2 className="text-lg font-bold mb-4 text-slate-700">Daftar Produk</h2>
+                    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+                        {displayItems.map(item => (
+                            <div 
+                                key={item.id} 
+                                onClick={() => addToCart(item)}
+                                className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-cyan-300 cursor-pointer transition-all active:scale-95 group"
                             >
-                                <div className="h-32 bg-surface-container w-full flex items-center justify-center p-4">
-                                    <div className="text-4xl">🛍️</div>
+                                <div className="aspect-square bg-slate-100 rounded-xl mb-4 flex items-center justify-center text-slate-400 group-hover:bg-cyan-50 transition-colors">
+                                    <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
                                 </div>
-                                <div className="p-3 flex flex-col flex-1 w-full">
-                                    <div className="flex justify-between items-start">
-                                        <h3 className="font-bold text-sm line-clamp-2">{product.tipe_merchandise}</h3>
-                                        <span className="bg-surface-container-high px-1 py-0.5 rounded text-[10px] font-bold">{product.event?.nama_subevent || 'ALL'}</span>
-                                    </div>
-                                    <div className="mt-auto pt-3 flex justify-between items-end w-full">
-                                        <span className="font-bold text-primary">Rp {Number(product.harga_merchandise).toLocaleString('id-ID')}</span>
-                                        <span className={`text-sm ${product.stok <= 3 ? 'text-error font-bold' : 'text-on-surface-variant'}`}>
-                                            Stok: {product.stok}
-                                        </span>
-                                    </div>
-                                </div>
-                            </button>
+                                <h3 className="font-bold text-slate-800 line-clamp-2 leading-tight">{item.nama_merchandise}</h3>
+                                <p className="text-cyan-600 font-bold mt-2">Rp {item.harga.toLocaleString('id-ID')}</p>
+                                <p className="text-xs text-slate-500 mt-1">Stok: {item.stok}</p>
+                            </div>
                         ))}
                     </div>
                 </main>
 
-                {/* Cart Panel */}
-                <aside className="w-[380px] bg-surface-container-lowest border-l border-outline-variant flex flex-col flex-shrink-0 z-20">
-                    <div className="p-4 border-b border-outline-variant flex justify-between items-center">
-                        <h2 className="font-bold text-lg">Keranjang ({totalItems})</h2>
-                        <button onClick={() => setCart([])} className="text-error text-sm hover:bg-error-container p-1 rounded">Kosongkan</button>
+                {/* Cart Sidebar */}
+                <aside className="w-full lg:w-[400px] bg-white border-l border-slate-200 flex flex-col shadow-[-4px_0_15px_-3px_rgba(0,0,0,0.05)] z-10">
+                    <div className="p-6 border-b border-slate-200 bg-slate-50/50">
+                        <h2 className="text-xl font-bold text-slate-800">Keranjang Belanja</h2>
                     </div>
-
-                    <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3 bg-background">
-                        {cart.map(item => (
-                            <div key={item.id_merchandise} className="bg-surface-container-lowest border border-outline-variant p-3 rounded-lg flex flex-col gap-2">
-                                <div className="flex justify-between">
-                                    <h4 className="font-bold text-sm">{item.tipe_merchandise}</h4>
-                                    <button onClick={() => removeFromCart(item.id_merchandise)} className="text-gray-400 hover:text-error">×</button>
-                                </div>
-                                <div className="flex justify-between items-center mt-2">
-                                    <div className="flex items-center border border-outline-variant rounded">
-                                        <button onClick={() => updateQuantity(item.id_merchandise, -1)} className="w-8 h-8 flex items-center justify-center hover:bg-surface-container">-</button>
-                                        <input readOnly value={item.jumlah} className="w-10 h-8 text-center border-x border-outline-variant border-y-0 text-sm bg-transparent" />
-                                        <button onClick={() => updateQuantity(item.id_merchandise, 1)} className="w-8 h-8 flex items-center justify-center hover:bg-surface-container">+</button>
+                    
+                    <div className="flex-1 p-6 overflow-y-auto no-scrollbar space-y-4">
+                        {cart.length === 0 ? (
+                            <div className="h-full flex flex-col items-center justify-center text-slate-400">
+                                <svg className="w-16 h-16 mb-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                <p>Keranjang masih kosong</p>
+                            </div>
+                        ) : (
+                            cart.map(item => (
+                                <div key={item.id} className="flex items-center justify-between p-4 bg-white border border-slate-200 rounded-xl shadow-sm">
+                                    <div className="flex-1">
+                                        <h4 className="font-bold text-slate-800 text-sm leading-tight">{item.nama_merchandise}</h4>
+                                        <p className="text-cyan-600 font-bold text-sm mt-1">Rp {item.harga.toLocaleString('id-ID')}</p>
                                     </div>
-                                    <span className="font-bold">Rp {(item.harga_merchandise * item.jumlah).toLocaleString('id-ID')}</span>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
-                    <div className="border-t border-outline-variant bg-surface-container-lowest flex flex-col">
-                        <div className="p-4 flex flex-col gap-4 max-h-[400px] overflow-y-auto">
-                            <div>
-                                <label className="font-bold text-sm mb-1 block">Nama Pembeli *</label>
-                                <input 
-                                    type="text" 
-                                    className="w-full p-2 border rounded"
-                                    value={customerName}
-                                    onChange={e => setCustomerName(e.target.value)}
-                                />
-                            </div>
-
-                            <div className="bg-surface-container-low border rounded-lg p-3">
-                                <label className="flex items-center justify-between cursor-pointer">
-                                    <span className="font-bold text-sm">Daftar Seminar BST?</span>
-                                    <input 
-                                        type="checkbox" 
-                                        checked={showSeminar}
-                                        onChange={e => setShowSeminar(e.target.checked)}
-                                    />
-                                </label>
-                                {showSeminar && (
-                                    <div className="mt-3 pt-3 border-t flex flex-col gap-3">
-                                        <input type="email" placeholder="Email" className="p-2 border rounded" value={seminarData.email} onChange={e => setSeminarData({...seminarData, email: e.target.value})} />
-                                        <input type="tel" placeholder="No. HP" className="p-2 border rounded" value={seminarData.nomor_telepon} onChange={e => setSeminarData({...seminarData, nomor_telepon: e.target.value})} />
-                                    </div>
-                                )}
-                            </div>
-
-                            <div>
-                                <label className="font-bold text-sm block mb-2">Metode Pembayaran</label>
-                                <div className="grid grid-cols-3 gap-2">
-                                    {[1, 2, 3].map(id => (
-                                        <button 
-                                            key={id}
-                                            onClick={() => setPaymentMethod(id)}
-                                            className={`p-2 border rounded text-sm ${paymentMethod === id ? 'bg-primary-container text-on-primary-container border-primary' : ''}`}
-                                        >
-                                            {id === 1 ? 'Transfer' : id === 2 ? 'QRIS' : 'Tunai'}
+                                    <div className="flex items-center gap-3 ml-4">
+                                        <div className="px-3 py-1 bg-slate-100 rounded-lg font-bold text-sm">{item.qty}</div>
+                                        <button onClick={() => removeFromCart(item.id)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                         </button>
-                                    ))}
+                                    </div>
                                 </div>
-                            </div>
+                            ))
+                        )}
+                    </div>
+                    
+                    <div className="p-6 bg-white border-t border-slate-200">
+                        <div className="flex justify-between items-center mb-6">
+                            <span className="text-slate-500 font-medium">Total Tagihan</span>
+                            <span className="text-2xl font-black text-slate-800">Rp {total.toLocaleString('id-ID')}</span>
                         </div>
-
-                        <div className="p-4 bg-surface-container-low border-t border-outline-variant">
-                            <div className="flex justify-between items-end mb-4">
-                                <span className="font-bold text-xl">Grand Total</span>
-                                <span className="text-2xl font-bold text-primary">Rp {grandTotal.toLocaleString('id-ID')}</span>
-                            </div>
-                            <button 
-                                onClick={handleCheckout}
-                                disabled={processing || cart.length === 0 || !customerName}
-                                className="w-full bg-primary text-on-primary py-3 rounded-lg font-bold disabled:opacity-50"
-                            >
-                                {processing ? 'Memproses...' : 'Proses Pembayaran'}
-                            </button>
-                        </div>
+                        <button 
+                            disabled={cart.length === 0}
+                            className="w-full py-4 bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-xl font-bold text-lg shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/40 hover:-translate-y-0.5 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                        >
+                            Proses Pembayaran
+                        </button>
                     </div>
                 </aside>
             </div>
