@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Schematics POS - Cashier Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#434655",
+                        "secondary-container": "#6cf8bb",
+                        "on-surface": "#0b1c30",
+                        "on-secondary-fixed-variant": "#005236",
+                        "surface": "#f8f9ff",
+                        "primary-container": "#2563eb",
+                        "tertiary-container": "#d22348",
+                        "on-secondary-container": "#00714d",
+                        "surface-tint": "#0053db",
+                        "surface-container-high": "#dce9ff",
+                        "background": "#f8f9ff",
+                        "surface-dim": "#cbdbf5",
+                        "secondary": "#006c49",
+                        "on-error-container": "#93000a",
+                        "outline-variant": "#c3c6d7",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#6ffbbe",
+                        "inverse-on-surface": "#eaf1ff",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-primary-container": "#eeefff",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#4edea3",
+                        "inverse-surface": "#213145",
+                        "primary": "#004ac6",
+                        "primary-fixed": "#dbe1ff",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "on-primary-fixed": "#00174b",
+                        "inverse-primary": "#b4c5ff",
+                        "on-background": "#0b1c30",
+                        "surface-container": "#e5eeff",
+                        "surface-bright": "#f8f9ff",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "error-container": "#ffdad6",
+                        "outline": "#737686",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed": "#ffdadb",
+                        "on-tertiary-fixed-variant": "#92002a",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-container": "#ffecec",
+                        "surface-container-low": "#eff4ff",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#002113",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed": "#40000d",
+                        "surface-variant": "#d3e4fe",
+                        "tertiary": "#ad0033"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "2rem",
+                        "gutter": "1rem",
+                        "xs": "0.25rem",
+                        "md": "1rem",
+                        "base": "4px",
+                        "lg": "1.5rem",
+                        "margin-mobile": "1rem",
+                        "xl": "2rem",
+                        "sm": "0.5rem"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "display": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "data-mono": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "display": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-lg": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "data-mono": ["16px", { "lineHeight": "24px", "letterSpacing": "0.05em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface h-screen overflow-hidden flex flex-col font-body-md text-body-md">
+<!-- TopNavBar -->
+<header class="bg-surface dark:bg-inverse-surface border-b border-outline-variant dark:border-outline shadow-sm flex justify-between items-center h-16 px-margin-desktop w-full flex-shrink-0 relative z-10">
+<div class="flex items-center gap-md">
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary">Schematics POS</span>
+</div>
+<div class="flex items-center gap-lg">
+<div class="flex items-center gap-xs text-on-surface-variant font-label-md text-label-md">
+<span class="material-symbols-outlined" style="font-size: 20px;">calendar_today</span>
+<span id="currentDateTime">24 Okt 2023, 14:30</span>
+</div>
+<div class="h-6 w-px bg-outline-variant"></div>
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-label-lg text-label-lg">JS</div>
+<span class="font-label-md text-label-md text-on-surface">Staff: John Finance</span>
+</div>
+<button class="text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors p-sm rounded-full active:scale-95 duration-100">
+<span class="material-symbols-outlined">schedule</span>
+</button>
+</div>
+</header>
+<!-- Main Content Area -->
+<div class="flex flex-1 overflow-hidden">
+<!-- SideNavBar / Left Menu -->
+<nav class="bg-surface-container-low dark:bg-surface-container-lowest border-r border-outline-variant dark:border-outline flex flex-col py-lg gap-sm w-64 flex-shrink-0 overflow-y-auto">
+<div class="px-md pb-md border-b border-outline-variant mb-sm">
+<h2 class="font-headline-sm text-headline-sm text-on-surface dark:text-on-background font-bold">Management</h2>
+<p class="font-label-md text-label-md text-on-surface-variant mt-xs">Terminal #01</p>
+</div>
+<div class="flex-1 flex flex-col gap-base">
+<a class="bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary font-bold rounded-lg mx-2 flex items-center gap-md px-md py-sm cursor-pointer active:opacity-80" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">point_of_sale</span>
+<span class="font-label-md text-label-md">Cashier Dashboard</span>
+</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-all mx-2 rounded-lg flex items-center gap-md px-md py-sm cursor-pointer active:opacity-80" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-label-md text-label-md">Merchandise Management</span>
+</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-all mx-2 rounded-lg flex items-center gap-md px-md py-sm cursor-pointer active:opacity-80" href="#">
+<span class="material-symbols-outlined">badge</span>
+<span class="font-label-md text-label-md">Staff Management</span>
+</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-all mx-2 rounded-lg flex items-center gap-md px-md py-sm cursor-pointer active:opacity-80" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-label-md text-label-md">Transaction History</span>
+</a>
+</div>
+<div class="mt-auto border-t border-outline-variant pt-sm flex flex-col gap-base">
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-all mx-2 rounded-lg flex items-center gap-md px-md py-sm cursor-pointer active:opacity-80" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+<a class="text-error hover:bg-error-container hover:text-on-error-container transition-all mx-2 rounded-lg flex items-center gap-md px-md py-sm cursor-pointer active:opacity-80" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-md text-label-md font-bold">Logout</span>
+</a>
+</div>
+</nav>
+<!-- Product Panel (2/3) -->
+<main class="flex-1 flex flex-col min-w-0 bg-surface bg-[url('https://www.transparenttextures.com/patterns/always-grey.png')]">
+<!-- Search & Filters -->
+<div class="p-lg pb-sm bg-surface/90 backdrop-blur-sm border-b border-outline-variant sticky top-0 z-10">
+<div class="flex items-center gap-md mb-md">
+<div class="relative flex-1">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full pl-xl pr-md py-sm bg-surface-container-lowest border border-outline-variant rounded-full font-body-md text-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline" placeholder="Cari nama produk atau SKU..." type="text"/>
+</div>
+<button class="bg-surface-container border border-outline-variant rounded-full p-sm text-on-surface-variant hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">barcode_scanner</span>
+</button>
+</div>
+<div class="flex gap-sm overflow-x-auto no-scrollbar pb-xs">
+<button class="px-md py-xs rounded-full bg-primary text-on-primary font-label-md text-label-md flex-shrink-0">Semua</button>
+<button class="px-md py-xs rounded-full bg-surface-container-lowest border border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors font-label-md text-label-md flex-shrink-0">BST</button>
+<button class="px-md py-xs rounded-full bg-surface-container-lowest border border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors font-label-md text-label-md flex-shrink-0">NPC</button>
+<button class="px-md py-xs rounded-full bg-surface-container-lowest border border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors font-label-md text-label-md flex-shrink-0">NLC</button>
+<button class="px-md py-xs rounded-full bg-surface-container-lowest border border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors font-label-md text-label-md flex-shrink-0">NLDC</button>
+</div>
+</div>
+<!-- Product Grid -->
+<div class="flex-1 overflow-y-auto p-lg grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-md content-start">
+<!-- Product Card 1 -->
+<button class="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden flex flex-col text-left hover:shadow-md transition-shadow group active:scale-[0.98] cursor-pointer">
+<div class="h-40 bg-surface-container w-full relative overflow-hidden flex items-center justify-center">
+<img alt="T-Shirt" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="A neat stack of folded premium white and navy blue cotton t-shirts displayed on a light oak wooden shelf. The lighting is bright and clean, mimicking a modern retail boutique store setting. Soft shadows give depth to the fabric texture. The overall aesthetic is minimalist, professional, and highlights high-quality merchandise within a light-mode UI context." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCp5CthsR4Fg78Gc5KgOl5lrQOsWa4XNUpW8H5KStpBypsr-9UYmSQHPmq_s1oPbHHWF6TqD2ZCcdvG8MLZWXiXPo_gtqJtAj2Y7gC_QhORX7g3ji3UW5lFmR6kYXH5kWTVhTgq9r4h13dZHCrDpA6j-kCmOYnbZHPE8uVtqSPWG2uOrIfNDL85Nw1xfuqiACbC9gMS7j0SGtu-vZVdQtuGMRtSrprGPTxljm6bm7oMGsGSV2GDRidYgViLW1dV_fbPQXDiAVHLUg"/>
+</div>
+<div class="p-sm flex flex-col gap-xs flex-1">
+<div class="flex justify-between items-start gap-xs">
+<h3 class="font-label-md text-label-md font-bold text-on-surface line-clamp-2">Kaos Schematics 2023 - L</h3>
+<span class="bg-surface-container-high px-xs py-base rounded text-on-surface-variant text-[10px] font-bold leading-none shrink-0 mt-xs">BST</span>
+</div>
+<p class="font-data-mono text-data-mono text-on-surface-variant text-xs">SKU: BST-TS-L</p>
+<div class="mt-auto pt-sm flex justify-between items-end">
+<span class="font-label-lg text-label-lg font-bold text-primary">Rp 150.000</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Stok: 15</span>
+</div>
+</div>
+</button>
+<!-- Product Card 2 -->
+<button class="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden flex flex-col text-left hover:shadow-md transition-shadow group active:scale-[0.98] cursor-pointer">
+<div class="h-40 bg-surface-container w-full relative overflow-hidden flex items-center justify-center">
+<img alt="Tote Bag" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="A durable canvas tote bag hanging on a simple metal hook against a smooth off-white wall. The bag features a subtle printed logo. Sunlight gently washes across the scene from a nearby window, creating a warm, inviting retail atmosphere. The minimalist framing aligns with a clean, modern inventory catalog aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZ2ux8Vf7qA5re_-4iR9VeK6fljDhvu_KtGMmVckBKWbXt3gizd9GwDWi1h0RLy74NfCEIh3xhCtJ0f0OQE2wF6KGZ5AcRQDjA49h1ptiJmGrzvUVvL1XIhgFuQd6MhMT-Tts2C_iA3bJNPXPJeIFrmB0aYl7BTZBPFNM7e-vrRviwif86c-W8Ho_L4WO3xp31rfX6eVQBQhEQucMmklx9tMInpPIBYKw12Vwm0O0NeLe8C6tziqjoJYzZsnnDpor4c9xhQu1tyA"/>
+</div>
+<div class="p-sm flex flex-col gap-xs flex-1">
+<div class="flex justify-between items-start gap-xs">
+<h3 class="font-label-md text-label-md font-bold text-on-surface line-clamp-2">Tote Bag Kanvas Premium</h3>
+<span class="bg-surface-container-high px-xs py-base rounded text-on-surface-variant text-[10px] font-bold leading-none shrink-0 mt-xs">NPC</span>
+</div>
+<p class="font-data-mono text-data-mono text-on-surface-variant text-xs">SKU: NPC-TB-01</p>
+<div class="mt-auto pt-sm flex justify-between items-end">
+<span class="font-label-lg text-label-lg font-bold text-primary">Rp 85.000</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Stok: 42</span>
+</div>
+</div>
+</button>
+<!-- Product Card 3 (Low Stock) -->
+<button class="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden flex flex-col text-left hover:shadow-md transition-shadow group active:scale-[0.98] cursor-pointer relative">
+<div class="absolute top-sm left-sm z-10 bg-error text-on-error px-xs py-base rounded text-[10px] font-bold shadow-sm">SISA 3</div>
+<div class="h-40 bg-surface-container w-full relative overflow-hidden flex items-center justify-center">
+<div class="w-full h-full bg-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-outline text-4xl">local_cafe</span>
+</div>
+</div>
+<div class="p-sm flex flex-col gap-xs flex-1">
+<div class="flex justify-between items-start gap-xs">
+<h3 class="font-label-md text-label-md font-bold text-on-surface line-clamp-2">Mug Keramik NLC</h3>
+<span class="bg-surface-container-high px-xs py-base rounded text-on-surface-variant text-[10px] font-bold leading-none shrink-0 mt-xs">NLC</span>
+</div>
+<p class="font-data-mono text-data-mono text-on-surface-variant text-xs">SKU: NLC-MG-01</p>
+<div class="mt-auto pt-sm flex justify-between items-end">
+<span class="font-label-lg text-label-lg font-bold text-primary">Rp 45.000</span>
+<span class="font-label-md text-label-md text-error font-bold">Stok: 3</span>
+</div>
+</div>
+</button>
+<!-- More items would repeat here... -->
+</div>
+</main>
+<!-- Right Panel: Cart & Checkout (1/3) -->
+<aside class="w-[380px] bg-surface-container-lowest border-l border-outline-variant flex flex-col flex-shrink-0 z-20 shadow-[-4px_0_15px_-5px_rgba(0,0,0,0.05)] relative">
+<!-- Cart Header -->
+<div class="p-md border-b border-outline-variant flex justify-between items-center bg-surface-container-lowest">
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface flex items-center gap-sm">
+<span class="material-symbols-outlined">shopping_cart</span>
+                    Keranjang
+                </h2>
+<button class="text-error font-label-md text-label-md hover:bg-error-container p-xs rounded transition-colors flex items-center gap-xs">
+<span class="material-symbols-outlined" style="font-size: 18px;">delete</span>
+                    Kosongkan
+                </button>
+</div>
+<!-- Cart Items List -->
+<div class="flex-1 overflow-y-auto p-md flex flex-col gap-sm bg-background">
+<!-- Item 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant p-sm rounded-lg flex flex-col gap-sm">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-label-md text-label-md font-bold text-on-surface">Kaos Schematics 2023 - L</h4>
+<p class="font-label-lg text-label-lg text-primary mt-xs">Rp 150.000</p>
+</div>
+<button class="text-on-surface-variant hover:text-error transition-colors p-xs">
+<span class="material-symbols-outlined" style="font-size: 20px;">close</span>
+</button>
+</div>
+<div class="flex justify-between items-center mt-xs">
+<div class="flex items-center border border-outline-variant rounded bg-surface-container-lowest">
+<button class="w-8 h-8 flex items-center justify-center text-on-surface hover:bg-surface-container transition-colors rounded-l active:bg-surface-variant"><span class="material-symbols-outlined" style="font-size: 18px;">remove</span></button>
+<input class="w-10 h-8 text-center border-x border-outline-variant border-y-0 p-0 font-data-mono text-data-mono bg-transparent focus:ring-0" type="text" value="1"/>
+<button class="w-8 h-8 flex items-center justify-center text-on-surface hover:bg-surface-container transition-colors rounded-r active:bg-surface-variant"><span class="material-symbols-outlined" style="font-size: 18px;">add</span></button>
+</div>
+<span class="font-label-lg text-label-lg font-bold text-on-surface">Rp 150.000</span>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant p-sm rounded-lg flex flex-col gap-sm">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-label-md text-label-md font-bold text-on-surface">Mug Keramik NLC</h4>
+<p class="font-label-lg text-label-lg text-primary mt-xs">Rp 45.000</p>
+</div>
+<button class="text-on-surface-variant hover:text-error transition-colors p-xs">
+<span class="material-symbols-outlined" style="font-size: 20px;">close</span>
+</button>
+</div>
+<div class="flex justify-between items-center mt-xs">
+<div class="flex items-center border border-outline-variant rounded bg-surface-container-lowest">
+<button class="w-8 h-8 flex items-center justify-center text-on-surface hover:bg-surface-container transition-colors rounded-l active:bg-surface-variant"><span class="material-symbols-outlined" style="font-size: 18px;">remove</span></button>
+<input class="w-10 h-8 text-center border-x border-outline-variant border-y-0 p-0 font-data-mono text-data-mono bg-transparent focus:ring-0" type="text" value="2"/>
+<button class="w-8 h-8 flex items-center justify-center text-on-surface hover:bg-surface-container transition-colors rounded-r active:bg-surface-variant"><span class="material-symbols-outlined" style="font-size: 18px;">add</span></button>
+</div>
+<span class="font-label-lg text-label-lg font-bold text-on-surface">Rp 90.000</span>
+</div>
+</div>
+</div>
+<!-- Customer & Payment Form -->
+<div class="border-t border-outline-variant bg-surface-container-lowest flex flex-col">
+<div class="p-md flex flex-col gap-md max-h-[409px] overflow-y-auto no-scrollbar">
+<!-- Customer Details -->
+<div class="flex flex-col gap-sm">
+<label class="font-label-md text-label-md font-bold text-on-surface">Nama Pembeli <span class="text-error">*</span></label>
+<input class="w-full px-md py-sm bg-surface border border-outline-variant rounded font-body-md text-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline" placeholder="Masukkan nama" required="" type="text"/>
+</div>
+<!-- Seminar Toggle -->
+<div class="bg-surface-container-low border border-outline-variant rounded-lg p-sm">
+<label class="flex items-center justify-between cursor-pointer">
+<span class="font-label-md text-label-md font-bold text-on-surface">Daftar Seminar BST?</span>
+<div class="relative">
+<input class="sr-only peer" id="seminarToggle" onchange="toggleSeminarForm()" type="checkbox"/>
+<div class="w-11 h-6 bg-outline-variant rounded-full peer peer-checked:bg-primary transition-colors"></div>
+<div class="absolute left-1 top-1 w-4 h-4 bg-surface-container-lowest rounded-full transition-transform peer-checked:translate-x-5"></div>
+</div>
+</label>
+<div class="hidden flex-col gap-sm mt-md pt-md border-t border-outline-variant" id="seminarFields">
+<div>
+<label class="font-label-md text-label-md text-on-surface-variant mb-xs block">Email</label>
+<input class="w-full px-md py-sm bg-surface border border-outline-variant rounded font-body-md text-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline" placeholder="email@contoh.com" type="email"/>
+</div>
+<div>
+<label class="font-label-md text-label-md text-on-surface-variant mb-xs block">No. HP</label>
+<input class="w-full px-md py-sm bg-surface border border-outline-variant rounded font-body-md text-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline" placeholder="08..." type="tel"/>
+</div>
+</div>
+</div>
+<!-- Payment Method -->
+<div class="flex flex-col gap-sm">
+<label class="font-label-md text-label-md font-bold text-on-surface">Metode Pembayaran</label>
+<div class="grid grid-cols-3 gap-sm">
+<label class="cursor-pointer">
+<input checked="" class="sr-only peer" name="payment" type="radio"/>
+<div class="border border-outline-variant rounded-lg p-sm text-center font-label-md text-label-md peer-checked:border-primary peer-checked:bg-primary-container peer-checked:text-on-primary-container hover:bg-surface-container transition-all">
+                                    Tunai
+                                </div>
+</label>
+<label class="cursor-pointer">
+<input class="sr-only peer" name="payment" type="radio"/>
+<div class="border border-outline-variant rounded-lg p-sm text-center font-label-md text-label-md peer-checked:border-primary peer-checked:bg-primary-container peer-checked:text-on-primary-container hover:bg-surface-container transition-all">
+                                    QRIS
+                                </div>
+</label>
+<label class="cursor-pointer">
+<input class="sr-only peer" name="payment" type="radio"/>
+<div class="border border-outline-variant rounded-lg p-sm text-center font-label-md text-label-md peer-checked:border-primary peer-checked:bg-primary-container peer-checked:text-on-primary-container hover:bg-surface-container transition-all">
+                                    Transfer
+                                </div>
+</label>
+</div>
+</div>
+</div>
+<!-- Summary & Action -->
+<div class="p-md bg-surface-container-low border-t border-outline-variant flex flex-col gap-md">
+<div class="flex justify-between items-center font-label-md text-label-md text-on-surface-variant">
+<span>Total Item</span>
+<span class="font-bold">3 Item</span>
+</div>
+<div class="flex justify-between items-end">
+<span class="font-headline-md text-headline-md font-bold text-on-surface">Grand Total</span>
+<span class="font-display text-display text-primary">Rp 240.000</span>
+</div>
+<button class="w-full bg-primary text-on-primary py-md rounded-lg font-headline-md text-headline-md font-bold hover:bg-primary/90 active:scale-[0.98] transition-all shadow-md flex items-center justify-center gap-sm mt-sm">
+                        Proses Pembayaran
+                        <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</aside>
+</div>
+<!-- Success Modal (Hidden by default) -->
+<!-- Remove 'hidden' class to preview -->
+<div class="hidden fixed inset-0 z-50 flex items-center justify-center bg-on-surface/50 backdrop-blur-sm p-margin-desktop" id="successModal">
+<div class="bg-surface-container-lowest rounded-xl shadow-lg w-full max-w-md p-xl flex flex-col items-center text-center animate-[popIn_0.3s_ease-out]">
+<div class="w-20 h-20 bg-secondary-container text-on-secondary-container rounded-full flex items-center justify-center mb-lg">
+<span class="material-symbols-outlined" style="font-size: 48px; font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h2 class="font-display text-display text-on-surface mb-xs">Transaksi Berhasil</h2>
+<p class="font-data-mono text-data-mono text-on-surface-variant mb-xl bg-surface-container px-md py-xs rounded">ID: TRS-2027-001</p>
+<div class="w-full border-t border-b border-outline-variant py-md mb-xl flex justify-between items-center">
+<span class="font-label-lg text-label-lg text-on-surface-variant">Total Pembayaran</span>
+<span class="font-headline-md text-headline-md font-bold text-primary">Rp 240.000</span>
+</div>
+<div class="flex flex-col gap-sm w-full">
+<button class="w-full bg-primary text-on-primary py-sm rounded-lg font-label-lg text-label-lg font-bold hover:bg-primary/90 active:scale-[0.98] transition-all shadow-sm flex items-center justify-center gap-sm">
+<span class="material-symbols-outlined">receipt</span>
+                    Cetak Struk
+                </button>
+<button class="w-full bg-surface-container border border-outline-variant text-on-surface py-sm rounded-lg font-label-lg text-label-lg font-bold hover:bg-surface-variant active:scale-[0.98] transition-all" onclick="document.getElementById('successModal').classList.add('hidden')">
+                    Transaksi Baru
+                </button>
+</div>
+</div>
+</div>
+<!-- Toast Notification (Sample, hidden by default, can be toggled for demo) -->
+<div class="fixed bottom-margin-desktop left-1/2 -translate-x-1/2 z-50 bg-secondary text-on-secondary px-lg py-sm rounded-lg shadow-lg font-label-md text-label-md flex items-center gap-sm transition-transform duration-300 translate-y-20 opacity-0" id="toast">
+<span class="material-symbols-outlined">check_circle</span>
+        Produk ditambahkan ke keranjang
+    </div>
+<script>
+        // Simple script for Seminar toggle UI logic
+        function toggleSeminarForm() {
+            const toggle = document.getElementById('seminarToggle');
+            const fields = document.getElementById('seminarFields');
+            if (toggle.checked) {
+                fields.classList.remove('hidden');
+                fields.classList.add('flex');
+            } else {
+                fields.classList.add('hidden');
+                fields.classList.remove('flex');
+            }
+        }
+
+        // Clock update
+        function updateClock() {
+            const now = new Date();
+            const options = { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+            document.getElementById('currentDateTime').textContent = now.toLocaleDateString('id-ID', options).replace(/\./g, ':');
+        }
+        setInterval(updateClock, 60000);
+        updateClock();
+
+        // Demo Toast function (uncomment to test)
+        /*
+        setTimeout(() => {
+            const toast = document.getElementById('toast');
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }, 1000);
+        */
+    </script>
+</body></html>
