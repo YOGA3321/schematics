@@ -1,6 +1,6 @@
 {
   "resources/css/app.css": {
-    "file": "assets/app-BnRGZ7KZ.css",
+    "file": "assets/app-CLVARC3A.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
@@ -9,7 +9,7 @@
     ]
   },
   "resources/js/Pages/LandingPage.jsx": {
-    "file": "assets/LandingPage-BwpDyCTW.js",
+    "file": "assets/LandingPage-B8MFQcCG.js",
     "name": "LandingPage",
     "src": "resources/js/Pages/LandingPage.jsx",
     "isDynamicEntry": true,
@@ -17,11 +17,11 @@
       "resources/js/app.jsx"
     ],
     "css": [
-      "assets/app-BnRGZ7KZ.css"
+      "assets/app-CLVARC3A.css"
     ]
   },
   "resources/js/Pages/Login.jsx": {
-    "file": "assets/Login-DYwnkAY4.js",
+    "file": "assets/Login-CPAwUSsM.js",
     "name": "Login",
     "src": "resources/js/Pages/Login.jsx",
     "isDynamicEntry": true,
@@ -29,11 +29,11 @@
       "resources/js/app.jsx"
     ],
     "css": [
-      "assets/app-BnRGZ7KZ.css"
+      "assets/app-CLVARC3A.css"
     ]
   },
   "resources/js/Pages/POS/Index.jsx": {
-    "file": "assets/Index-B_6camUg.js",
+    "file": "assets/Index-C4Nx6HMj.js",
     "name": "Index",
     "src": "resources/js/Pages/POS/Index.jsx",
     "isDynamicEntry": true,
@@ -41,11 +41,11 @@
       "resources/js/app.jsx"
     ],
     "css": [
-      "assets/app-BnRGZ7KZ.css"
+      "assets/app-CLVARC3A.css"
     ]
   },
   "resources/js/app.jsx": {
-    "file": "assets/app-B0ko02Vu.js",
+    "file": "assets/app-Cj_Pf_TZ.js",
     "name": "app",
     "src": "resources/js/app.jsx",
     "isEntry": true,
@@ -55,7 +55,7 @@
       "resources/js/Pages/POS/Index.jsx"
     ],
     "css": [
-      "assets/app-BnRGZ7KZ.css"
+      "assets/app-CLVARC3A.css"
     ]
   }
 }
