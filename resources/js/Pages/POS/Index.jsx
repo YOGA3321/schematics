@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 
 export default function POSIndex({ auth, merchandises = [] }) {
     const [cart, setCart] = useState([]);
@@ -34,15 +34,15 @@ export default function POSIndex({ auth, merchandises = [] }) {
             <header className="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center sticky top-0 z-20 shadow-sm">
                 <div>
                     <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Schematics POS</h1>
-                    <p className="text-sm text-slate-500 font-medium mt-1">Cashier: <span className="text-cyan-600">{auth?.user?.nama || 'Admin'}</span></p>
+                    <p className="text-sm text-slate-500 font-medium mt-1">Cashier: <span className="text-cyan-600">{auth?.user?.nama_lengkap || 'Admin'}</span></p>
                 </div>
                 <div className="flex gap-4">
                     <button className="px-5 py-2.5 bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-lg font-semibold transition-colors">
                         Laporan
                     </button>
-                    <button className="px-5 py-2.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg font-semibold transition-colors">
+                    <Link href="/staff/logout" method="post" as="button" className="px-5 py-2.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg font-semibold transition-colors">
                         Logout
-                    </button>
+                    </Link>
                 </div>
             </header>
 
