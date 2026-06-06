@@ -8,10 +8,54 @@
       "app.css"
     ]
   },
-  "resources/js/app.js": {
-    "file": "assets/app-DsbP9Jus.js",
+  "resources/js/Pages/LandingPage.jsx": {
+    "file": "assets/LandingPage-B5jGNRED.js",
+    "name": "LandingPage",
+    "src": "resources/js/Pages/LandingPage.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx"
+    ],
+    "css": [
+      "assets/app-DwKTF_pQ.css"
+    ]
+  },
+  "resources/js/Pages/Login.jsx": {
+    "file": "assets/Login-DtwDVLfH.js",
+    "name": "Login",
+    "src": "resources/js/Pages/Login.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx"
+    ],
+    "css": [
+      "assets/app-DwKTF_pQ.css"
+    ]
+  },
+  "resources/js/Pages/POS/Index.jsx": {
+    "file": "assets/Index-DB5dFXpq.js",
+    "name": "Index",
+    "src": "resources/js/Pages/POS/Index.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx"
+    ],
+    "css": [
+      "assets/app-DwKTF_pQ.css"
+    ]
+  },
+  "resources/js/app.jsx": {
+    "file": "assets/app-DdMBtvEo.js",
     "name": "app",
-    "src": "resources/js/app.js",
-    "isEntry": true
+    "src": "resources/js/app.jsx",
+    "isEntry": true,
+    "dynamicImports": [
+      "resources/js/Pages/LandingPage.jsx",
+      "resources/js/Pages/Login.jsx",
+      "resources/js/Pages/POS/Index.jsx"
+    ],
+    "css": [
+      "assets/app-DwKTF_pQ.css"
+    ]
   }
 }
