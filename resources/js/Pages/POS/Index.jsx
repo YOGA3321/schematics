@@ -1,28 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { Head, Link } from '@inertiajs/react';
+import AdminLayout from '../../Layouts/AdminLayout';
 
 export default function POSIndex({ auth, merchandises = [] }) {
     const [cart, setCart] = useState([]);
-    const [currentTime, setCurrentTime] = useState("");
     const [isSeminar, setIsSeminar] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [activeFilter, setActiveFilter] = useState("Semua");
     
-    useEffect(() => {
-        const updateClock = () => {
-            const now = new Date();
-            const options = { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
-            setCurrentTime(now.toLocaleDateString('id-ID', options).replace(/\./g, ':'));
-        };
-        updateClock();
-        const timer = setInterval(updateClock, 60000);
-        return () => clearInterval(timer);
-    }, []);
-
-    // Fallback if empty
-    const displayItems = merchandises.length > 0 ? merchandises : [
+    // Normalization
+    const normalizedItems = merchandises.length > 0 ? merchandises.map(m => ({
+        id: m.id_merchandise,
+        nama_merchandise: m.tipe_merchandise,
+        harga: Number(m.harga_merchandise),
+        stok: m.stok,
+        asal_subevent: m.event?.nama_subevent || 'Umum',
+        sku: `SKU-0${m.id_merchandise}`
+    })) : [
         { id: 1, nama_merchandise: 'Kaos Schematics 2023 - L', harga: 150000, stok: 15, asal_subevent: 'BST', sku: 'BST-TS-L' },
         { id: 2, nama_merchandise: 'Tote Bag Kanvas Premium', harga: 85000, stok: 42, asal_subevent: 'NPC', sku: 'NPC-TB-01' },
         { id: 3, nama_merchandise: 'Mug Keramik NLC', harga: 45000, stok: 3, asal_subevent: 'NLC', sku: 'NLC-MG-01' },
     ];
+
+    const displayItems = normalizedItems.filter(item => {
+        const matchSearch = item.nama_merchandise.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                            item.sku.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchFilter = activeFilter === 'Semua' || item.asal_subevent === activeFilter;
+        return matchSearch && matchFilter;
+    });
 
     const addToCart = (item) => {
         const existing = cart.find(c => c.id === item.id);
@@ -50,66 +55,8 @@ export default function POSIndex({ auth, merchandises = [] }) {
     const total = cart.reduce((sum, item) => sum + (item.harga * item.qty), 0);
 
     return (
-        <div className="bg-surface text-on-surface h-screen overflow-hidden flex flex-col font-body-md text-[16px]">
-            <Head>
-                <title>Schematics POS - Cashier Dashboard</title>
-                <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-            </Head>
-            
-            {/* TopNavBar */}
-            <header className="bg-surface border-b border-outline-variant shadow-sm flex justify-between items-center h-16 px-8 w-full flex-shrink-0 relative z-10">
-                <div className="flex items-center gap-4">
-                    <span className="font-headline-md text-[20px] font-bold text-primary">Schematics POS</span>
-                </div>
-                <div className="flex items-center gap-6">
-                    <div className="flex items-center gap-1 text-on-surface-variant font-label-md text-[14px]">
-                        <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>calendar_today</span>
-                        <span>{currentTime}</span>
-                    </div>
-                    <div className="h-6 w-px bg-outline-variant"></div>
-                    <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-label-lg text-[14px] font-bold">
-                            {auth?.user?.nama_lengkap?.[0] || 'A'}
-                        </div>
-                        <span className="font-label-md text-[14px] text-on-surface font-medium">Staff: {auth?.user?.nama_lengkap || 'Admin'}</span>
-                    </div>
-                    <button className="text-on-surface-variant hover:bg-surface-container-low transition-colors p-2 rounded-full active:scale-95 duration-100">
-                        <span className="material-symbols-outlined">schedule</span>
-                    </button>
-                </div>
-            </header>
-
-            {/* Main Content Area */}
-            <div className="flex flex-1 overflow-hidden">
-                
-                {/* SideNavBar / Left Menu */}
-                <nav className="bg-surface-container-low border-r border-outline-variant flex flex-col py-6 gap-2 w-64 flex-shrink-0 overflow-y-auto">
-                    <div className="px-4 pb-4 border-b border-outline-variant mb-2">
-                        <h2 className="text-[24px] font-bold text-on-surface">Management</h2>
-                        <p className="font-label-md text-[14px] text-on-surface-variant mt-1">Terminal #01</p>
-                    </div>
-                    <div className="flex-1 flex flex-col gap-1">
-                        <a className="bg-secondary-container text-on-secondary-container font-bold rounded-lg mx-2 flex items-center gap-4 px-4 py-2 cursor-pointer active:opacity-80">
-                            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>point_of_sale</span>
-                            <span className="font-label-md text-[14px]">Cashier Dashboard</span>
-                        </a>
-                        <a className="text-on-surface-variant hover:bg-surface-container-high transition-all mx-2 rounded-lg flex items-center gap-4 px-4 py-2 cursor-pointer active:opacity-80">
-                            <span className="material-symbols-outlined">inventory_2</span>
-                            <span className="font-label-md text-[14px]">Merchandise</span>
-                        </a>
-                        <a className="text-on-surface-variant hover:bg-surface-container-high transition-all mx-2 rounded-lg flex items-center gap-4 px-4 py-2 cursor-pointer active:opacity-80">
-                            <span className="material-symbols-outlined">receipt_long</span>
-                            <span className="font-label-md text-[14px]">Transaction History</span>
-                        </a>
-                    </div>
-                    <div className="mt-auto border-t border-outline-variant pt-2 flex flex-col gap-1">
-                        <Link href="/staff/logout" method="post" as="button" className="text-error hover:bg-error-container hover:text-on-error-container transition-all mx-2 rounded-lg flex items-center gap-4 px-4 py-2 cursor-pointer active:opacity-80">
-                            <span className="material-symbols-outlined">logout</span>
-                            <span className="font-label-md text-[14px] font-bold">Logout</span>
-                        </Link>
-                    </div>
-                </nav>
-
+        <AdminLayout title="Schematics POS - Point of Sale" auth={auth}>
+            <div className="flex flex-1 w-full h-full overflow-hidden">
                 {/* Product Panel (2/3) */}
                 <main className="flex-1 flex flex-col min-w-0 bg-surface" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/always-grey.png')" }}>
                     {/* Search & Filters */}
@@ -121,6 +68,8 @@ export default function POSIndex({ auth, merchandises = [] }) {
                                     className="w-full pl-12 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-full font-body-md text-[16px] focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline" 
                                     placeholder="Cari nama produk atau SKU..." 
                                     type="text" 
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
                                 />
                             </div>
                             <button className="bg-surface-container border border-outline-variant rounded-full p-2 text-on-surface-variant hover:bg-surface-variant transition-colors">
@@ -128,10 +77,10 @@ export default function POSIndex({ auth, merchandises = [] }) {
                             </button>
                         </div>
                         <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-                            <button className="px-4 py-1 rounded-full bg-primary text-on-primary font-label-md text-[14px] font-medium flex-shrink-0">Semua</button>
-                            <button className="px-4 py-1 rounded-full bg-surface-container-lowest border border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors font-label-md text-[14px] font-medium flex-shrink-0">BST</button>
-                            <button className="px-4 py-1 rounded-full bg-surface-container-lowest border border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors font-label-md text-[14px] font-medium flex-shrink-0">NPC</button>
-                            <button className="px-4 py-1 rounded-full bg-surface-container-lowest border border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors font-label-md text-[14px] font-medium flex-shrink-0">NLC</button>
+                            <button onClick={() => setActiveFilter('Semua')} className={`px-4 py-1 rounded-full font-label-md text-[14px] font-medium flex-shrink-0 transition-colors ${activeFilter === 'Semua' ? 'bg-primary text-on-primary' : 'bg-surface-container-lowest border border-outline-variant text-on-surface-variant hover:bg-surface-container'}`}>Semua</button>
+                            <button onClick={() => setActiveFilter('BST')} className={`px-4 py-1 rounded-full font-label-md text-[14px] font-medium flex-shrink-0 transition-colors ${activeFilter === 'BST' ? 'bg-primary text-on-primary' : 'bg-surface-container-lowest border border-outline-variant text-on-surface-variant hover:bg-surface-container'}`}>BST</button>
+                            <button onClick={() => setActiveFilter('NPC')} className={`px-4 py-1 rounded-full font-label-md text-[14px] font-medium flex-shrink-0 transition-colors ${activeFilter === 'NPC' ? 'bg-primary text-on-primary' : 'bg-surface-container-lowest border border-outline-variant text-on-surface-variant hover:bg-surface-container'}`}>NPC</button>
+                            <button onClick={() => setActiveFilter('NLC')} className={`px-4 py-1 rounded-full font-label-md text-[14px] font-medium flex-shrink-0 transition-colors ${activeFilter === 'NLC' ? 'bg-primary text-on-primary' : 'bg-surface-container-lowest border border-outline-variant text-on-surface-variant hover:bg-surface-container'}`}>NLC</button>
                         </div>
                     </div>
 
@@ -291,6 +240,6 @@ export default function POSIndex({ auth, merchandises = [] }) {
                     </div>
                 </aside>
             </div>
-        </div>
+        </AdminLayout>
     );
 }

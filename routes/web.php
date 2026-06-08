@@ -46,8 +46,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
     
     Route::get('/merchandise', [\App\Http\Controllers\MerchandiseController::class, 'index'])->name('merchandise.index');
+    Route::get('/transactions', [\App\Http\Controllers\TransactionController::class, 'index'])->name('transactions.index');
+    Route::get('/seminar', [\App\Http\Controllers\SeminarController::class, 'index'])->name('seminar.index');
     Route::get('/merchandise/create', [\App\Http\Controllers\MerchandiseController::class, 'create'])->name('merchandise.create');
     Route::post('/merchandise', [\App\Http\Controllers\MerchandiseController::class, 'store'])->name('merchandise.store');
+    Route::get('/merchandise/{id}/edit', [\App\Http\Controllers\MerchandiseController::class, 'edit'])->name('merchandise.edit');
+    Route::put('/merchandise/{id}', [\App\Http\Controllers\MerchandiseController::class, 'update'])->name('merchandise.update');
 
     Route::post('/api/checkout', [\App\Http\Controllers\CheckoutController::class, 'store']);
 });

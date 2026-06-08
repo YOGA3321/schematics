@@ -2,20 +2,21 @@ import React, { useState } from 'react';
 import AdminLayout from '../../Layouts/AdminLayout';
 import { Head, useForm, Link } from '@inertiajs/react';
 
-export default function Create({ events, auth }) {
+export default function Edit({ merchandise, events, auth }) {
     const { data, setData, post, processing, errors } = useForm({
-        tipe_merchandise: '',
-        harga_merchandise: '',
-        stok: '',
-        id_event: '',
+        tipe_merchandise: merchandise.tipe_merchandise || '',
+        harga_merchandise: merchandise.harga_merchandise || '',
+        stok: merchandise.stok || '',
+        id_event: merchandise.id_event || '',
         foto: null,
+        _method: 'PUT'
     });
 
-    const [preview, setPreview] = useState(null);
+    const [preview, setPreview] = useState(merchandise.foto ? `/storage/${merchandise.foto}` : null);
 
     const submit = (e) => {
         e.preventDefault();
-        post('/merchandise');
+        post(`/merchandise/${merchandise.id_merchandise}`);
     };
 
     const handleImageChange = (e) => {
@@ -24,12 +25,12 @@ export default function Create({ events, auth }) {
         if (file) {
             setPreview(URL.createObjectURL(file));
         } else {
-            setPreview(null);
+            setPreview(merchandise.foto ? `/storage/${merchandise.foto}` : null);
         }
     };
 
     return (
-        <AdminLayout title="Add Merchandise" auth={auth}>
+        <AdminLayout title="Edit Merchandise" auth={auth}>
             <div className="p-8 flex flex-col gap-8 h-full overflow-y-auto">
                 <div className="max-w-3xl w-full mx-auto">
                     <div className="mb-8">
@@ -37,8 +38,8 @@ export default function Create({ events, auth }) {
                             <span className="material-symbols-outlined text-[18px]">arrow_back</span>
                             Back to Catalog
                         </Link>
-                        <h1 className="text-[32px] font-bold text-on-surface tracking-tight">Add New Merchandise</h1>
-                        <p className="text-on-surface-variant mt-2 font-label-md text-[14px]">Enter the details of the new product.</p>
+                        <h1 className="text-[32px] font-bold text-on-surface tracking-tight">Edit Merchandise</h1>
+                        <p className="text-on-surface-variant mt-2 font-label-md text-[14px]">Update the details of the product.</p>
                     </div>
 
                     <div className="bg-surface-container-lowest border border-outline-variant rounded-2xl p-8">
@@ -137,7 +138,7 @@ export default function Create({ events, auth }) {
                                     disabled={processing}
                                     className="bg-primary hover:bg-primary/90 text-on-primary px-8 py-3 rounded-xl font-bold shadow-lg shadow-primary/30 transition disabled:opacity-50 active:scale-[0.98]"
                                 >
-                                    {processing ? 'Saving...' : 'Save Merchandise'}
+                                    {processing ? 'Saving...' : 'Update Merchandise'}
                                 </button>
                             </div>
                         </form>
