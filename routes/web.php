@@ -47,6 +47,8 @@ Route::middleware('auth')->group(function () {
     
     Route::get('/merchandise', [\App\Http\Controllers\MerchandiseController::class, 'index'])->name('merchandise.index');
     Route::get('/transactions', [\App\Http\Controllers\TransactionController::class, 'index'])->name('transactions.index');
+    Route::get('/transactions/pdf', [\App\Http\Controllers\TransactionController::class, 'pdf'])->name('transactions.pdf');
+    Route::get('/transactions/{id}', [\App\Http\Controllers\TransactionController::class, 'show'])->name('transactions.show');
     Route::get('/seminar', [\App\Http\Controllers\SeminarController::class, 'index'])->name('seminar.index');
     Route::get('/merchandise/create', [\App\Http\Controllers\MerchandiseController::class, 'create'])->name('merchandise.create');
     Route::post('/merchandise', [\App\Http\Controllers\MerchandiseController::class, 'store'])->name('merchandise.store');

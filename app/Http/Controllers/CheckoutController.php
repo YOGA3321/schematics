@@ -15,6 +15,7 @@ class CheckoutController extends Controller
             'seminar.email' => 'required_with:seminar|email|max:50',
             'seminar.nomor_telepon' => 'required_with:seminar|string|max:15',
             'id_metode' => 'required|integer',
+            'uang_diberikan' => 'required|numeric|min:0',
             'cart' => 'required|array|min:1',
             'cart.*.id_merchandise' => 'required|integer',
             'cart.*.jumlah' => 'required|integer|min:1',
@@ -29,6 +30,7 @@ class CheckoutController extends Controller
                 $validated['seminar'] ?? null,
                 $nrp,
                 $validated['id_metode'],
+                $validated['uang_diberikan'],
                 $validated['cart']
             );
 

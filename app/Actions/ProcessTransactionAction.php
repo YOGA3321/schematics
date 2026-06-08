@@ -18,11 +18,12 @@ class ProcessTransactionAction
      * @param array|null $seminarData ['email', 'nomor_telepon']
      * @param string $nrp
      * @param int $idMetode
+     * @param float|int $uangDiberikan
      * @param array $cartItems [['id_merchandise' => 1, 'jumlah' => 2]]
      */
-    public function execute(array $pembeliData, ?array $seminarData, string $nrp, int $idMetode, array $cartItems)
+    public function execute(array $pembeliData, ?array $seminarData, string $nrp, int $idMetode, $uangDiberikan, array $cartItems)
     {
-        return DB::transaction(function () use ($pembeliData, $seminarData, $nrp, $idMetode, $cartItems) {
+        return DB::transaction(function () use ($pembeliData, $seminarData, $nrp, $idMetode, $uangDiberikan, $cartItems) {
             // 1. Create Pembeli
             $pembeli = Pembeli::create([
                 'nama_lengkap' => $pembeliData['nama_lengkap'],
@@ -72,11 +73,18 @@ class ProcessTransactionAction
                 $updatedMerchandises[] = $merch;
             }
 
+            if ($uangDiberikan < $totalHarga) {
+                throw new Exception("Uang diberikan tidak mencukupi (Kurang Rp " . number_format($totalHarga - $uangDiberikan, 0, ',', '.') . ").");
+            }
+            $kembalian = $uangDiberikan - $totalHarga;
+
             // Create Transaksi
             $transaksi = Transaksi::create([
                 'waktu_pemesanan' => now(),
                 'total_merchandise' => $totalMerchandise,
                 'total_harga' => $totalHarga,
+                'uang_diberikan' => $uangDiberikan,
+                'kembalian' => $kembalian,
                 'id_pembeli' => $pembeli->id_pembeli,
                 'nrp' => $nrp,
                 'id_metode' => $idMetode,

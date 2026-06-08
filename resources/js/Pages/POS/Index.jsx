@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
+import axios from 'axios';
+import Swal from 'sweetalert2';
 import AdminLayout from '../../Layouts/AdminLayout';
 
 export default function POSIndex({ auth, merchandises = [] }) {
@@ -7,6 +9,12 @@ export default function POSIndex({ auth, merchandises = [] }) {
     const [isSeminar, setIsSeminar] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [activeFilter, setActiveFilter] = useState("Semua");
+    
+    const [namaPembeli, setNamaPembeli] = useState("");
+    const [email, setEmail] = useState("");
+    const [nomorTelepon, setNomorTelepon] = useState("");
+    const [metodePembayaran, setMetodePembayaran] = useState(1);
+    const [uangDiberikan, setUangDiberikan] = useState("");
     
     // Normalization
     const normalizedItems = merchandises.length > 0 ? merchandises.map(m => ({
@@ -53,6 +61,54 @@ export default function POSIndex({ auth, merchandises = [] }) {
     };
 
     const total = cart.reduce((sum, item) => sum + (item.harga * item.qty), 0);
+    const kembalian = Number(uangDiberikan) - total;
+
+    const handleCheckout = () => {
+        if (!namaPembeli) {
+            Swal.fire('Error', 'Nama pembeli harus diisi.', 'error');
+            return;
+        }
+        if (isSeminar && (!email || !nomorTelepon)) {
+            Swal.fire('Error', 'Email dan Nomor Telepon wajib diisi untuk pendaftaran seminar.', 'error');
+            return;
+        }
+        if (Number(uangDiberikan) < total) {
+            Swal.fire('Error', 'Uang diberikan tidak mencukupi.', 'error');
+            return;
+        }
+
+        const payload = {
+            pembeli: { nama_lengkap: namaPembeli },
+            id_metode: metodePembayaran,
+            uang_diberikan: Number(uangDiberikan),
+            cart: cart.map(c => ({ id_merchandise: c.id, jumlah: c.qty }))
+        };
+
+        if (isSeminar) {
+            payload.seminar = { email, nomor_telepon: nomorTelepon };
+        }
+
+        axios.post('/api/checkout', payload)
+            .then(res => {
+                Swal.fire({
+                    title: 'Berhasil!',
+                    text: 'Transaksi berhasil diproses.',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    setCart([]);
+                    setNamaPembeli('');
+                    setEmail('');
+                    setNomorTelepon('');
+                    setUangDiberikan('');
+                    setIsSeminar(false);
+                    router.reload({ only: ['merchandises'] });
+                });
+            })
+            .catch(err => {
+                Swal.fire('Error', err.response?.data?.message || 'Terjadi kesalahan saat checkout.', 'error');
+            });
+    };
 
     return (
         <AdminLayout title="Schematics POS - Point of Sale" auth={auth}>
@@ -169,7 +225,7 @@ export default function POSIndex({ auth, merchandises = [] }) {
                             {/* Customer Details */}
                             <div className="flex flex-col gap-2">
                                 <label className="font-label-md text-[14px] font-bold text-on-surface">Nama Pembeli <span className="text-error">*</span></label>
-                                <input className="w-full px-4 py-2 bg-surface border border-outline-variant rounded focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline" placeholder="Masukkan nama" required type="text" />
+                                <input value={namaPembeli} onChange={e => setNamaPembeli(e.target.value)} className="w-full px-4 py-2 bg-surface border border-outline-variant rounded focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline" placeholder="Masukkan nama" required type="text" />
                             </div>
 
                             {/* Seminar Toggle */}
@@ -186,11 +242,11 @@ export default function POSIndex({ auth, merchandises = [] }) {
                                     <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-outline-variant">
                                         <div>
                                             <label className="font-label-md text-[14px] font-medium text-on-surface-variant mb-1 block">Email</label>
-                                            <input className="w-full px-4 py-2 bg-surface border border-outline-variant rounded focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline" placeholder="email@contoh.com" type="email" />
+                                            <input value={email} onChange={e => setEmail(e.target.value)} className="w-full px-4 py-2 bg-surface border border-outline-variant rounded focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline" placeholder="email@contoh.com" type="email" />
                                         </div>
                                         <div>
                                             <label className="font-label-md text-[14px] font-medium text-on-surface-variant mb-1 block">No. HP</label>
-                                            <input className="w-full px-4 py-2 bg-surface border border-outline-variant rounded focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline" placeholder="08..." type="tel" />
+                                            <input value={nomorTelepon} onChange={e => setNomorTelepon(e.target.value)} className="w-full px-4 py-2 bg-surface border border-outline-variant rounded focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline" placeholder="08..." type="tel" />
                                         </div>
                                     </div>
                                 )}
@@ -201,19 +257,19 @@ export default function POSIndex({ auth, merchandises = [] }) {
                                 <label className="font-label-md text-[14px] font-bold text-on-surface">Metode Pembayaran</label>
                                 <div className="grid grid-cols-3 gap-2">
                                     <label className="cursor-pointer">
-                                        <input defaultChecked className="sr-only peer" name="payment" type="radio" value="tunai" />
+                                        <input checked={metodePembayaran === 1} onChange={() => setMetodePembayaran(1)} className="sr-only peer" name="payment" type="radio" value="1" />
                                         <div className="border border-outline-variant rounded-lg p-2 text-center font-label-md text-[14px] font-medium peer-checked:border-primary peer-checked:bg-primary-container peer-checked:text-on-primary-container hover:bg-surface-container transition-all">
                                             Tunai
                                         </div>
                                     </label>
                                     <label className="cursor-pointer">
-                                        <input className="sr-only peer" name="payment" type="radio" value="qris" />
+                                        <input checked={metodePembayaran === 2} onChange={() => setMetodePembayaran(2)} className="sr-only peer" name="payment" type="radio" value="2" />
                                         <div className="border border-outline-variant rounded-lg p-2 text-center font-label-md text-[14px] font-medium peer-checked:border-primary peer-checked:bg-primary-container peer-checked:text-on-primary-container hover:bg-surface-container transition-all">
                                             QRIS
                                         </div>
                                     </label>
                                     <label className="cursor-pointer">
-                                        <input className="sr-only peer" name="payment" type="radio" value="transfer" />
+                                        <input checked={metodePembayaran === 3} onChange={() => setMetodePembayaran(3)} className="sr-only peer" name="payment" type="radio" value="3" />
                                         <div className="border border-outline-variant rounded-lg p-2 text-center font-label-md text-[14px] font-medium peer-checked:border-primary peer-checked:bg-primary-container peer-checked:text-on-primary-container hover:bg-surface-container transition-all">
                                             Transfer
                                         </div>
@@ -224,15 +280,28 @@ export default function POSIndex({ auth, merchandises = [] }) {
 
                         {/* Summary & Action */}
                         <div className="p-4 bg-surface-container-low border-t border-outline-variant flex flex-col gap-4">
+                            <div className="flex flex-col gap-2">
+                                <label className="font-label-md text-[14px] font-bold text-on-surface">Uang Diberikan</label>
+                                <div className="flex items-center">
+                                    <span className="bg-surface-container border border-outline-variant border-r-0 px-3 py-2 rounded-l font-bold text-on-surface-variant">Rp</span>
+                                    <input value={uangDiberikan} onChange={e => setUangDiberikan(e.target.value)} type="number" min="0" className="w-full px-4 py-2 bg-surface border border-outline-variant rounded-r focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline font-data-mono font-bold" placeholder="0" />
+                                </div>
+                            </div>
                             <div className="flex justify-between items-center font-label-md text-[14px] text-on-surface-variant">
                                 <span>Total Item</span>
                                 <span className="font-bold">{cart.reduce((s, c) => s + c.qty, 0)} Item</span>
                             </div>
-                            <div className="flex justify-between items-end">
-                                <span className="font-headline-md text-[20px] font-bold text-on-surface">Grand Total</span>
-                                <span className="text-[28px] font-bold text-primary tracking-tight">Rp {total.toLocaleString('id-ID')}</span>
+                            <div className="flex justify-between items-end border-b border-outline-variant pb-2">
+                                <span className="font-headline-md text-[16px] font-bold text-on-surface">Grand Total</span>
+                                <span className="text-[20px] font-bold text-primary tracking-tight">Rp {total.toLocaleString('id-ID')}</span>
                             </div>
-                            <button disabled={cart.length === 0} className="w-full bg-primary text-on-primary py-4 rounded-lg font-headline-md text-[20px] font-bold hover:bg-primary/90 active:scale-[0.98] transition-all shadow-md flex items-center justify-center gap-2 mt-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <div className="flex justify-between items-end">
+                                <span className="font-headline-md text-[16px] font-bold text-on-surface">Kembalian</span>
+                                <span className={`text-[20px] font-bold tracking-tight ${kembalian < 0 ? 'text-error' : 'text-primary'}`}>
+                                    {kembalian < 0 ? 'Kurang ' : ''}Rp {Math.abs(kembalian).toLocaleString('id-ID')}
+                                </span>
+                            </div>
+                            <button onClick={handleCheckout} disabled={cart.length === 0} className="w-full bg-primary text-on-primary py-4 rounded-lg font-headline-md text-[20px] font-bold hover:bg-primary/90 active:scale-[0.98] transition-all shadow-md flex items-center justify-center gap-2 mt-2 disabled:opacity-50 disabled:cursor-not-allowed">
                                 Proses Pembayaran
                                 <span className="material-symbols-outlined">arrow_forward</span>
                             </button>
