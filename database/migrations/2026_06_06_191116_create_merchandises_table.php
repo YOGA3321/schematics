@@ -14,6 +14,7 @@ return new class extends Migration
             $table->decimal('harga_merchandise', 10, 2);
             $table->integer('stok');
             $table->unsignedBigInteger('id_event');
+            $table->string('foto')->nullable();
             $table->timestamps();
 
             $table->foreign('id_event')->references('id_event')->on('event')->onDelete('cascade')->onUpdate('cascade');

@@ -43,5 +43,11 @@ Route::middleware('auth')->group(function () {
         ]);
     })->name('pos');
     
+    Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
+    
+    Route::get('/merchandise', [\App\Http\Controllers\MerchandiseController::class, 'index'])->name('merchandise.index');
+    Route::get('/merchandise/create', [\App\Http\Controllers\MerchandiseController::class, 'create'])->name('merchandise.create');
+    Route::post('/merchandise', [\App\Http\Controllers\MerchandiseController::class, 'store'])->name('merchandise.store');
+
     Route::post('/api/checkout', [\App\Http\Controllers\CheckoutController::class, 'store']);
 });
