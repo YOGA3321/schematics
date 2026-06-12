@@ -39,7 +39,11 @@ class CheckoutController extends Controller
                 'transaksi' => $transaksi
             ], 201);
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 400);
+            $message = $e->getMessage();
+            if (str_contains(strtolower($message), 'stok tidak mencukupi')) {
+                $message = 'Stok merchandise tidak mencukupi untuk pesanan ini.';
+            }
+            return response()->json(['message' => $message], 400);
         }
     }
 }

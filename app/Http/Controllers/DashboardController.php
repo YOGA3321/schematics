@@ -21,13 +21,20 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
+        // Fetch sub-event revenues using the stored function fn_pendapatan_event(id_event)
+        $eventRevenues = \Illuminate\Support\Facades\DB::select("
+            SELECT id_event, nama_subevent, fn_pendapatan_event(id_event) AS pendapatan
+            FROM event
+        ");
+
         return Inertia::render('Dashboard', [
             'stats' => [
                 'totalTransactions' => $totalTransactions,
                 'totalRevenue' => $totalRevenue,
                 'totalMerchSold' => $totalMerchSold,
             ],
-            'recentTransactions' => $recentTransactions
+            'recentTransactions' => $recentTransactions,
+            'eventRevenues' => $eventRevenues
         ]);
     }
 }

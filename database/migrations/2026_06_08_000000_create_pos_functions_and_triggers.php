@@ -7,9 +7,10 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // Drop existing procedures and triggers just in case migrate:fresh didn't clear them
+        // Drop existing procedures, functions and triggers just in case migrate:fresh didn't clear them
         DB::unprepared("DROP PROCEDURE IF EXISTS Proses_Transaksi");
         DB::unprepared("DROP PROCEDURE IF EXISTS Cek_Stok");
+        DB::unprepared("DROP FUNCTION IF EXISTS fn_pendapatan_event");
         DB::unprepared("DROP TRIGGER IF EXISTS trg_generate_id_peserta");
         DB::unprepared("DROP TRIGGER IF EXISTS trg_generate_id_transaksi");
         DB::unprepared("DROP TRIGGER IF EXISTS trg_update_total_transaksi");
@@ -68,6 +69,26 @@ return new class extends Migration
                     SIGNAL SQLSTATE '45000' 
                     SET MESSAGE_TEXT = 'stok tidak mencukupi';
                 END IF;
+            END;
+        ");
+
+        // Functions
+        DB::unprepared("
+            CREATE FUNCTION fn_pendapatan_event(
+                p_ID_Event INT
+            )
+            RETURNS DECIMAL(12,2)
+            READS SQL DATA
+            DETERMINISTIC
+            BEGIN
+                DECLARE v_Total DECIMAL(12,2);
+                
+                SELECT IFNULL(SUM(dt.total), 0) INTO v_Total
+                FROM detail_transaksi dt
+                JOIN merchandise m ON dt.id_merchandise = m.id_merchandise
+                WHERE m.id_event = p_ID_Event;
+                
+                RETURN v_Total;
             END;
         ");
 
@@ -159,5 +180,6 @@ return new class extends Migration
         
         DB::unprepared("DROP PROCEDURE IF EXISTS Proses_Transaksi");
         DB::unprepared("DROP PROCEDURE IF EXISTS Cek_Stok");
+        DB::unprepared("DROP FUNCTION IF EXISTS fn_pendapatan_event");
     }
 };

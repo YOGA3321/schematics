@@ -38,66 +38,51 @@ class ProcessTransactionAction
                 ]);
             }
 
-            // 3. Prepare Transaksi Data
-            $totalHarga = 0;
-            $totalMerchandise = 0;
+            // 3. Create Transaksi (with 0 placeholder for total_merchandise and total_harga)
+            // Triggers on detail_transaksi will calculate and update total_merchandise & total_harga automatically.
+            $transaksi = Transaksi::create([
+                'waktu_pemesanan' => now(),
+                'total_merchandise' => 0,
+                'total_harga' => 0.00,
+                'uang_diberikan' => $uangDiberikan,
+                'kembalian' => 0.00,
+                'id_pembeli' => $pembeli->id_pembeli,
+                'nrp' => $nrp,
+                'id_metode' => $idMetode,
+            ]);
 
-            $detailTransaksiData = [];
-            $updatedMerchandises = [];
-
+            // 4. Create Detail Transaksi records
+            // This will trigger trg_cek_stok, trg_hitung_detail, trg_kurangi_stok, and trg_update_total_transaksi
             foreach ($cartItems as $item) {
                 $merch = Merchandise::lockForUpdate()->find($item['id_merchandise']);
                 if (!$merch) {
                     throw new Exception("Merchandise tidak ditemukan.");
                 }
 
-                if ($merch->stok < $item['jumlah']) {
-                    throw new Exception("Stok untuk {$merch->tipe_merchandise} tidak mencukupi.");
-                }
-
-                // Deduct stock
-                $merch->stok -= $item['jumlah'];
-                $merch->save();
-
-                $subTotal = $merch->harga_merchandise * $item['jumlah'];
-                $totalHarga += $subTotal;
-                $totalMerchandise += $item['jumlah'];
-
-                $detailTransaksiData[] = [
+                DetailTransaksi::create([
+                    'id_transaksi' => $transaksi->id_transaksi,
                     'id_merchandise' => $merch->id_merchandise,
                     'jumlah_barang' => $item['jumlah'],
-                    'harga_satuan' => $merch->harga_merchandise,
-                    'total' => $subTotal,
-                ];
-
-                $updatedMerchandises[] = $merch;
+                    'harga_satuan' => 0.00, // calculated automatically by trigger trg_hitung_detail
+                    'total' => 0.00,        // calculated automatically by trigger trg_hitung_detail
+                ]);
             }
 
-            if ($uangDiberikan < $totalHarga) {
-                throw new Exception("Uang diberikan tidak mencukupi (Kurang Rp " . number_format($totalHarga - $uangDiberikan, 0, ',', '.') . ").");
-            }
-            $kembalian = $uangDiberikan - $totalHarga;
+            // 5. Refresh the transaction instance to fetch trigger-updated total_harga and total_merchandise
+            $transaksi->refresh();
 
-            // Create Transaksi
-            $transaksi = Transaksi::create([
-                'waktu_pemesanan' => now(),
-                'total_merchandise' => $totalMerchandise,
-                'total_harga' => $totalHarga,
-                'uang_diberikan' => $uangDiberikan,
-                'kembalian' => $kembalian,
-                'id_pembeli' => $pembeli->id_pembeli,
-                'nrp' => $nrp,
-                'id_metode' => $idMetode,
-            ]);
-
-            // Create Detail Transaksi
-            foreach ($detailTransaksiData as $detail) {
-                $detail['id_transaksi'] = $transaksi->id_transaksi;
-                DetailTransaksi::create($detail);
+            // 6. Validate if the provided payment is sufficient
+            if ($uangDiberikan < $transaksi->total_harga) {
+                throw new Exception("Uang diberikan tidak mencukupi (Kurang Rp " . number_format($transaksi->total_harga - $uangDiberikan, 0, ',', '.') . ").");
             }
 
-            // Dispatch Event for Realtime Updates
-            foreach ($updatedMerchandises as $merch) {
+            // 7. Calculate and save the correct kembalian
+            $transaksi->kembalian = $uangDiberikan - $transaksi->total_harga;
+            $transaksi->save();
+
+            // Dispatch Event for Realtime Updates with the new stock amounts
+            foreach ($cartItems as $item) {
+                $merch = Merchandise::find($item['id_merchandise']);
                 broadcast(new MerchandiseStockUpdated($merch->id_merchandise, $merch->stok))->toOthers();
             }
 

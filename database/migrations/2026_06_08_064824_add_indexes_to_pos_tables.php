@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('transaksi', function (Blueprint $table) {
             $table->index('waktu_pemesanan', 'idx_waktu_pemesanan');
+            $table->index('id_pembeli', 'idx_fk_pembeli');
         });
 
         Schema::table('pembeli', function (Blueprint $table) {
@@ -27,6 +28,7 @@ return new class extends Migration
     {
         Schema::table('transaksi', function (Blueprint $table) {
             $table->dropIndex('idx_waktu_pemesanan');
+            $table->dropIndex('idx_fk_pembeli');
         });
 
         Schema::table('pembeli', function (Blueprint $table) {

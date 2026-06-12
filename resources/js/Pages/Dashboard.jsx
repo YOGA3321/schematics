@@ -1,7 +1,7 @@
 import React from 'react';
 import AdminLayout from '../Layouts/AdminLayout';
 
-export default function Dashboard({ stats, recentTransactions, auth }) {
+export default function Dashboard({ stats, recentTransactions, eventRevenues = [], auth }) {
     return (
         <AdminLayout title="Admin Dashboard" auth={auth}>
             <div className="p-8 flex flex-col gap-8 h-full overflow-y-auto">
@@ -36,6 +36,25 @@ export default function Dashboard({ stats, recentTransactions, auth }) {
                         <p className="text-[32px] font-bold mt-2 text-primary tracking-tight">
                             {stats.totalMerchSold}
                         </p>
+                    </div>
+                </div>
+
+                {/* Revenue by Subevent */}
+                <div className="bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 shadow-sm">
+                    <h2 className="text-[20px] font-bold text-on-surface mb-4">Revenue by Subevent</h2>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {eventRevenues.map(event => (
+                            <div key={event.id_event} className="bg-surface-container-low border border-outline-variant p-4 rounded-xl flex flex-col gap-2 relative overflow-hidden group hover:shadow-sm transition-all">
+                                <div className="absolute top-0 right-0 p-2 opacity-15">
+                                    <span className="material-symbols-outlined text-[48px] text-primary">local_activity</span>
+                                </div>
+                                <span className="bg-primary/10 text-primary px-2 py-0.5 rounded text-[12px] font-bold self-start">{event.nama_subevent}</span>
+                                <h4 className="text-[18px] font-bold text-on-surface mt-1">
+                                    Rp {Number(event.pendapatan).toLocaleString('id-ID')}
+                                </h4>
+                                <p className="text-[12px] text-on-surface-variant">Total Event Revenue</p>
+                            </div>
+                        ))}
                     </div>
                 </div>
 

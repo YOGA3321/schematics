@@ -13,7 +13,7 @@ export default function POSIndex({ auth, merchandises = [] }) {
     const [namaPembeli, setNamaPembeli] = useState("");
     const [email, setEmail] = useState("");
     const [nomorTelepon, setNomorTelepon] = useState("");
-    const [metodePembayaran, setMetodePembayaran] = useState(1);
+    const [metodePembayaran, setMetodePembayaran] = useState(3);
     const [uangDiberikan, setUangDiberikan] = useState("");
     
     // Normalization
@@ -38,8 +38,16 @@ export default function POSIndex({ auth, merchandises = [] }) {
     });
 
     const addToCart = (item) => {
+        if (item.stok < 1) {
+            Swal.fire('Stok Habis', `Stok untuk ${item.nama_merchandise} sudah habis.`, 'warning');
+            return;
+        }
         const existing = cart.find(c => c.id === item.id);
         if (existing) {
+            if (existing.qty + 1 > item.stok) {
+                Swal.fire('Stok Tidak Mencukupi', `Anda tidak dapat menambahkan lebih dari ${item.stok} unit untuk ${item.nama_merchandise}.`, 'warning');
+                return;
+            }
             setCart(cart.map(c => c.id === item.id ? { ...c, qty: c.qty + 1 } : c));
         } else {
             setCart([...cart, { ...item, qty: 1 }]);
@@ -50,6 +58,10 @@ export default function POSIndex({ auth, merchandises = [] }) {
         setCart(cart.map(c => {
             if (c.id === id) {
                 const newQty = c.qty + delta;
+                if (newQty > c.stok) {
+                    Swal.fire('Stok Tidak Mencukupi', `Stok maksimal untuk ${c.nama_merchandise} adalah ${c.stok}.`, 'warning');
+                    return c;
+                }
                 return newQty > 0 ? { ...c, qty: newQty } : c;
             }
             return c;
@@ -146,11 +158,14 @@ export default function POSIndex({ auth, merchandises = [] }) {
                             <button 
                                 key={item.id} 
                                 onClick={() => addToCart(item)}
-                                className="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden flex flex-col text-left hover:shadow-md transition-shadow group active:scale-[0.98] cursor-pointer relative"
+                                disabled={item.stok === 0}
+                                className={`bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden flex flex-col text-left relative transition-all ${item.stok === 0 ? 'opacity-55 cursor-not-allowed' : 'hover:shadow-md active:scale-[0.98] cursor-pointer group'}`}
                             >
-                                {item.stok < 5 && (
+                                {item.stok === 0 ? (
+                                    <div className="absolute top-2 left-2 z-10 bg-outline text-surface-container-lowest px-2 py-0.5 rounded text-[10px] font-bold shadow-sm">HABIS</div>
+                                ) : item.stok < 5 ? (
                                     <div className="absolute top-2 left-2 z-10 bg-error text-on-error px-1 py-0.5 rounded text-[10px] font-bold shadow-sm">SISA {item.stok}</div>
-                                )}
+                                ) : null}
                                 <div className="h-40 bg-surface-container w-full relative overflow-hidden flex items-center justify-center">
                                     <div className="w-full h-full bg-surface-variant flex items-center justify-center group-hover:bg-surface-dim transition-colors">
                                         <span className="material-symbols-outlined text-outline text-4xl">inventory_2</span>
@@ -257,7 +272,7 @@ export default function POSIndex({ auth, merchandises = [] }) {
                                 <label className="font-label-md text-[14px] font-bold text-on-surface">Metode Pembayaran</label>
                                 <div className="grid grid-cols-3 gap-2">
                                     <label className="cursor-pointer">
-                                        <input checked={metodePembayaran === 1} onChange={() => setMetodePembayaran(1)} className="sr-only peer" name="payment" type="radio" value="1" />
+                                        <input checked={metodePembayaran === 3} onChange={() => setMetodePembayaran(3)} className="sr-only peer" name="payment" type="radio" value="3" />
                                         <div className="border border-outline-variant rounded-lg p-2 text-center font-label-md text-[14px] font-medium peer-checked:border-primary peer-checked:bg-primary-container peer-checked:text-on-primary-container hover:bg-surface-container transition-all">
                                             Tunai
                                         </div>
@@ -269,7 +284,7 @@ export default function POSIndex({ auth, merchandises = [] }) {
                                         </div>
                                     </label>
                                     <label className="cursor-pointer">
-                                        <input checked={metodePembayaran === 3} onChange={() => setMetodePembayaran(3)} className="sr-only peer" name="payment" type="radio" value="3" />
+                                        <input checked={metodePembayaran === 1} onChange={() => setMetodePembayaran(1)} className="sr-only peer" name="payment" type="radio" value="1" />
                                         <div className="border border-outline-variant rounded-lg p-2 text-center font-label-md text-[14px] font-medium peer-checked:border-primary peer-checked:bg-primary-container peer-checked:text-on-primary-container hover:bg-surface-container transition-all">
                                             Transfer
                                         </div>
