@@ -13,59 +13,60 @@ export default function Login() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-950 flex flex-col justify-center items-center px-4 relative overflow-hidden font-sans text-slate-200">
+        <div className="min-h-screen bg-zinc-950 flex flex-col justify-center items-center px-4 relative overflow-hidden font-sans text-zinc-200 selection:bg-orange-500/30 selection:text-orange-500">
             <Head title="Staff Login - Schematics 2027" />
             
-            {/* Background Effects */}
-            <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
-                <div className="absolute -top-40 -right-40 w-96 h-96 bg-cyan-600/20 rounded-full blur-[100px]"></div>
-                <div className="absolute bottom-0 left-10 w-80 h-80 bg-violet-600/20 rounded-full blur-[100px]"></div>
-            </div>
+            {/* Grid Background Pattern */}
+            <div className="fixed inset-0 z-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)', backgroundSize: '4rem 4rem' }}></div>
 
-            <Link href="/" className="absolute top-8 left-8 text-slate-400 hover:text-cyan-400 flex items-center gap-2 transition-colors z-10 font-medium">
+            <Link href="/" className="absolute top-8 left-8 text-zinc-400 hover:text-orange-500 flex items-center gap-2 transition-colors z-10 font-mono text-xs uppercase tracking-widest font-bold">
                 &larr; Back to Home
             </Link>
             
-            <div className="w-full max-w-[420px] glass-dark rounded-3xl p-8 z-10 relative">
-                <div className="text-center mb-10">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-500 to-violet-600 mb-6 shadow-lg shadow-cyan-500/30">
-                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                        </svg>
+            <div className="w-full max-w-[400px] border border-zinc-800 bg-zinc-950 p-8 md:p-10 z-10 relative shadow-2xl">
+                <div className="text-center mb-8">
+                    <div className="flex justify-center mb-6">
+                        <div className="w-12 h-12 border border-zinc-800 flex items-center justify-center rotate-45 hover:border-orange-500 transition-colors">
+                            <div className="w-6 h-6 bg-orange-500 -rotate-45 flex items-center justify-center">
+                                <svg className="w-3.5 h-3.5 text-zinc-950" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                </svg>
+                            </div>
+                        </div>
                     </div>
-                    <h2 className="text-3xl font-bold text-white mb-2 tracking-tight">Staff Portal</h2>
-                    <p className="text-slate-400 text-sm">Secure access for Schematics 2027 committee</p>
+                    <h2 className="text-3xl font-black text-white mb-2 uppercase tracking-tighter">Staff Area</h2>
+                    <p className="text-zinc-500 font-mono text-[11px] tracking-widest uppercase">Schematics 2027 Portal</p>
                 </div>
                 
-                <form onSubmit={submit} className="flex flex-col gap-5">
+                <form onSubmit={submit} className="flex flex-col gap-6">
                     <div>
-                        <label className="block text-sm font-medium text-slate-300 mb-2">NRP</label>
+                        <label className="block text-xs font-mono font-bold uppercase tracking-wider text-zinc-400 mb-2">NRP</label>
                         <input 
                             type="text" 
-                            className="w-full px-5 py-3.5 bg-slate-900/50 border border-slate-700/50 rounded-xl focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all outline-none text-white placeholder-slate-600"
-                            placeholder="e.g. 5025251187"
+                            className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 rounded-none focus:ring-1 focus:ring-orange-500/50 focus:border-orange-500 transition-all outline-none text-zinc-100 placeholder-zinc-700 font-mono text-sm"
+                            placeholder="e.g. 5025251056"
                             value={data.nrp}
                             onChange={e => setData('nrp', e.target.value)}
                         />
-                        {errors.nrp && <p className="text-red-400 text-sm mt-2">{errors.nrp}</p>}
+                        {errors.nrp && <p className="text-red-500 font-mono text-xs mt-2">{errors.nrp}</p>}
                     </div>
                     
                     <div>
-                        <label className="block text-sm font-medium text-slate-300 mb-2">Password</label>
+                        <label className="block text-xs font-mono font-bold uppercase tracking-wider text-zinc-400 mb-2">Password</label>
                         <input 
                             type="password" 
-                            className="w-full px-5 py-3.5 bg-slate-900/50 border border-slate-700/50 rounded-xl focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all outline-none text-white placeholder-slate-600"
+                            className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 rounded-none focus:ring-1 focus:ring-orange-500/50 focus:border-orange-500 transition-all outline-none text-zinc-100 placeholder-zinc-700 font-mono text-sm"
                             placeholder="••••••••"
                             value={data.password}
                             onChange={e => setData('password', e.target.value)}
                         />
-                        {errors.password && <p className="text-red-400 text-sm mt-2">{errors.password}</p>}
+                        {errors.password && <p className="text-red-500 font-mono text-xs mt-2">{errors.password}</p>}
                     </div>
                     
                     <button 
                         type="submit" 
                         disabled={processing}
-                        className="w-full mt-6 bg-gradient-to-r from-cyan-500 to-violet-600 text-white py-4 rounded-xl font-bold hover:shadow-lg hover:shadow-cyan-500/25 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full mt-4 bg-orange-500 text-zinc-950 py-4 font-black uppercase tracking-[0.2em] text-sm text-center hover:bg-orange-600 hover:text-zinc-50 transition-all hover:translate-x-1 hover:-translate-y-1 active:translate-x-0 active:translate-y-0 hover:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.15)] rounded-none disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {processing ? 'Authenticating...' : 'Sign In'}
                     </button>
