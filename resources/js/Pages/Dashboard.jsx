@@ -59,9 +59,9 @@ export default function Dashboard({ stats, recentTransactions, eventRevenues = [
                 </div>
 
                 {/* Recent Transactions Table */}
-                <div className="bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 flex flex-col min-h-0 flex-1 mb-8">
+                <div className="bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 flex flex-col mb-8">
                     <h2 className="text-[20px] font-bold text-on-surface mb-4">Recent Transactions</h2>
-                    <div className="overflow-x-auto flex-1">
+                    <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="border-b border-outline-variant text-on-surface-variant font-label-md text-[14px]">

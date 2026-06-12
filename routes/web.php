@@ -9,6 +9,9 @@ Route::get('/', function () {
 });
 
 Route::get('/staff/login', function () {
+    if (\Illuminate\Support\Facades\Auth::check()) {
+        return redirect('/pos');
+    }
     return Inertia::render('Login');
 })->name('login');
 
@@ -39,7 +42,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/pos', function () {
         $merchandise = \App\Models\Merchandise::with('event')->get();
         return Inertia::render('POS/Index', [
-            'merchandise' => $merchandise
+            'merchandises' => $merchandise
         ]);
     })->name('pos');
     

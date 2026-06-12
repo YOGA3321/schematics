@@ -15,6 +15,8 @@ export default function POSIndex({ auth, merchandises = [] }) {
     const [nomorTelepon, setNomorTelepon] = useState("");
     const [metodePembayaran, setMetodePembayaran] = useState(3);
     const [uangDiberikan, setUangDiberikan] = useState("");
+    const [showCheckoutModal, setShowCheckoutModal] = useState(false);
+    const [uangDiberikanModal, setUangDiberikanModal] = useState("");
     
     // Normalization
     const normalizedItems = merchandises.length > 0 ? merchandises.map(m => ({
@@ -84,7 +86,18 @@ export default function POSIndex({ auth, merchandises = [] }) {
             Swal.fire('Error', 'Email dan Nomor Telepon wajib diisi untuk pendaftaran seminar.', 'error');
             return;
         }
-        if (Number(uangDiberikan) < total) {
+
+        if (metodePembayaran !== 3) {
+            setUangDiberikanModal(total.toString());
+        } else {
+            setUangDiberikanModal('');
+        }
+        setShowCheckoutModal(true);
+    };
+
+    const confirmCheckout = () => {
+        const payCash = metodePembayaran === 3 ? Number(uangDiberikanModal) : total;
+        if (metodePembayaran === 3 && payCash < total) {
             Swal.fire('Error', 'Uang diberikan tidak mencukupi.', 'error');
             return;
         }
@@ -92,7 +105,7 @@ export default function POSIndex({ auth, merchandises = [] }) {
         const payload = {
             pembeli: { nama_lengkap: namaPembeli },
             id_metode: metodePembayaran,
-            uang_diberikan: Number(uangDiberikan),
+            uang_diberikan: payCash,
             cart: cart.map(c => ({ id_merchandise: c.id, jumlah: c.qty }))
         };
 
@@ -113,7 +126,9 @@ export default function POSIndex({ auth, merchandises = [] }) {
                     setEmail('');
                     setNomorTelepon('');
                     setUangDiberikan('');
+                    setUangDiberikanModal('');
                     setIsSeminar(false);
+                    setShowCheckoutModal(false);
                     router.reload({ only: ['merchandises'] });
                 });
             })
@@ -295,13 +310,6 @@ export default function POSIndex({ auth, merchandises = [] }) {
 
                         {/* Summary & Action */}
                         <div className="p-4 bg-surface-container-low border-t border-outline-variant flex flex-col gap-4">
-                            <div className="flex flex-col gap-2">
-                                <label className="font-label-md text-[14px] font-bold text-on-surface">Uang Diberikan</label>
-                                <div className="flex items-center">
-                                    <span className="bg-surface-container border border-outline-variant border-r-0 px-3 py-2 rounded-l font-bold text-on-surface-variant">Rp</span>
-                                    <input value={uangDiberikan} onChange={e => setUangDiberikan(e.target.value)} type="number" min="0" className="w-full px-4 py-2 bg-surface border border-outline-variant rounded-r focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline font-data-mono font-bold" placeholder="0" />
-                                </div>
-                            </div>
                             <div className="flex justify-between items-center font-label-md text-[14px] text-on-surface-variant">
                                 <span>Total Item</span>
                                 <span className="font-bold">{cart.reduce((s, c) => s + c.qty, 0)} Item</span>
@@ -309,12 +317,6 @@ export default function POSIndex({ auth, merchandises = [] }) {
                             <div className="flex justify-between items-end border-b border-outline-variant pb-2">
                                 <span className="font-headline-md text-[16px] font-bold text-on-surface">Grand Total</span>
                                 <span className="text-[20px] font-bold text-primary tracking-tight">Rp {total.toLocaleString('id-ID')}</span>
-                            </div>
-                            <div className="flex justify-between items-end">
-                                <span className="font-headline-md text-[16px] font-bold text-on-surface">Kembalian</span>
-                                <span className={`text-[20px] font-bold tracking-tight ${kembalian < 0 ? 'text-error' : 'text-primary'}`}>
-                                    {kembalian < 0 ? 'Kurang ' : ''}Rp {Math.abs(kembalian).toLocaleString('id-ID')}
-                                </span>
                             </div>
                             <button onClick={handleCheckout} disabled={cart.length === 0} className="w-full bg-primary text-on-primary py-4 rounded-lg font-headline-md text-[20px] font-bold hover:bg-primary/90 active:scale-[0.98] transition-all shadow-md flex items-center justify-center gap-2 mt-2 disabled:opacity-50 disabled:cursor-not-allowed">
                                 Proses Pembayaran
@@ -324,6 +326,79 @@ export default function POSIndex({ auth, merchandises = [] }) {
                     </div>
                 </aside>
             </div>
+
+            {/* Checkout Confirmation Modal */}
+            {showCheckoutModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
+                    <div className="w-full max-w-md bg-surface-container-lowest border border-outline-variant p-6 rounded-2xl shadow-xl flex flex-col gap-6 relative">
+                        <h3 className="text-xl font-bold text-on-surface">Konfirmasi Pembayaran</h3>
+                        
+                        <div className="flex flex-col gap-4">
+                            <div className="flex justify-between items-center text-sm text-on-surface-variant pb-2 border-b border-outline-variant">
+                                <span>Metode Pembayaran</span>
+                                <span className="font-bold uppercase bg-surface-container px-2 py-0.5 rounded text-xs text-primary">
+                                    {metodePembayaran === 3 ? 'Tunai' : metodePembayaran === 2 ? 'QRIS' : 'Transfer'}
+                                </span>
+                            </div>
+                            
+                            <div className="flex justify-between items-end">
+                                <span className="text-sm text-on-surface-variant">Grand Total</span>
+                                <span className="text-2xl font-black text-primary">Rp {total.toLocaleString('id-ID')}</span>
+                            </div>
+
+                            {metodePembayaran === 3 ? (
+                                <div className="flex flex-col gap-2 mt-2">
+                                    <label className="text-sm font-bold text-on-surface">Uang Diberikan</label>
+                                    <div className="flex items-center">
+                                        <span className="bg-surface-container border border-outline-variant border-r-0 px-3 py-2 rounded-l font-bold text-on-surface-variant">Rp</span>
+                                        <input 
+                                            value={uangDiberikanModal} 
+                                            onChange={e => setUangDiberikanModal(e.target.value)} 
+                                            type="number" 
+                                            min="0" 
+                                            className="w-full px-4 py-2 bg-surface border border-outline-variant rounded-r focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline font-data-mono font-bold text-[16px]" 
+                                            placeholder="0" 
+                                            autoFocus
+                                        />
+                                    </div>
+                                    
+                                    <div className="flex justify-between items-end mt-2 pt-2 border-t border-outline-variant">
+                                        <span className="text-sm text-on-surface-variant">Kembalian</span>
+                                        {(() => {
+                                            const modalKembalian = Number(uangDiberikanModal) - total;
+                                            return (
+                                                <span className={`text-xl font-bold ${modalKembalian < 0 ? 'text-error' : 'text-primary'}`}>
+                                                    {modalKembalian < 0 ? 'Kurang ' : ''}Rp {Math.abs(modalKembalian).toLocaleString('id-ID')}
+                                                </span>
+                                            );
+                                        })()}
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="bg-surface-container-low p-3 rounded-lg border border-outline-variant text-sm text-on-surface-variant">
+                                    Pembayaran menggunakan {metodePembayaran === 2 ? 'QRIS' : 'Transfer Bank'}. Pastikan dana sudah diterima sebelum konfirmasi.
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="flex justify-end gap-3 mt-4">
+                            <button 
+                                onClick={() => setShowCheckoutModal(false)} 
+                                className="px-4 py-2 border border-outline-variant rounded-lg font-medium text-sm text-on-surface-variant hover:bg-surface-container transition-colors"
+                            >
+                                Batal
+                            </button>
+                            <button 
+                                onClick={confirmCheckout} 
+                                disabled={metodePembayaran === 3 && Number(uangDiberikanModal) < total}
+                                className="px-5 py-2 bg-primary text-on-primary rounded-lg font-bold text-sm hover:bg-primary/90 transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                Konfirmasi & Bayar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </AdminLayout>
     );
 }
