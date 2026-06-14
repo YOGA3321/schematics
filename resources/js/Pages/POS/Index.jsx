@@ -39,11 +39,12 @@ export default function POSIndex({ auth, merchandises = [] }) {
         harga: Number(m.harga_merchandise),
         stok: m.stok,
         asal_subevent: m.event?.nama_subevent || 'Umum',
+        foto: m.foto,
         sku: `SKU-0${m.id_merchandise}`
     })) : [
-        { id: 1, nama_merchandise: 'Kaos Schematics 2023 - L', harga: 150000, stok: 15, asal_subevent: 'BST', sku: 'BST-TS-L' },
-        { id: 2, nama_merchandise: 'Tote Bag Kanvas Premium', harga: 85000, stok: 42, asal_subevent: 'NPC', sku: 'NPC-TB-01' },
-        { id: 3, nama_merchandise: 'Mug Keramik NLC', harga: 45000, stok: 3, asal_subevent: 'NLC', sku: 'NLC-MG-01' },
+        { id: 1, nama_merchandise: 'Kaos Schematics 2023 - L', harga: 150000, stok: 15, asal_subevent: 'BST', sku: 'BST-TS-L', foto: null },
+        { id: 2, nama_merchandise: 'Tote Bag Kanvas Premium', harga: 85000, stok: 42, asal_subevent: 'NPC', sku: 'NPC-TB-01', foto: null },
+        { id: 3, nama_merchandise: 'Mug Keramik NLC', harga: 45000, stok: 3, asal_subevent: 'NLC', sku: 'NLC-MG-01', foto: null },
     ];
 
     const displayItems = normalizedItems.filter(item => {
@@ -173,7 +174,7 @@ export default function POSIndex({ auth, merchandises = [] }) {
                                     <span className="w-2 h-2 bg-orange-500 rounded-full animate-pulse shadow-sm shadow-orange-500/50"></span>
                                     Point of Sale
                                 </div>
-                                <h1 className="text-2xl font-black uppercase tracking-tighter text-gray-900">Terminal_01</h1>
+                                <h1 className="text-2xl font-black uppercase tracking-tighter text-gray-900">Penjualan</h1>
                             </div>
                             <button className="bg-gray-50 border border-gray-200 p-3 text-gray-500 hover:text-orange-600 hover:border-orange-200 hover:bg-orange-50 rounded-xl transition-all">
                                 <span className="material-symbols-outlined text-[24px]">barcode_scanner</span>
@@ -216,8 +217,12 @@ export default function POSIndex({ auth, merchandises = [] }) {
                                     <div className="absolute top-3 left-3 z-10 bg-red-50 border border-red-200 text-red-600 px-2 py-1 font-mono text-[10px] font-bold tracking-widest uppercase animate-pulse rounded">LOW: {item.stok}</div>
                                 ) : null}
                                 
-                                <div className="h-32 bg-gray-50 w-full relative overflow-hidden flex items-center justify-center border-b border-gray-100 group-hover:bg-orange-50/50 transition-colors">
-                                    <span className="material-symbols-outlined text-gray-300 text-[48px] group-hover:text-orange-300 transition-colors">inventory_2</span>
+                                <div className="h-40 bg-gray-50 w-full relative overflow-hidden flex items-center justify-center border-b border-gray-100 group-hover:bg-orange-50/50 transition-colors">
+                                    {item.foto ? (
+                                        <img src={`/storage/${item.foto}`} alt={item.nama_merchandise} className="w-full h-full object-cover" />
+                                    ) : (
+                                        <span className="material-symbols-outlined text-gray-300 text-[48px] group-hover:text-orange-300 transition-colors">inventory_2</span>
+                                    )}
                                 </div>
                                 <div className="p-4 flex flex-col gap-1 flex-1">
                                     <div className="flex justify-between items-start gap-2 mb-2">
@@ -236,7 +241,7 @@ export default function POSIndex({ auth, merchandises = [] }) {
                 </main>
 
                 {/* Right Panel: Cart & Checkout (1/3) */}
-                <aside className="w-[400px] bg-white border-l border-gray-200 flex flex-col flex-shrink-0 relative z-20">
+                <aside className="w-[500px] bg-white border-l border-gray-200 flex flex-col flex-shrink-0 relative z-20">
                     {/* Cart Header */}
                     <div className="p-6 border-b border-gray-200 flex justify-between items-center bg-gray-50/80 backdrop-blur-sm">
                         <h2 className="text-xl font-black uppercase tracking-tight text-gray-900 flex items-center gap-2">
@@ -260,7 +265,7 @@ export default function POSIndex({ auth, merchandises = [] }) {
                             cart.map(item => (
                                 <div key={item.id} className="bg-white border border-gray-200 p-4 flex flex-col gap-3 relative group hover:border-orange-300 hover:shadow-md transition-all rounded-xl">
                                     <div className="flex justify-between items-start">
-                                        <div className="pr-6">
+                                        <div className="pr-4 flex-1">
                                             <h4 className="font-bold text-sm text-gray-900 leading-tight mb-1">{item.nama_merchandise}</h4>
                                             <p className="text-xs font-mono text-gray-500 font-bold">Rp {item.harga.toLocaleString('id-ID')}</p>
                                         </div>

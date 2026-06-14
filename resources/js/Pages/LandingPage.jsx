@@ -162,7 +162,7 @@ export default function LandingPage() {
             </main>
 
             {/* Marquee Status bar */}
-            <div className="w-full border-y border-zinc-800 bg-zinc-900 py-4 overflow-hidden select-none reveal opacity-0 translate-y-8 transition-all duration-1000 flex">
+            <div className="w-full border-y border-zinc-800 bg-zinc-900 py-4 overflow-hidden select-none flex">
                 {/* We use identical blocks to create a seamless infinite marquee */}
                 <div className="shrink-0 whitespace-nowrap flex gap-12 px-6 font-mono text-xs font-black uppercase tracking-[0.2em] animate-[marquee_20s_linear_infinite] text-orange-500">
                     <span>/// 50,000+ Participants</span>

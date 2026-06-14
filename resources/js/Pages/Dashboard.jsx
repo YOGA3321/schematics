@@ -49,7 +49,7 @@ export default function Dashboard({ stats, recentTransactions, eventRevenues = [
                             <span className="w-2 h-2 bg-orange-500 rounded-full animate-pulse shadow-sm shadow-orange-500/50"></span>
                             Live Analytics
                         </div>
-                        <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-gray-900">Command Center</h1>
+                        <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-gray-900">DASHBOARD</h1>
                     </div>
                 </div>
 

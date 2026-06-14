@@ -69,6 +69,9 @@ class MerchandiseController extends Controller
         ]);
 
         if ($request->hasFile('foto')) {
+            if ($merchandise->foto && Storage::disk('public')->exists($merchandise->foto)) {
+                Storage::disk('public')->delete($merchandise->foto);
+            }
             $path = $request->file('foto')->store('merchandise', 'public');
             $validated['foto'] = $path;
         }
