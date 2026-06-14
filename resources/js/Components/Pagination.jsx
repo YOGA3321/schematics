@@ -8,8 +8,8 @@ export default function Pagination({ links }) {
         <div className="flex flex-wrap gap-1 justify-center mt-6 mb-2">
             {links.map((link, index) => {
                 let label = link.label;
-                if (label.includes('Previous')) label = '«';
-                if (label.includes('Next')) label = '»';
+                if (label.toLowerCase().includes('previous')) label = '« Previous';
+                if (label.toLowerCase().includes('next')) label = 'Next »';
 
                 return link.url === null ? (
                     <div
