@@ -115,7 +115,7 @@ export default function Dashboard({ stats, recentTransactions, eventRevenues = [
                                     <Tooltip cursor={{ fill: '#f3f4f6' }} content={<CustomTooltip />} />
                                     <Bar dataKey="revenue" radius={[6, 6, 0, 0]}>
                                         {dailySalesData.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={index === dailySalesData.length - 1 ? '#f97316' : '#e5e7eb'} />
+                                            <Cell key={`cell-${index}`} fill={index === dailySalesData.length - 1 ? '#ea580c' : '#fdba74'} />
                                         ))}
                                     </Bar>
                                 </BarChart>
