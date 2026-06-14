@@ -74,6 +74,8 @@ class MerchandiseController extends Controller
             }
             $path = $request->file('foto')->store('merchandise', 'public');
             $validated['foto'] = $path;
+        } else {
+            unset($validated['foto']);
         }
 
         $merchandise->update($validated);
