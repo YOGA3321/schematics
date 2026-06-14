@@ -104,27 +104,27 @@ export default function Create({ events, auth }) {
 
                         <div className="flex flex-col gap-2">
                             <label className="font-mono text-[10px] uppercase tracking-widest text-gray-500 font-bold">Product Image</label>
-                            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-200 border-dashed hover:border-orange-400 transition-colors cursor-pointer relative bg-gray-50 rounded-xl shadow-inner">
+                            <div className="mt-1 px-6 pt-5 pb-6 border-2 border-gray-200 border-dashed hover:border-orange-400 transition-colors cursor-pointer relative bg-gray-50 rounded-xl shadow-inner text-center block">
                                 <input 
                                     type="file" 
                                     onChange={handleImageChange}
                                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                                     accept="image/*"
                                 />
-                                <div className="space-y-2 text-center pointer-events-none w-full">
+                                <div className="pointer-events-none relative z-0">
                                     {preview ? (
-                                        <div className="relative w-full max-w-xs mx-auto h-48">
-                                            <img src={preview} alt="Preview" className="w-full h-full object-contain filter hover:brightness-110 transition-all duration-500" />
+                                        <div className="w-full h-48 flex justify-center items-center">
+                                            <img src={preview} alt="Preview" className="max-h-full max-w-full object-contain filter hover:brightness-110 transition-all duration-500 rounded-lg" />
                                         </div>
                                     ) : (
-                                        <>
+                                        <div className="flex flex-col items-center justify-center space-y-2">
                                             <span className="material-symbols-outlined text-[48px] text-gray-300">image</span>
                                             <div className="flex font-mono text-[10px] uppercase tracking-widest text-gray-500 justify-center">
                                                 <span className="font-bold text-orange-500 hover:text-orange-600">Upload a file</span>
                                                 <p className="pl-1">or drag and drop</p>
                                             </div>
                                             <p className="font-mono text-[10px] text-gray-400 mt-2 font-bold">PNG, JPG, GIF up to 2MB</p>
-                                        </>
+                                        </div>
                                     )}
                                 </div>
                             </div>
