@@ -6,13 +6,18 @@ export default function LandingPage() {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('opacity-100', 'translate-y-0', 'scale-100');
-                    entry.target.classList.remove('opacity-0', 'translate-y-12', 'scale-95');
+                    if (entry.target.classList.contains('reveal-3d')) {
+                        entry.target.classList.add('opacity-100', 'translate-y-0', 'rotate-x-0', 'scale-100');
+                        entry.target.classList.remove('opacity-0', 'translate-y-24', 'rotate-x-12', 'scale-90');
+                    } else {
+                        entry.target.classList.add('opacity-100', 'translate-y-0', 'scale-100');
+                        entry.target.classList.remove('opacity-0', 'translate-y-12', 'scale-95');
+                    }
                 }
             });
-        }, { threshold: 0.1 });
+        }, { threshold: 0.2 });
 
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        document.querySelectorAll('.reveal, .reveal-3d').forEach(el => observer.observe(el));
         return () => observer.disconnect();
     }, []);
 
@@ -63,7 +68,7 @@ export default function LandingPage() {
                 </div>
 
                 {/* The Logo / Visual Showcase */}
-                <div className="w-full max-w-5xl mx-auto mb-24 reveal opacity-0 translate-y-12 scale-95 transition-all duration-[1.5s] delay-300 ease-out relative group">
+                <div className="w-full max-w-5xl mx-auto mb-24 reveal-3d opacity-0 translate-y-24 rotate-x-12 scale-90 transition-all duration-[1.5s] ease-out relative group" style={{ perspective: '1000px' }}>
                     {/* Decorative elements around the image */}
                     <div className="absolute -top-6 -left-6 w-24 h-24 border-t-2 border-l-2 border-orange-500 z-20 transition-transform group-hover:-translate-x-2 group-hover:-translate-y-2"></div>
                     <div className="absolute -bottom-6 -right-6 w-24 h-24 border-b-2 border-r-2 border-orange-500 z-20 transition-transform group-hover:translate-x-2 group-hover:translate-y-2"></div>
@@ -154,23 +159,33 @@ export default function LandingPage() {
                     </div>
                 </section>
 
-                {/* Marquee Status bar */}
-                <div className="w-[100vw] relative left-1/2 -translate-x-1/2 border-y border-zinc-800 bg-zinc-900 py-4 overflow-hidden select-none reveal opacity-0 translate-y-8 transition-all duration-1000">
-                    <div className="whitespace-nowrap flex gap-12 font-mono text-xs font-black uppercase tracking-[0.2em] animate-[marquee_20s_linear_infinite] text-orange-500">
-                        <span>/// 50,000+ Participants</span>
-                        <span>/// 4 Major Events</span>
-                        <span>/// National Scale</span>
-                        <span>/// Established 2007</span>
-                        <span>/// Push The Boundaries</span>
-                        <span>/// 50,000+ Participants</span>
-                        <span>/// 4 Major Events</span>
-                        <span>/// National Scale</span>
-                        <span>/// Established 2007</span>
-                        <span>/// Push The Boundaries</span>
-                    </div>
-                </div>
-
             </main>
+
+            {/* Marquee Status bar */}
+            <div className="w-full border-y border-zinc-800 bg-zinc-900 py-4 overflow-hidden select-none reveal opacity-0 translate-y-8 transition-all duration-1000 flex">
+                {/* We use two identical blocks to create a seamless infinite marquee */}
+                <div className="whitespace-nowrap flex gap-12 px-6 font-mono text-xs font-black uppercase tracking-[0.2em] animate-[marquee_20s_linear_infinite] text-orange-500">
+                    <span>/// 50,000+ Participants</span>
+                    <span>/// 4 Major Events</span>
+                    <span>/// National Scale</span>
+                    <span>/// Established 2007</span>
+                    <span>/// Push The Boundaries</span>
+                </div>
+                <div className="whitespace-nowrap flex gap-12 px-6 font-mono text-xs font-black uppercase tracking-[0.2em] animate-[marquee_20s_linear_infinite] text-orange-500">
+                    <span>/// 50,000+ Participants</span>
+                    <span>/// 4 Major Events</span>
+                    <span>/// National Scale</span>
+                    <span>/// Established 2007</span>
+                    <span>/// Push The Boundaries</span>
+                </div>
+                <div className="whitespace-nowrap flex gap-12 px-6 font-mono text-xs font-black uppercase tracking-[0.2em] animate-[marquee_20s_linear_infinite] text-orange-500 hidden md:flex">
+                    <span>/// 50,000+ Participants</span>
+                    <span>/// 4 Major Events</span>
+                    <span>/// National Scale</span>
+                    <span>/// Established 2007</span>
+                    <span>/// Push The Boundaries</span>
+                </div>
+            </div>
 
             <footer className="relative z-50 border-t border-zinc-900 bg-zinc-950 flex flex-col md:flex-row justify-between items-center p-6 md:px-12">
                 <span className="text-[10px] text-zinc-600 font-mono tracking-[0.2em] uppercase mb-4 md:mb-0">&copy; 2027 Schematics ITS</span>
