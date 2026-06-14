@@ -207,7 +207,7 @@ export default function POSIndex({ auth, merchandises = [], events = [] }) {
                         </div>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto p-6 grid grid-cols-2 lg:grid-cols-3 gap-4 content-start relative z-10 bg-gray-50/50">
+                    <div className="flex-1 overflow-y-auto p-4 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 content-start relative z-10 bg-gray-50/50">
                         {displayItems.map(item => (
                             <button 
                                 key={item.id} 
@@ -222,22 +222,22 @@ export default function POSIndex({ auth, merchandises = [], events = [] }) {
                                     <div className="absolute top-3 left-3 z-10 bg-red-50 border border-red-200 text-red-600 px-2 py-1 font-mono text-[10px] font-bold tracking-widest uppercase animate-pulse rounded">LOW: {item.stok}</div>
                                 ) : null}
                                 
-                                <div className="h-32 bg-gray-50 shrink-0 w-full relative overflow-hidden flex items-center justify-center border-b border-gray-100 group-hover:bg-orange-50/50 transition-colors p-2">
+                                <div className="h-28 bg-gray-50 shrink-0 w-full relative overflow-hidden flex items-center justify-center border-b border-gray-100 group-hover:bg-orange-50/50 transition-colors p-2">
                                     {item.foto ? (
-                                        <img src={`/storage/${item.foto}`} alt={item.tipe_merchandise} className="w-full h-full object-contain" />
+                                        <img src={`/storage/${item.foto}`} alt={item.nama_merchandise} className="w-full h-full object-contain" />
                                     ) : (
-                                        <span className="material-symbols-outlined text-gray-300 text-[48px] group-hover:text-orange-300 transition-colors">image</span>
+                                        <span className="material-symbols-outlined text-gray-300 text-[40px] group-hover:text-orange-300 transition-colors">image</span>
                                     )}
                                     <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm border border-gray-200 text-gray-700 px-2 py-0.5 font-mono text-[8px] font-bold tracking-widest uppercase rounded-full shadow-sm">
-                                        {item.event?.nama_subevent || 'Umum'}
+                                        {item.asal_subevent}
                                     </div>
                                 </div>
-                                <div className="p-4 flex flex-col gap-1 flex-1 w-full">
-                                    <h3 className="font-bold text-sm text-gray-900 leading-tight">{item.tipe_merchandise}</h3>
-                                    <p className="font-mono text-[9px] text-gray-400 uppercase tracking-widest mb-2">SKU-0{item.id_merchandise}</p>
+                                <div className="p-3 flex flex-col gap-1 flex-1 w-full">
+                                    <h3 className="font-bold text-sm text-gray-900 leading-tight line-clamp-2">{item.nama_merchandise}</h3>
+                                    <p className="font-mono text-[9px] text-gray-400 uppercase tracking-widest mb-1">{item.sku}</p>
                                     
-                                    <div className="mt-auto pt-3 flex justify-between items-end border-t border-gray-100">
-                                        <span className="font-black text-orange-600 text-lg tracking-tighter">Rp {Number(item.harga_merchandise).toLocaleString('id-ID')}</span>
+                                    <div className="mt-auto pt-2 flex justify-between items-end border-t border-gray-100">
+                                        <span className="font-black text-orange-600 text-base tracking-tighter">Rp {item.harga.toLocaleString('id-ID')}</span>
                                         <span className={`font-mono text-[9px] font-bold uppercase ${item.stok < 5 ? 'text-red-500' : 'text-gray-500'}`}>Stock: {item.stok}</span>
                                     </div>
                                 </div>

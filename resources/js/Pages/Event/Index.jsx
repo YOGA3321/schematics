@@ -62,7 +62,7 @@ export default function Index({ events, auth }) {
                                             <span className="font-bold text-gray-900">{ev.nama_subevent}</span>
                                         </td>
                                         <td className="p-4 text-right">
-                                            <div className="flex gap-2 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <div className="flex gap-2 justify-end transition-opacity">
                                                 <Link 
                                                     href={`/event/${ev.id_event}/edit`}
                                                     className="w-8 h-8 rounded-lg bg-white border border-gray-200 text-gray-500 hover:text-orange-500 hover:border-orange-200 hover:bg-orange-50 flex items-center justify-center transition-all shadow-sm"

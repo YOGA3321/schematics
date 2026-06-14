@@ -14,7 +14,7 @@ export default function Create({ auth }) {
 
     return (
         <AdminLayout title="Add Event Category" auth={auth}>
-            <div className="flex flex-col gap-10 max-w-4xl mx-auto w-full pb-12">
+            <div className="flex flex-col gap-8 max-w-2xl mx-auto w-full pb-12">
                 <div className="flex flex-col gap-4 border-b border-gray-200 pb-6">
                     <Link href="/event" className="text-gray-500 hover:text-orange-500 font-mono text-[10px] uppercase tracking-widest font-bold flex items-center gap-2 mb-4 w-fit transition-colors">
                         <span className="material-symbols-outlined text-[14px]">arrow_back</span>
@@ -25,28 +25,35 @@ export default function Create({ auth }) {
                             <span className="w-2 h-2 bg-orange-500 rounded-full animate-pulse shadow-sm shadow-orange-500/50"></span>
                             System Settings
                         </div>
-                        <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-gray-900">Add Event</h1>
+                        <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tighter text-gray-900">Add Event</h1>
                     </div>
                 </div>
 
-                <div className="bg-white border border-gray-200 rounded-2xl shadow-sm relative">
+                <div className="bg-white border border-gray-200 rounded-2xl shadow-sm relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-400 to-orange-600"></div>
                     <form onSubmit={submit} className="p-8 space-y-8 relative z-10">
-                        <div className="grid grid-cols-1 max-w-xl">
-                            <div className="flex flex-col gap-2">
-                                <label className="font-mono text-[10px] uppercase tracking-widest text-gray-500 font-bold">Event Name <span className="text-orange-500">*</span></label>
-                                <input 
-                                    type="text" 
-                                    value={data.nama_subevent}
-                                    onChange={e => setData('nama_subevent', e.target.value)}
-                                    className="w-full bg-gray-50 border border-gray-200 px-4 py-3 font-mono text-sm text-gray-900 rounded-xl focus:bg-white focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all placeholder:text-gray-400 shadow-sm"
-                                    placeholder="e.g. BST"
-                                    autoFocus
-                                />
+                        <div className="grid grid-cols-1">
+                            <div className="flex flex-col gap-3">
+                                <label className="font-mono text-[10px] uppercase tracking-widest text-gray-500 font-bold flex items-center gap-2">
+                                    <span className="material-symbols-outlined text-[14px] text-orange-500">label</span>
+                                    Event Name <span className="text-orange-500">*</span>
+                                </label>
+                                <div className="relative">
+                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-400">event</span>
+                                    <input 
+                                        type="text" 
+                                        value={data.nama_subevent}
+                                        onChange={e => setData('nama_subevent', e.target.value)}
+                                        className="w-full bg-gray-50 border border-gray-200 pl-12 pr-4 py-4 font-mono text-base text-gray-900 rounded-xl focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 outline-none transition-all placeholder:text-gray-400 shadow-sm"
+                                        placeholder="Enter event name (e.g. BST)"
+                                        autoFocus
+                                    />
+                                </div>
                                 {errors.nama_subevent && <div className="text-red-500 text-[10px] font-mono uppercase tracking-widest mt-1 font-bold">{errors.nama_subevent}</div>}
                             </div>
                         </div>
 
-                        <div className="flex justify-end gap-4 border-t border-gray-200 pt-6">
+                        <div className="flex justify-end gap-4 border-t border-gray-100 pt-6">
                             <Link 
                                 href="/event"
                                 className="px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest border border-gray-200 text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-colors rounded-xl shadow-sm"
