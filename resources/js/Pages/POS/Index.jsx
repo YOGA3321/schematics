@@ -217,7 +217,7 @@ export default function POSIndex({ auth, merchandises = [] }) {
                                     <div className="absolute top-3 left-3 z-10 bg-red-50 border border-red-200 text-red-600 px-2 py-1 font-mono text-[10px] font-bold tracking-widest uppercase animate-pulse rounded">LOW: {item.stok}</div>
                                 ) : null}
                                 
-                                <div className="h-40 bg-gray-50 w-full relative overflow-hidden flex items-center justify-center border-b border-gray-100 group-hover:bg-orange-50/50 transition-colors">
+                                <div className="h-40 shrink-0 bg-gray-50 w-full relative overflow-hidden flex items-center justify-center border-b border-gray-100 group-hover:bg-orange-50/50 transition-colors">
                                     {item.foto ? (
                                         <img src={`/storage/${item.foto}`} alt={item.nama_merchandise} className="w-full h-full object-cover" />
                                     ) : (
@@ -243,15 +243,21 @@ export default function POSIndex({ auth, merchandises = [] }) {
                 {/* Right Panel: Cart & Checkout (1/3) */}
                 <aside className="w-[500px] bg-white border-l border-gray-200 flex flex-col flex-shrink-0 relative z-20">
                     {/* Cart Header */}
-                    <div className="p-6 border-b border-gray-200 flex justify-between items-center bg-gray-50/80 backdrop-blur-sm">
-                        <h2 className="text-xl font-black uppercase tracking-tight text-gray-900 flex items-center gap-2">
-                            <span className="material-symbols-outlined text-orange-600">shopping_cart</span>
-                            Cart
-                        </h2>
-                        <button onClick={() => setCart([])} className="text-gray-500 font-mono text-[10px] uppercase tracking-widest font-bold hover:text-red-600 hover:bg-red-50 transition-colors flex items-center gap-1 border border-gray-200 hover:border-red-200 bg-white px-3 py-1.5 rounded-full shadow-sm">
-                            <span className="material-symbols-outlined text-[14px]">delete</span>
-                            Clear
-                        </button>
+                    <div className="p-6 border-b border-gray-100 flex flex-col gap-4 bg-gray-50/80 backdrop-blur-sm">
+                        <div className="flex justify-between items-center">
+                            <h2 className="text-xl font-black uppercase tracking-tight text-gray-900 flex items-center gap-2">
+                                <span className="material-symbols-outlined text-orange-600">shopping_cart</span>
+                                Cart
+                            </h2>
+                            <button onClick={() => setCart([])} className="text-gray-500 font-mono text-[10px] uppercase tracking-widest font-bold hover:text-red-600 hover:bg-red-50 transition-colors flex items-center gap-1 border border-gray-200 hover:border-red-200 bg-white px-3 py-1.5 rounded-full shadow-sm">
+                                <span className="material-symbols-outlined text-[14px]">delete</span>
+                                Clear
+                            </button>
+                        </div>
+                        <div className="relative">
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-400 text-[18px]">person</span>
+                            <input value={namaPembeli} onChange={e => setNamaPembeli(e.target.value)} className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl font-mono text-sm focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all placeholder:text-gray-400 text-gray-900 shadow-sm" placeholder="Customer Name *" required type="text" />
+                        </div>
                     </div>
 
                     {/* Cart Items List */}
@@ -330,12 +336,6 @@ export default function POSIndex({ auth, merchandises = [] }) {
                             <h3 className="text-2xl font-black uppercase tracking-tighter text-gray-900 border-b border-gray-100 pb-4">Process Transaction</h3>
                             
                             <div className="flex flex-col gap-6">
-                                {/* Form Info Pembeli pindahan dari Cart */}
-                                <div className="flex flex-col gap-2">
-                                    <label className="font-mono text-[10px] uppercase tracking-widest text-gray-500 font-bold">Customer Name <span className="text-orange-500">*</span></label>
-                                    <input value={namaPembeli} onChange={e => setNamaPembeli(e.target.value)} className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl font-mono text-sm focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all placeholder:text-gray-400 text-gray-900 shadow-sm" placeholder="Enter name..." required autoFocus type="text" />
-                                </div>
-
                                 <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 shadow-sm">
                                     <label className="flex items-center justify-between cursor-pointer">
                                         <span className="font-mono text-xs font-bold uppercase text-gray-700">Register Seminar?</span>
