@@ -21,7 +21,7 @@ class TransactionController extends Controller
         }
 
         return Inertia::render('Transaction/Index', [
-            'transactions' => $query->get(),
+            'transactions' => $query->paginate(15)->withQueryString(),
             'filters' => $request->only(['start_date', 'end_date'])
         ]);
     }

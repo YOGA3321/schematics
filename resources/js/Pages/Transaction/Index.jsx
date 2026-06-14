@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import AdminLayout from '../../Layouts/AdminLayout';
+import Pagination from '../../Components/Pagination';
 
 export default function Index({ transactions, filters = {}, auth }) {
     const [startDate, setStartDate] = useState(filters.start_date || '');
@@ -73,7 +74,7 @@ export default function Index({ transactions, filters = {}, auth }) {
                                 </tr>
                             </thead>
                             <tbody>
-                                {transactions.map((tx) => (
+                                {transactions.data.map((tx) => (
                                     <tr key={tx.id_transaksi} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                                         <td className="py-4 font-mono text-orange-500 font-bold text-xs">TRX-{String(tx.id_transaksi).padStart(4, '0')}</td>
                                         <td className="py-4 text-xs text-gray-500 font-mono">{new Date(tx.waktu_pemesanan).toLocaleString()}</td>
@@ -94,11 +95,12 @@ export default function Index({ transactions, filters = {}, auth }) {
                                 ))}
                             </tbody>
                         </table>
-                        {transactions.length === 0 && (
+                        {transactions.data.length === 0 && (
                             <div className="py-12 text-center text-gray-400 font-mono text-sm uppercase tracking-widest font-bold">
                                 No records found.
                             </div>
                         )}
+                        <Pagination links={transactions.links} />
                     </div>
                 </div>
             </div>

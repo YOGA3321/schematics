@@ -1,59 +1,36 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Schematics POS Application
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Schematics POS is an integrated Point-Of-Sale (POS) and registration system developed for the Schematics event. It features real-time merchandise sales, transaction history, and seminar participant management.
 
-## About Laravel
+## Key Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Merchandise & POS**: Real-time sales interface for event merchandise.
+- **Transaction History**: Comprehensive ledger for tracking all transactions.
+- **Seminar Registration**: Management of seminar participants.
+- **Optimized Performance**: Server-side pagination and advanced database indexing for managing millions of records without performance degradation.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Database Indexing Strategies (For Presentation)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+To ensure the application remains fast and responsive under heavy load (e.g., millions of transaction records), we have implemented comprehensive Database Indexing:
 
-## Learning Laravel
+### 1. Primary & Foreign Key Indexes
+All relational mappings inherently use indexes automatically provided by the database schema definitions. 
+- **Migration Examples (`database/migrations/`):**
+  - `$table->foreign('id_transaksi')` (Detail Transaksi)
+  - `$table->foreign('id_pembeli')` (Transaksi & Peserta Seminar)
+  - `$table->foreign('nrp')` (Transaksi)
+  - `$table->foreign('id_event')` (Merchandise)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 2. Custom Performance Indexes
+We have explicitly created a dedicated migration `2026_06_08_064824_add_indexes_to_pos_tables.php` to optimize specific heavily queried columns. These ensure that filtering, searching, and sorting operations bypass expensive full-table scans.
+- **`idx_waktu_pemesanan` (`waktu_pemesanan`)**: Speeds up the transaction ledger's chronological sorting (`ORDER BY waktu_pemesanan DESC`) and date-range filtering.
+- **`idx_nama_pembeli` (`nama_lengkap`)**: Optimizes search functionality for looking up buyers by their full name.
+- **`idx_fk_pembeli` (`id_pembeli` in `transaksi` table)**: Accelerates lookup operations when retrieving the purchase history of a specific participant.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+By combining these indexing strategies with **Server-Side Pagination** on the backend controllers (`paginate(15)`), the server memory and response times are kept highly efficient regardless of database size.
 
-## Laravel Sponsors
+## Technology Stack
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- **Backend**: Laravel (PHP)
+- **Frontend**: React.js with Inertia.js
+- **Styling**: Tailwind CSS

@@ -55,7 +55,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/transactions', [\App\Http\Controllers\TransactionController::class, 'index'])->name('transactions.index');
     Route::get('/transactions/pdf', [\App\Http\Controllers\TransactionController::class, 'pdf'])->name('transactions.pdf');
     Route::get('/transactions/{id}', [\App\Http\Controllers\TransactionController::class, 'show'])->name('transactions.show');
+    
     Route::get('/seminar', [\App\Http\Controllers\SeminarController::class, 'index'])->name('seminar.index');
+    Route::get('/seminar/{id}/edit', [\App\Http\Controllers\SeminarController::class, 'edit'])->name('seminar.edit');
+    Route::put('/seminar/{id}', [\App\Http\Controllers\SeminarController::class, 'update'])->name('seminar.update');
+    Route::delete('/seminar/{id}', [\App\Http\Controllers\SeminarController::class, 'destroy'])->name('seminar.destroy');
+    
     Route::get('/merchandise/create', [\App\Http\Controllers\MerchandiseController::class, 'create'])->name('merchandise.create');
     Route::post('/merchandise', [\App\Http\Controllers\MerchandiseController::class, 'store'])->name('merchandise.store');
     Route::get('/merchandise/{id}/edit', [\App\Http\Controllers\MerchandiseController::class, 'edit'])->name('merchandise.edit');

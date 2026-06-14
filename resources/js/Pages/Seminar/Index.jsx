@@ -2,6 +2,7 @@ import React from 'react';
 import AdminLayout from '../../Layouts/AdminLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import Swal from 'sweetalert2';
+import Pagination from '../../Components/Pagination';
 
 export default function Index({ peserta = [], auth }) {
     const { delete: destroy } = useForm();
@@ -49,7 +50,7 @@ export default function Index({ peserta = [], auth }) {
                                 </tr>
                             </thead>
                             <tbody>
-                                {peserta.map((p) => (
+                                {peserta.data && peserta.data.map((p) => (
                                     <tr key={p.id_peserta} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                                         <td className="py-4 font-mono text-orange-500 text-xs font-bold">{p.id_peserta}</td>
                                         <td className="py-4 text-sm font-bold text-gray-900">{p.pembeli?.nama_lengkap || '-'}</td>
@@ -77,11 +78,12 @@ export default function Index({ peserta = [], auth }) {
                                 ))}
                             </tbody>
                         </table>
-                        {peserta.length === 0 && (
+                        {(!peserta.data || peserta.data.length === 0) && (
                             <div className="py-12 text-center text-gray-400 font-mono text-sm uppercase tracking-widest font-bold">
                                 No participants registered yet.
                             </div>
                         )}
+                        {peserta.links && <Pagination links={peserta.links} />}
                     </div>
                 </div>
             </div>
