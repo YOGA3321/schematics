@@ -222,9 +222,9 @@ export default function POSIndex({ auth, merchandises = [], events = [] }) {
                                     <div className="absolute top-3 left-3 z-10 bg-red-50 border border-red-200 text-red-600 px-2 py-1 font-mono text-[10px] font-bold tracking-widest uppercase animate-pulse rounded">LOW: {item.stok}</div>
                                 ) : null}
                                 
-                                <div className="aspect-[4/3] w-full relative overflow-hidden flex items-center justify-center border-b border-gray-100 bg-gray-100/50">
+                                <div className="h-36 shrink-0 w-full relative overflow-hidden flex items-center justify-center border-b border-gray-100 bg-gray-100/50 p-2">
                                     {item.foto ? (
-                                        <img src={`/storage/${item.foto}`} alt={item.nama_merchandise} className="w-full h-full object-cover" />
+                                        <img src={`/storage/${item.foto}`} alt={item.nama_merchandise} className="w-full h-full object-contain" />
                                     ) : (
                                         <span className="material-symbols-outlined text-gray-300 text-[48px]">inventory_2</span>
                                     )}

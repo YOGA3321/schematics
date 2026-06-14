@@ -50,12 +50,12 @@ export default function Index({ merchandises, auth }) {
                                 <h3 className="font-bold text-xl text-gray-900 leading-tight">{item.tipe_merchandise}</h3>
                                 <p className="font-mono text-[10px] text-gray-400 uppercase tracking-widest mb-2">SKU-0{item.id_merchandise}</p>
                                 
-                                <div className="mt-auto pt-4 flex justify-between items-end border-t border-gray-100 mb-6">
+                                <div className="mt-auto pt-4 flex justify-between items-end border-t border-gray-100 pb-2">
                                     <span className="font-black text-orange-600 text-2xl tracking-tighter">Rp {Number(item.harga_merchandise).toLocaleString('id-ID')}</span>
                                     <span className={`font-mono text-xs font-bold uppercase ${item.stok < 5 ? 'text-red-500' : 'text-gray-500'}`}>Stock: {item.stok}</span>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-2 opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-6 left-6 right-6">
+                                <div className="grid grid-cols-2 gap-2 opacity-0 group-hover:opacity-100 transition-opacity mt-2">
                                     <Link 
                                         href={`/merchandise/${item.id_merchandise}/edit`}
                                         className="bg-gray-50 text-gray-700 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-200 border border-gray-200 py-2 rounded-xl text-center font-mono text-[10px] font-bold uppercase tracking-widest transition-colors flex justify-center items-center gap-1 shadow-sm"

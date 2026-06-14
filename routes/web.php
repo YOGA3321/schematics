@@ -60,6 +60,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/merchandise', [\App\Http\Controllers\MerchandiseController::class, 'store'])->name('merchandise.store');
     Route::get('/merchandise/{id}/edit', [\App\Http\Controllers\MerchandiseController::class, 'edit'])->name('merchandise.edit');
     Route::put('/merchandise/{id}', [\App\Http\Controllers\MerchandiseController::class, 'update'])->name('merchandise.update');
+    
+    Route::resource('event', EventController::class);
 
     Route::post('/api/checkout', [\App\Http\Controllers\CheckoutController::class, 'store']);
 });
