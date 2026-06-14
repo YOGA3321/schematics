@@ -60,6 +60,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/seminar/{id}/edit', [\App\Http\Controllers\SeminarController::class, 'edit'])->name('seminar.edit');
     Route::put('/seminar/{id}', [\App\Http\Controllers\SeminarController::class, 'update'])->name('seminar.update');
     Route::delete('/seminar/{id}', [\App\Http\Controllers\SeminarController::class, 'destroy'])->name('seminar.destroy');
+
+    Route::resource('staff', \App\Http\Controllers\StaffController::class);
     
     Route::get('/merchandise/create', [\App\Http\Controllers\MerchandiseController::class, 'create'])->name('merchandise.create');
     Route::post('/merchandise', [\App\Http\Controllers\MerchandiseController::class, 'store'])->name('merchandise.store');

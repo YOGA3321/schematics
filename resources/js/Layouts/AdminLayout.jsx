@@ -82,6 +82,10 @@ export default function AdminLayout({ children, title = "Schematics POS", auth }
                             <span className={`material-symbols-outlined text-[20px] ${isActive('/seminar') ? '' : 'text-gray-400 transition-colors'}`}>group</span>
                             <span className="font-mono text-[12px] uppercase tracking-widest">Seminar</span>
                         </Link>
+                        <Link href="/staff" className={getLinkClass('/staff')}>
+                            <span className={`material-symbols-outlined text-[20px] ${isActive('/staff') ? '' : 'text-gray-400 transition-colors'}`}>manage_accounts</span>
+                            <span className="font-mono text-[12px] uppercase tracking-widest">User Mgmt</span>
+                        </Link>
                         <Link href="/event" className={getLinkClass('/event')}>
                             <span className={`material-symbols-outlined text-[20px] ${isActive('/event') ? '' : 'text-gray-400 transition-colors'}`}>event</span>
                             <span className="font-mono text-[12px] uppercase tracking-widest">Event</span>
