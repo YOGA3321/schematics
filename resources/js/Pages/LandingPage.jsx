@@ -96,11 +96,12 @@ export default function LandingPage() {
                 </div>
 
                 {/* Event Highlights */}
-                <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 mb-24">
+                <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-24">
                     {[
                         { title: 'NLC', sub: 'National Logic Competition', icon: 'psychology' },
                         { title: 'NPC', sub: 'National Programming Contest', icon: 'terminal' },
-                        { title: 'NST', sub: 'National Seminar of Technology', icon: 'forum' }
+                        { title: 'BST', sub: 'Bootcamp and Seminar of Technology', icon: 'school' },
+                        { title: 'REEVA', sub: 'Revolutionary Entertainment and Expo with Various Arts', icon: 'festival' }
                     ].map((event, i) => (
                         <div key={i} className={`reveal opacity-0 translate-y-12 transition-all duration-1000 bg-zinc-900/50 border border-zinc-800 p-8 hover:bg-zinc-800 hover:border-orange-500 transition-colors group relative overflow-hidden`} style={{ transitionDelay: `${i * 200}ms` }}>
                             {/* Hover effect background */}
