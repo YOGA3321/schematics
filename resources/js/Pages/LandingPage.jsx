@@ -163,22 +163,22 @@ export default function LandingPage() {
 
             {/* Marquee Status bar */}
             <div className="w-full border-y border-zinc-800 bg-zinc-900 py-4 overflow-hidden select-none reveal opacity-0 translate-y-8 transition-all duration-1000 flex">
-                {/* We use two identical blocks to create a seamless infinite marquee */}
-                <div className="whitespace-nowrap flex gap-12 px-6 font-mono text-xs font-black uppercase tracking-[0.2em] animate-[marquee_20s_linear_infinite] text-orange-500">
+                {/* We use identical blocks to create a seamless infinite marquee */}
+                <div className="shrink-0 whitespace-nowrap flex gap-12 px-6 font-mono text-xs font-black uppercase tracking-[0.2em] animate-[marquee_20s_linear_infinite] text-orange-500">
                     <span>/// 50,000+ Participants</span>
                     <span>/// 4 Major Events</span>
                     <span>/// National Scale</span>
                     <span>/// Established 2007</span>
                     <span>/// Push The Boundaries</span>
                 </div>
-                <div className="whitespace-nowrap flex gap-12 px-6 font-mono text-xs font-black uppercase tracking-[0.2em] animate-[marquee_20s_linear_infinite] text-orange-500">
+                <div className="shrink-0 whitespace-nowrap flex gap-12 px-6 font-mono text-xs font-black uppercase tracking-[0.2em] animate-[marquee_20s_linear_infinite] text-orange-500">
                     <span>/// 50,000+ Participants</span>
                     <span>/// 4 Major Events</span>
                     <span>/// National Scale</span>
                     <span>/// Established 2007</span>
                     <span>/// Push The Boundaries</span>
                 </div>
-                <div className="whitespace-nowrap flex gap-12 px-6 font-mono text-xs font-black uppercase tracking-[0.2em] animate-[marquee_20s_linear_infinite] text-orange-500 hidden md:flex">
+                <div className="shrink-0 whitespace-nowrap flex gap-12 px-6 font-mono text-xs font-black uppercase tracking-[0.2em] animate-[marquee_20s_linear_infinite] text-orange-500">
                     <span>/// 50,000+ Participants</span>
                     <span>/// 4 Major Events</span>
                     <span>/// National Scale</span>
@@ -199,7 +199,7 @@ export default function LandingPage() {
             <style dangerouslySetInnerHTML={{__html: `
                 @keyframes marquee {
                     0% { transform: translateX(0); }
-                    100% { transform: translateX(-50%); }
+                    100% { transform: translateX(-100%); }
                 }
             `}} />
         </div>
