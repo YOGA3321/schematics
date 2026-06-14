@@ -27,6 +27,23 @@ class DashboardController extends Controller
             FROM event
         ");
 
+        $salesByDate = \Illuminate\Support\Facades\DB::table('transaksi')
+            ->selectRaw('DATE(waktu_pemesanan) as date, SUM(total_harga) as revenue')
+            ->groupBy('date')
+            ->orderBy('date', 'desc')
+            ->limit(7)
+            ->get()
+            ->reverse()
+            ->values();
+
+        $salesByItem = \Illuminate\Support\Facades\DB::table('detail_transaksi')
+            ->join('merchandise', 'detail_transaksi.id_merchandise', '=', 'merchandise.id_merchandise')
+            ->select('merchandise.tipe_merchandise as name', \Illuminate\Support\Facades\DB::raw('SUM(detail_transaksi.jumlah_barang) as total_sold'))
+            ->groupBy('merchandise.id_merchandise', 'merchandise.tipe_merchandise')
+            ->orderByDesc('total_sold')
+            ->limit(6)
+            ->get();
+
         return Inertia::render('Dashboard', [
             'stats' => [
                 'totalTransactions' => $totalTransactions,
@@ -34,7 +51,9 @@ class DashboardController extends Controller
                 'totalMerchSold' => $totalMerchSold,
             ],
             'recentTransactions' => $recentTransactions,
-            'eventRevenues' => $eventRevenues
+            'eventRevenues' => $eventRevenues,
+            'salesByDate' => $salesByDate,
+            'salesByItem' => $salesByItem
         ]);
     }
 }
