@@ -55,7 +55,7 @@ export default function Index({ merchandises, auth }) {
                                     <span className={`font-mono text-xs font-bold uppercase ${item.stok < 5 ? 'text-red-500' : 'text-gray-500'}`}>Stock: {item.stok}</span>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-2 opacity-0 group-hover:opacity-100 transition-opacity mt-2">
+                                <div className="grid grid-cols-2 gap-2 mt-2">
                                     <Link 
                                         href={`/merchandise/${item.id_merchandise}/edit`}
                                         className="bg-gray-50 text-gray-700 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-200 border border-gray-200 py-2 rounded-xl text-center font-mono text-[10px] font-bold uppercase tracking-widest transition-colors flex justify-center items-center gap-1 shadow-sm"

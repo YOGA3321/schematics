@@ -31,17 +31,19 @@ export default function Edit({ event, auth }) {
 
                 <div className="bg-white border border-gray-200 rounded-2xl shadow-sm relative">
                     <form onSubmit={submit} className="p-8 space-y-8 relative z-10">
-                        <div className="flex flex-col gap-2 max-w-xl">
-                            <label className="font-mono text-[10px] uppercase tracking-widest text-gray-500 font-bold">Event Name <span className="text-orange-500">*</span></label>
-                            <input 
-                                type="text" 
-                                value={data.nama_subevent}
-                                onChange={e => setData('nama_subevent', e.target.value)}
-                                className="w-full bg-gray-50 border border-gray-200 px-4 py-3 font-mono text-sm text-gray-900 rounded-xl focus:bg-white focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all placeholder:text-gray-400 shadow-sm"
-                                placeholder="e.g. BST"
-                                autoFocus
-                            />
-                            {errors.nama_subevent && <div className="text-red-500 text-[10px] font-mono uppercase tracking-widest mt-1 font-bold">{errors.nama_subevent}</div>}
+                        <div className="grid grid-cols-1 max-w-xl">
+                            <div className="flex flex-col gap-2">
+                                <label className="font-mono text-[10px] uppercase tracking-widest text-gray-500 font-bold">Event Name <span className="text-orange-500">*</span></label>
+                                <input 
+                                    type="text" 
+                                    value={data.nama_subevent}
+                                    onChange={e => setData('nama_subevent', e.target.value)}
+                                    className="w-full bg-gray-50 border border-gray-200 px-4 py-3 font-mono text-sm text-gray-900 rounded-xl focus:bg-white focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all placeholder:text-gray-400 shadow-sm"
+                                    placeholder="e.g. BST"
+                                    autoFocus
+                                />
+                                {errors.nama_subevent && <div className="text-red-500 text-[10px] font-mono uppercase tracking-widest mt-1 font-bold">{errors.nama_subevent}</div>}
+                            </div>
                         </div>
 
                         <div className="flex justify-end gap-4 border-t border-gray-200 pt-6">

@@ -222,22 +222,23 @@ export default function POSIndex({ auth, merchandises = [], events = [] }) {
                                     <div className="absolute top-3 left-3 z-10 bg-red-50 border border-red-200 text-red-600 px-2 py-1 font-mono text-[10px] font-bold tracking-widest uppercase animate-pulse rounded">LOW: {item.stok}</div>
                                 ) : null}
                                 
-                                <div className="h-36 shrink-0 w-full relative overflow-hidden flex items-center justify-center border-b border-gray-100 bg-gray-100/50 p-2">
+                                <div className="h-32 bg-gray-50 shrink-0 w-full relative overflow-hidden flex items-center justify-center border-b border-gray-100 group-hover:bg-orange-50/50 transition-colors p-2">
                                     {item.foto ? (
-                                        <img src={`/storage/${item.foto}`} alt={item.nama_merchandise} className="w-full h-full object-contain" />
+                                        <img src={`/storage/${item.foto}`} alt={item.tipe_merchandise} className="w-full h-full object-contain" />
                                     ) : (
-                                        <span className="material-symbols-outlined text-gray-300 text-[48px]">inventory_2</span>
+                                        <span className="material-symbols-outlined text-gray-300 text-[48px] group-hover:text-orange-300 transition-colors">image</span>
                                     )}
-                                </div>
-                                <div className="p-4 flex flex-col gap-1 flex-1">
-                                    <div className="flex justify-between items-start gap-2 mb-2">
-                                        <h3 className="font-bold text-sm text-gray-900 leading-tight">{item.nama_merchandise}</h3>
-                                        <span className="bg-gray-100 px-2 py-0.5 text-gray-600 text-[9px] font-mono font-bold uppercase shrink-0 rounded-full">{item.asal_subevent}</span>
+                                    <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm border border-gray-200 text-gray-700 px-2 py-0.5 font-mono text-[8px] font-bold tracking-widest uppercase rounded-full shadow-sm">
+                                        {item.event?.nama_subevent || 'Umum'}
                                     </div>
-                                    <p className="font-mono text-[10px] text-gray-400 uppercase tracking-widest mb-4">{item.sku}</p>
+                                </div>
+                                <div className="p-4 flex flex-col gap-1 flex-1 w-full">
+                                    <h3 className="font-bold text-sm text-gray-900 leading-tight">{item.tipe_merchandise}</h3>
+                                    <p className="font-mono text-[9px] text-gray-400 uppercase tracking-widest mb-2">SKU-0{item.id_merchandise}</p>
+                                    
                                     <div className="mt-auto pt-3 flex justify-between items-end border-t border-gray-100">
-                                        <span className="font-black text-orange-600 text-lg tracking-tighter">Rp {item.harga.toLocaleString('id-ID')}</span>
-                                        <span className={`font-mono text-[10px] font-bold uppercase ${item.stok < 5 ? 'text-red-500' : 'text-gray-400'}`}>QTY: {item.stok}</span>
+                                        <span className="font-black text-orange-600 text-lg tracking-tighter">Rp {Number(item.harga_merchandise).toLocaleString('id-ID')}</span>
+                                        <span className={`font-mono text-[9px] font-bold uppercase ${item.stok < 5 ? 'text-red-500' : 'text-gray-500'}`}>Stock: {item.stok}</span>
                                     </div>
                                 </div>
                             </button>
