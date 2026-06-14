@@ -20,79 +20,83 @@ export default function AdminLayout({ children, title = "Schematics POS", auth }
 
     const getLinkClass = (path) => {
         if (isActive(path)) {
-            return "bg-secondary-container text-on-secondary-container font-bold rounded-lg mx-2 flex items-center gap-4 px-4 py-2 cursor-pointer active:opacity-80";
+            return "bg-orange-500 text-zinc-950 font-bold px-4 py-3 cursor-pointer transition-all flex items-center gap-4 group";
         }
-        return "text-on-surface-variant hover:bg-surface-container-high transition-all mx-2 rounded-lg flex items-center gap-4 px-4 py-2 cursor-pointer active:opacity-80";
+        return "text-zinc-400 hover:text-zinc-50 hover:bg-zinc-900 transition-all px-4 py-3 cursor-pointer flex items-center gap-4 group";
     };
 
     return (
-        <div className="bg-surface text-on-surface h-screen overflow-hidden flex flex-col font-body-md text-[16px]">
+        <div className="bg-zinc-950 text-zinc-50 h-screen overflow-hidden flex flex-col font-sans selection:bg-orange-500/30 selection:text-orange-500">
             <Head>
                 <title>{title}</title>
-                <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
             </Head>
             
             {/* TopNavBar */}
-            <header className="bg-surface border-b border-outline-variant shadow-sm flex justify-between items-center h-16 px-8 w-full flex-shrink-0 relative z-10">
-                <div className="flex items-center gap-3">
-                    <img src="/logo.jpeg" alt="Logo" className="w-8 h-8 rounded-full object-cover shadow-sm" />
-                    <span className="font-headline-md text-[20px] font-bold text-primary">Schematics</span>
+            <header className="bg-zinc-950 border-b border-zinc-900 shadow-sm flex justify-between items-center h-16 px-8 w-full flex-shrink-0 relative z-50">
+                <div className="flex items-center gap-4">
+                    <img src="/logo.jpg" alt="Logo" className="w-8 h-8 rounded-none object-cover shadow-sm grayscale opacity-80 border border-zinc-800" />
+                    <span className="text-[20px] font-black uppercase tracking-widest text-zinc-100">Schematics<span className="text-orange-500">/</span>POS</span>
                 </div>
                 <div className="flex items-center gap-6">
-                    <div className="flex items-center gap-1 text-on-surface-variant font-label-md text-[14px]">
-                        <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>calendar_today</span>
+                    <div className="flex items-center gap-2 text-zinc-500 font-mono text-[10px] uppercase tracking-[0.2em] hidden md:flex">
+                        <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
                         <span>{currentTime}</span>
                     </div>
-                    <div className="h-6 w-px bg-outline-variant"></div>
-                    <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-label-lg text-[14px] font-bold">
+                    <div className="h-6 w-px bg-zinc-800 hidden md:block"></div>
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-zinc-900 border border-zinc-800 text-orange-500 flex items-center justify-center font-mono text-[12px] font-bold uppercase">
                             {auth?.user?.nama_lengkap?.[0] || 'A'}
                         </div>
-                        <span className="font-label-md text-[14px] text-on-surface font-medium">Staff: {auth?.user?.nama_lengkap || 'Admin'}</span>
+                        <span className="font-mono text-[10px] text-zinc-400 uppercase tracking-widest hidden md:block">
+                            Staff_<span className="text-zinc-100">{auth?.user?.nama_lengkap || 'Admin'}</span>
+                        </span>
                     </div>
-                    <button className="text-on-surface-variant hover:bg-surface-container-low transition-colors p-2 rounded-full active:scale-95 duration-100">
-                        <span className="material-symbols-outlined">schedule</span>
-                    </button>
                 </div>
             </header>
 
             {/* Main Content Area */}
-            <div className="flex flex-1 overflow-hidden">
+            <div className="flex flex-1 overflow-hidden relative">
+                {/* Background Grid */}
+                <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)', backgroundSize: '4rem 4rem' }}></div>
                 
                 {/* SideNavBar / Left Menu */}
-                <nav className="bg-surface-container-low border-r border-outline-variant flex flex-col py-6 gap-2 w-64 flex-shrink-0 overflow-y-auto">
-                    <div className="flex-1 flex flex-col gap-1 mt-4">
+                <nav className="bg-zinc-950 border-r border-zinc-900 flex flex-col py-6 w-64 flex-shrink-0 overflow-y-auto relative z-10">
+                    <div className="px-6 mb-6">
+                        <div className="text-[10px] font-mono text-zinc-600 uppercase tracking-[0.2em]">Navigation</div>
+                    </div>
+                    <div className="flex-1 flex flex-col gap-1">
                         <Link href="/dashboard" className={getLinkClass('/dashboard')}>
-                            <span className="material-symbols-outlined" style={isActive('/dashboard') ? { fontVariationSettings: "'FILL' 1" } : {}}>dashboard</span>
-                            <span className="font-label-md text-[14px]">Dashboard</span>
+                            <span className={`material-symbols-outlined text-[20px] ${isActive('/dashboard') ? '' : 'text-zinc-600 group-hover:text-orange-500 transition-colors'}`}>dashboard</span>
+                            <span className="font-mono text-[12px] uppercase tracking-widest">Dashboard</span>
                         </Link>
                         <Link href="/pos" className={getLinkClass('/pos')}>
-                            <span className="material-symbols-outlined" style={isActive('/pos') ? { fontVariationSettings: "'FILL' 1" } : {}}>point_of_sale</span>
-                            <span className="font-label-md text-[14px]">Point of Sale</span>
+                            <span className={`material-symbols-outlined text-[20px] ${isActive('/pos') ? '' : 'text-zinc-600 group-hover:text-orange-500 transition-colors'}`}>point_of_sale</span>
+                            <span className="font-mono text-[12px] uppercase tracking-widest">POS</span>
                         </Link>
                         <Link href="/merchandise" className={getLinkClass('/merchandise')}>
-                            <span className="material-symbols-outlined" style={isActive('/merchandise') ? { fontVariationSettings: "'FILL' 1" } : {}}>inventory_2</span>
-                            <span className="font-label-md text-[14px]">Merchandise</span>
+                            <span className={`material-symbols-outlined text-[20px] ${isActive('/merchandise') ? '' : 'text-zinc-600 group-hover:text-orange-500 transition-colors'}`}>inventory_2</span>
+                            <span className="font-mono text-[12px] uppercase tracking-widest">Merchandise</span>
                         </Link>
                         <Link href="/transactions" className={getLinkClass('/transactions')}>
-                            <span className="material-symbols-outlined" style={isActive('/transactions') ? { fontVariationSettings: "'FILL' 1" } : {}}>receipt_long</span>
-                            <span className="font-label-md text-[14px]">Transaction History</span>
+                            <span className={`material-symbols-outlined text-[20px] ${isActive('/transactions') ? '' : 'text-zinc-600 group-hover:text-orange-500 transition-colors'}`}>receipt_long</span>
+                            <span className="font-mono text-[12px] uppercase tracking-widest">Transactions</span>
                         </Link>
                         <Link href="/seminar" className={getLinkClass('/seminar')}>
-                            <span className="material-symbols-outlined" style={isActive('/seminar') ? { fontVariationSettings: "'FILL' 1" } : {}}>group</span>
-                            <span className="font-label-md text-[14px]">Peserta Seminar</span>
+                            <span className={`material-symbols-outlined text-[20px] ${isActive('/seminar') ? '' : 'text-zinc-600 group-hover:text-orange-500 transition-colors'}`}>group</span>
+                            <span className="font-mono text-[12px] uppercase tracking-widest">Seminar</span>
                         </Link>
                     </div>
-                    <div className="mt-auto border-t border-outline-variant pt-2 flex flex-col gap-1">
-                        <Link href="/staff/logout" method="post" as="button" className="text-error hover:bg-error-container hover:text-on-error-container transition-all mx-2 rounded-lg flex items-center gap-4 px-4 py-2 cursor-pointer active:opacity-80">
-                            <span className="material-symbols-outlined">logout</span>
-                            <span className="font-label-md text-[14px] font-bold">Logout</span>
+                    
+                    <div className="mt-auto pt-6 px-4">
+                        <Link href="/staff/logout" method="post" as="button" className="w-full border border-zinc-800 hover:border-red-500 hover:bg-red-500/10 text-zinc-400 hover:text-red-500 transition-all flex items-center gap-4 px-4 py-3 group">
+                            <span className="material-symbols-outlined text-[20px]">logout</span>
+                            <span className="font-mono text-[12px] uppercase tracking-widest font-bold">Logout</span>
                         </Link>
                     </div>
                 </nav>
 
                 {/* Main Viewport */}
-                <main className="flex-1 flex flex-col min-w-0 bg-surface" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/always-grey.png')" }}>
+                <main className="flex-1 flex flex-col min-w-0 bg-zinc-950/50 backdrop-blur-3xl relative z-10 overflow-y-auto overflow-x-hidden p-6 md:p-8">
                     {children}
                 </main>
             </div>

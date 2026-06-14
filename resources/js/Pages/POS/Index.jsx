@@ -89,7 +89,6 @@ export default function POSIndex({ auth, merchandises = [] }) {
     };
 
     const total = cart.reduce((sum, item) => sum + (item.harga * item.qty), 0);
-    const kembalian = Number(uangDiberikan) - total;
 
     const handleCheckout = () => {
         if (!namaPembeli) {
@@ -133,7 +132,10 @@ export default function POSIndex({ auth, merchandises = [] }) {
                     title: 'Berhasil!',
                     text: 'Transaksi berhasil diproses.',
                     icon: 'success',
-                    confirmButtonText: 'OK'
+                    confirmButtonText: 'OK',
+                    background: '#09090b',
+                    color: '#fafafa',
+                    confirmButtonColor: '#f97316'
                 }).then(() => {
                     setCart([]);
                     setNamaPembeli('');
@@ -147,68 +149,89 @@ export default function POSIndex({ auth, merchandises = [] }) {
                 });
             })
             .catch(err => {
-                Swal.fire('Error', err.response?.data?.message || 'Terjadi kesalahan saat checkout.', 'error');
+                Swal.fire({
+                    title: 'Error',
+                    text: err.response?.data?.message || 'Terjadi kesalahan saat checkout.',
+                    icon: 'error',
+                    background: '#09090b',
+                    color: '#fafafa'
+                });
             });
     };
 
     return (
-        <AdminLayout title="Schematics POS - Point of Sale" auth={auth}>
-            <div className="flex flex-1 w-full h-full overflow-hidden">
+        <AdminLayout title="Schematics POS - Terminal" auth={auth}>
+            <div className="flex flex-1 w-full h-full overflow-hidden border border-zinc-900 bg-zinc-950">
                 {/* Product Panel (2/3) */}
-                <main className="flex-1 flex flex-col min-w-0 bg-surface" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/always-grey.png')" }}>
+                <main className="flex-1 flex flex-col min-w-0 bg-zinc-950/50 relative">
+                    {/* Background Grid */}
+                    <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.02]" style={{ backgroundImage: 'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)', backgroundSize: '4rem 4rem' }}></div>
+                    
                     {/* Search & Filters */}
-                    <div className="p-6 pb-2 bg-surface/90 backdrop-blur-sm border-b border-outline-variant sticky top-0 z-10">
-                        <div className="flex items-center gap-4 mb-4">
+                    <div className="p-6 pb-4 border-b border-zinc-900 relative z-10 flex flex-col gap-4">
+                        <div className="flex justify-between items-end">
+                            <div>
+                                <div className="text-orange-500 font-mono text-[10px] uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
+                                    <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse"></span>
+                                    Point of Sale
+                                </div>
+                                <h1 className="text-2xl font-black uppercase tracking-tighter text-zinc-100">Terminal_01</h1>
+                            </div>
+                            <button className="bg-zinc-900 border border-zinc-800 p-3 text-zinc-400 hover:text-orange-500 hover:border-orange-500 transition-colors">
+                                <span className="material-symbols-outlined text-[24px]">barcode_scanner</span>
+                            </button>
+                        </div>
+
+                        <div className="flex items-center gap-4">
                             <div className="relative flex-1">
-                                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+                                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-zinc-600">search</span>
                                 <input 
-                                    className="w-full pl-12 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-full font-body-md text-[16px] focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline" 
-                                    placeholder="Cari nama produk atau SKU..." 
+                                    className="w-full pl-12 pr-4 py-3 bg-zinc-900/50 border border-zinc-800 rounded-none font-mono text-sm text-zinc-100 focus:border-orange-500 outline-none transition-all placeholder:text-zinc-700" 
+                                    placeholder="SEARCH DATABASE..." 
                                     type="text" 
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
                             </div>
-                            <button className="bg-surface-container border border-outline-variant rounded-full p-2 text-on-surface-variant hover:bg-surface-variant transition-colors">
-                                <span className="material-symbols-outlined">barcode_scanner</span>
-                            </button>
                         </div>
-                        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-                            <button onClick={() => setActiveFilter('Semua')} className={`px-4 py-1 rounded-full font-label-md text-[14px] font-medium flex-shrink-0 transition-colors ${activeFilter === 'Semua' ? 'bg-primary text-on-primary' : 'bg-surface-container-lowest border border-outline-variant text-on-surface-variant hover:bg-surface-container'}`}>Semua</button>
-                            <button onClick={() => setActiveFilter('BST')} className={`px-4 py-1 rounded-full font-label-md text-[14px] font-medium flex-shrink-0 transition-colors ${activeFilter === 'BST' ? 'bg-primary text-on-primary' : 'bg-surface-container-lowest border border-outline-variant text-on-surface-variant hover:bg-surface-container'}`}>BST</button>
-                            <button onClick={() => setActiveFilter('NPC')} className={`px-4 py-1 rounded-full font-label-md text-[14px] font-medium flex-shrink-0 transition-colors ${activeFilter === 'NPC' ? 'bg-primary text-on-primary' : 'bg-surface-container-lowest border border-outline-variant text-on-surface-variant hover:bg-surface-container'}`}>NPC</button>
-                            <button onClick={() => setActiveFilter('NLC')} className={`px-4 py-1 rounded-full font-label-md text-[14px] font-medium flex-shrink-0 transition-colors ${activeFilter === 'NLC' ? 'bg-primary text-on-primary' : 'bg-surface-container-lowest border border-outline-variant text-on-surface-variant hover:bg-surface-container'}`}>NLC</button>
+
+                        <div className="flex gap-2 overflow-x-auto no-scrollbar pt-2 border-t border-zinc-900">
+                            {['Semua', 'BST', 'NPC', 'NLC'].map(filter => (
+                                <button key={filter} onClick={() => setActiveFilter(filter)} className={`px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-widest flex-shrink-0 transition-colors border ${activeFilter === filter ? 'bg-orange-500 text-zinc-950 border-orange-500' : 'bg-zinc-900 border-zinc-800 text-zinc-500 hover:text-zinc-100 hover:border-zinc-700'}`}>{filter}</button>
+                            ))}
                         </div>
                     </div>
 
                     {/* Product Grid */}
-                    <div className="flex-1 overflow-y-auto p-6 grid grid-cols-2 xl:grid-cols-3 gap-4 content-start">
+                    <div className="flex-1 overflow-y-auto p-6 grid grid-cols-2 lg:grid-cols-3 gap-4 content-start relative z-10">
                         {displayItems.map(item => (
                             <button 
                                 key={item.id} 
                                 onClick={() => addToCart(item)}
                                 disabled={item.stok === 0}
-                                className={`bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden flex flex-col text-left relative transition-all ${item.stok === 0 ? 'opacity-55 cursor-not-allowed' : 'hover:shadow-md active:scale-[0.98] cursor-pointer group'}`}
+                                className={`bg-zinc-900/30 border rounded-none overflow-hidden flex flex-col text-left relative transition-all ${item.stok === 0 ? 'opacity-40 border-zinc-900 cursor-not-allowed' : 'border-zinc-800 hover:border-orange-500 hover:bg-zinc-900/80 active:scale-[0.98] group'}`}
                             >
+                                {/* Decals */}
+                                <div className="absolute top-0 right-0 w-2 h-2 border-b border-l border-zinc-700 group-hover:border-orange-500 z-10 transition-colors"></div>
+                                
                                 {item.stok === 0 ? (
-                                    <div className="absolute top-2 left-2 z-10 bg-outline text-surface-container-lowest px-2 py-0.5 rounded text-[10px] font-bold shadow-sm">HABIS</div>
+                                    <div className="absolute top-3 left-3 z-10 bg-zinc-950 border border-zinc-800 text-zinc-500 px-2 py-1 font-mono text-[10px] font-bold tracking-widest uppercase">DEPLETED</div>
                                 ) : item.stok < 5 ? (
-                                    <div className="absolute top-2 left-2 z-10 bg-error text-on-error px-1 py-0.5 rounded text-[10px] font-bold shadow-sm">SISA {item.stok}</div>
+                                    <div className="absolute top-3 left-3 z-10 bg-red-500/10 border border-red-500 text-red-500 px-2 py-1 font-mono text-[10px] font-bold tracking-widest uppercase animate-pulse">LOW: {item.stok}</div>
                                 ) : null}
-                                <div className="h-40 bg-surface-container w-full relative overflow-hidden flex items-center justify-center">
-                                    <div className="w-full h-full bg-surface-variant flex items-center justify-center group-hover:bg-surface-dim transition-colors">
-                                        <span className="material-symbols-outlined text-outline text-4xl">inventory_2</span>
-                                    </div>
+                                
+                                <div className="h-32 bg-zinc-950 w-full relative overflow-hidden flex items-center justify-center border-b border-zinc-800">
+                                    <span className="material-symbols-outlined text-zinc-800 text-[48px] group-hover:text-zinc-700 transition-colors">inventory_2</span>
                                 </div>
-                                <div className="p-2 flex flex-col gap-1 flex-1">
-                                    <div className="flex justify-between items-start gap-1">
-                                        <h3 className="font-label-md text-[14px] font-bold text-on-surface line-clamp-2 leading-tight">{item.nama_merchandise}</h3>
-                                        <span className="bg-surface-container-high px-1 py-0.5 rounded text-on-surface-variant text-[10px] font-bold leading-none shrink-0 mt-1">{item.asal_subevent}</span>
+                                <div className="p-4 flex flex-col gap-1 flex-1">
+                                    <div className="flex justify-between items-start gap-2 mb-2">
+                                        <h3 className="font-bold text-sm text-zinc-100 leading-tight">{item.nama_merchandise}</h3>
+                                        <span className="bg-zinc-800 px-1.5 py-0.5 text-zinc-400 text-[9px] font-mono font-bold uppercase shrink-0">{item.asal_subevent}</span>
                                     </div>
-                                    <p className="font-data-mono text-[12px] text-on-surface-variant">SKU: {item.sku || `SKU-0${item.id}`}</p>
-                                    <div className="mt-auto pt-2 flex justify-between items-end">
-                                        <span className="font-label-lg text-[16px] font-bold text-primary">Rp {item.harga.toLocaleString('id-ID')}</span>
-                                        <span className={`font-label-md text-[14px] font-medium ${item.stok < 5 ? 'text-error font-bold' : 'text-on-surface-variant'}`}>Stok: {item.stok}</span>
+                                    <p className="font-mono text-[10px] text-zinc-600 uppercase tracking-widest mb-4">{item.sku || `SKU-0${item.id}`}</p>
+                                    <div className="mt-auto pt-3 flex justify-between items-end border-t border-zinc-800/50">
+                                        <span className="font-black text-orange-500 text-lg tracking-tighter">Rp {item.harga.toLocaleString('id-ID')}</span>
+                                        <span className={`font-mono text-[10px] font-bold uppercase ${item.stok < 5 ? 'text-red-500' : 'text-zinc-500'}`}>QTY: {item.stok}</span>
                                     </div>
                                 </div>
                             </button>
@@ -217,46 +240,49 @@ export default function POSIndex({ auth, merchandises = [] }) {
                 </main>
 
                 {/* Right Panel: Cart & Checkout (1/3) */}
-                <aside className="w-[380px] bg-surface-container-lowest border-l border-outline-variant flex flex-col flex-shrink-0 z-20 shadow-[-4px_0_15px_-5px_rgba(0,0,0,0.05)] relative">
+                <aside className="w-[400px] bg-zinc-950 border-l border-zinc-900 flex flex-col flex-shrink-0 relative z-20">
                     {/* Cart Header */}
-                    <div className="p-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-lowest">
-                        <h2 className="text-[20px] font-bold text-on-surface flex items-center gap-2">
-                            <span className="material-symbols-outlined">shopping_cart</span>
-                            Keranjang
+                    <div className="p-6 border-b border-zinc-900 flex justify-between items-center bg-zinc-950">
+                        <h2 className="text-xl font-black uppercase tracking-tight text-zinc-100 flex items-center gap-2">
+                            <span className="material-symbols-outlined text-orange-500">shopping_cart</span>
+                            Cart
                         </h2>
-                        <button onClick={() => setCart([])} className="text-error font-label-md text-[14px] font-medium hover:bg-error-container p-1 rounded transition-colors flex items-center gap-1">
-                            <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>delete</span>
-                            Kosongkan
+                        <button onClick={() => setCart([])} className="text-zinc-500 font-mono text-[10px] uppercase tracking-widest font-bold hover:text-red-500 transition-colors flex items-center gap-1 border border-zinc-800 hover:border-red-500/50 bg-zinc-900 px-2 py-1">
+                            <span className="material-symbols-outlined text-[14px]">delete</span>
+                            Clear
                         </button>
                     </div>
 
                     {/* Cart Items List */}
-                    <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-2 bg-background">
+                    <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-3 bg-zinc-950/50">
                         {cart.length === 0 ? (
-                            <div className="flex-1 flex items-center justify-center text-outline font-medium text-[14px]">Keranjang kosong</div>
+                            <div className="flex-1 flex flex-col items-center justify-center text-zinc-600 opacity-50">
+                                <span className="material-symbols-outlined text-[48px] mb-2">shopping_basket</span>
+                                <span className="font-mono text-xs uppercase tracking-widest">Cart is empty</span>
+                            </div>
                         ) : (
                             cart.map(item => (
-                                <div key={item.id} className="bg-surface-container-lowest border border-outline-variant p-2 rounded-lg flex flex-col gap-2">
+                                <div key={item.id} className="bg-zinc-900/50 border border-zinc-800 p-4 flex flex-col gap-3 relative group hover:border-orange-500/50 transition-colors">
                                     <div className="flex justify-between items-start">
-                                        <div>
-                                            <h4 className="font-label-md text-[14px] font-bold text-on-surface leading-tight">{item.nama_merchandise}</h4>
-                                            <p className="text-[14px] font-bold text-primary mt-1">Rp {item.harga.toLocaleString('id-ID')}</p>
+                                        <div className="pr-6">
+                                            <h4 className="font-bold text-sm text-zinc-100 leading-tight mb-1">{item.nama_merchandise}</h4>
+                                            <p className="text-xs font-mono text-zinc-500">Rp {item.harga.toLocaleString('id-ID')}</p>
                                         </div>
-                                        <button onClick={() => removeFromCart(item.id)} className="text-on-surface-variant hover:text-error transition-colors p-1">
-                                            <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>close</span>
+                                        <button onClick={() => removeFromCart(item.id)} className="absolute top-4 right-4 text-zinc-600 hover:text-red-500 transition-colors">
+                                            <span className="material-symbols-outlined text-[18px]">close</span>
                                         </button>
                                     </div>
-                                    <div className="flex justify-between items-center mt-1">
-                                        <div className="flex items-center border border-outline-variant rounded bg-surface-container-lowest">
-                                            <button onClick={() => updateQty(item.id, -1)} className="w-8 h-8 flex items-center justify-center text-on-surface hover:bg-surface-container transition-colors rounded-l active:bg-surface-variant">
-                                                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>remove</span>
+                                    <div className="flex justify-between items-center pt-3 border-t border-zinc-800">
+                                        <div className="flex items-center border border-zinc-700 bg-zinc-950">
+                                            <button onClick={() => updateQty(item.id, -1)} className="w-8 h-8 flex items-center justify-center text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-colors">
+                                                <span className="material-symbols-outlined text-[16px]">remove</span>
                                             </button>
-                                            <input readOnly className="w-10 h-8 text-center border-x border-outline-variant border-y-0 p-0 font-data-mono text-[14px] font-bold bg-transparent focus:ring-0" type="text" value={item.qty} />
-                                            <button onClick={() => updateQty(item.id, 1)} className="w-8 h-8 flex items-center justify-center text-on-surface hover:bg-surface-container transition-colors rounded-r active:bg-surface-variant">
-                                                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>add</span>
+                                            <input readOnly className="w-8 h-8 text-center border-x border-zinc-700 border-y-0 p-0 font-mono text-xs font-bold bg-transparent text-zinc-100 focus:ring-0" type="text" value={item.qty} />
+                                            <button onClick={() => updateQty(item.id, 1)} className="w-8 h-8 flex items-center justify-center text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-colors">
+                                                <span className="material-symbols-outlined text-[16px]">add</span>
                                             </button>
                                         </div>
-                                        <span className="text-[14px] font-bold text-on-surface">Rp {(item.harga * item.qty).toLocaleString('id-ID')}</span>
+                                        <span className="text-sm font-black text-orange-500 tracking-tighter">Rp {(item.harga * item.qty).toLocaleString('id-ID')}</span>
                                     </div>
                                 </div>
                             ))
@@ -264,77 +290,69 @@ export default function POSIndex({ auth, merchandises = [] }) {
                     </div>
 
                     {/* Customer & Payment Form */}
-                    <div className="border-t border-outline-variant bg-surface-container-lowest flex flex-col">
-                        <div className="p-4 flex flex-col gap-4 max-h-[400px] overflow-y-auto no-scrollbar">
-                            {/* Customer Details */}
+                    <div className="border-t border-zinc-900 bg-zinc-950 flex flex-col">
+                        <div className="p-6 flex flex-col gap-6 max-h-[350px] overflow-y-auto no-scrollbar">
+                            
                             <div className="flex flex-col gap-2">
-                                <label className="font-label-md text-[14px] font-bold text-on-surface">Nama Pembeli <span className="text-error">*</span></label>
-                                <input value={namaPembeli} onChange={e => setNamaPembeli(e.target.value)} className="w-full px-4 py-2 bg-surface border border-outline-variant rounded focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline" placeholder="Masukkan nama" required type="text" />
+                                <label className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">Customer Name <span className="text-orange-500">*</span></label>
+                                <input value={namaPembeli} onChange={e => setNamaPembeli(e.target.value)} className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 font-mono text-sm focus:border-orange-500 outline-none transition-all placeholder:text-zinc-700 text-zinc-100" placeholder="Enter name..." required type="text" />
                             </div>
 
-                            {/* Seminar Toggle */}
-                            <div className="bg-surface-container-low border border-outline-variant rounded-lg p-2">
+                            <div className="bg-zinc-900/50 border border-zinc-800 p-4">
                                 <label className="flex items-center justify-between cursor-pointer">
-                                    <span className="font-label-md text-[14px] font-bold text-on-surface">Daftar Seminar BST?</span>
+                                    <span className="font-mono text-xs font-bold uppercase text-zinc-300">Register Seminar?</span>
                                     <div className="relative">
                                         <input className="sr-only peer" type="checkbox" checked={isSeminar} onChange={(e) => setIsSeminar(e.target.checked)} />
-                                        <div className="w-11 h-6 bg-outline-variant rounded-full peer peer-checked:bg-primary transition-colors"></div>
-                                        <div className="absolute left-1 top-1 w-4 h-4 bg-surface-container-lowest rounded-full transition-transform peer-checked:translate-x-5"></div>
+                                        <div className="w-10 h-5 bg-zinc-800 border border-zinc-700 peer-checked:bg-orange-500 transition-colors"></div>
+                                        <div className="absolute left-1 top-1 w-3 h-3 bg-zinc-500 peer-checked:bg-zinc-950 transition-transform peer-checked:translate-x-5"></div>
                                     </div>
                                 </label>
                                 {isSeminar && (
-                                    <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-outline-variant">
+                                    <div className="flex flex-col gap-4 mt-4 pt-4 border-t border-zinc-800">
                                         <div>
-                                            <label className="font-label-md text-[14px] font-medium text-on-surface-variant mb-1 block">Email</label>
-                                            <input value={email} onChange={e => setEmail(e.target.value)} className="w-full px-4 py-2 bg-surface border border-outline-variant rounded focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline" placeholder="email@contoh.com" type="email" />
+                                            <label className="font-mono text-[10px] uppercase tracking-widest text-zinc-500 mb-2 block">Email Address</label>
+                                            <input value={email} onChange={e => setEmail(e.target.value)} className="w-full px-4 py-3 bg-zinc-950 border border-zinc-800 font-mono text-sm focus:border-orange-500 outline-none transition-all placeholder:text-zinc-700 text-zinc-100" placeholder="user@domain.com" type="email" />
                                         </div>
                                         <div>
-                                            <label className="font-label-md text-[14px] font-medium text-on-surface-variant mb-1 block">No. HP</label>
-                                            <input value={nomorTelepon} onChange={e => setNomorTelepon(e.target.value)} className="w-full px-4 py-2 bg-surface border border-outline-variant rounded focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline" placeholder="08..." type="tel" />
+                                            <label className="font-mono text-[10px] uppercase tracking-widest text-zinc-500 mb-2 block">Phone Number</label>
+                                            <input value={nomorTelepon} onChange={e => setNomorTelepon(e.target.value)} className="w-full px-4 py-3 bg-zinc-950 border border-zinc-800 font-mono text-sm focus:border-orange-500 outline-none transition-all placeholder:text-zinc-700 text-zinc-100" placeholder="08..." type="tel" />
                                         </div>
                                     </div>
                                 )}
                             </div>
 
-                            {/* Payment Method */}
                             <div className="flex flex-col gap-2">
-                                <label className="font-label-md text-[14px] font-bold text-on-surface">Metode Pembayaran</label>
+                                <label className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">Payment Gateway</label>
                                 <div className="grid grid-cols-3 gap-2">
-                                    <label className="cursor-pointer">
-                                        <input checked={metodePembayaran === 3} onChange={() => setMetodePembayaran(3)} className="sr-only peer" name="payment" type="radio" value="3" />
-                                        <div className="border border-outline-variant rounded-lg p-2 text-center font-label-md text-[14px] font-medium peer-checked:border-primary peer-checked:bg-primary-container peer-checked:text-on-primary-container hover:bg-surface-container transition-all">
-                                            Tunai
-                                        </div>
-                                    </label>
-                                    <label className="cursor-pointer">
-                                        <input checked={metodePembayaran === 2} onChange={() => setMetodePembayaran(2)} className="sr-only peer" name="payment" type="radio" value="2" />
-                                        <div className="border border-outline-variant rounded-lg p-2 text-center font-label-md text-[14px] font-medium peer-checked:border-primary peer-checked:bg-primary-container peer-checked:text-on-primary-container hover:bg-surface-container transition-all">
-                                            QRIS
-                                        </div>
-                                    </label>
-                                    <label className="cursor-pointer">
-                                        <input checked={metodePembayaran === 1} onChange={() => setMetodePembayaran(1)} className="sr-only peer" name="payment" type="radio" value="1" />
-                                        <div className="border border-outline-variant rounded-lg p-2 text-center font-label-md text-[14px] font-medium peer-checked:border-primary peer-checked:bg-primary-container peer-checked:text-on-primary-container hover:bg-surface-container transition-all">
-                                            Transfer
-                                        </div>
-                                    </label>
+                                    {[
+                                        { id: 3, label: 'CASH' },
+                                        { id: 2, label: 'QRIS' },
+                                        { id: 1, label: 'TRF' }
+                                    ].map(method => (
+                                        <label key={method.id} className="cursor-pointer">
+                                            <input checked={metodePembayaran === method.id} onChange={() => setMetodePembayaran(method.id)} className="sr-only peer" name="payment" type="radio" value={method.id} />
+                                            <div className="border border-zinc-800 bg-zinc-900 py-3 text-center font-mono text-[10px] font-bold uppercase tracking-widest text-zinc-500 peer-checked:border-orange-500 peer-checked:bg-orange-500 peer-checked:text-zinc-950 transition-all hover:bg-zinc-800">
+                                                {method.label}
+                                            </div>
+                                        </label>
+                                    ))}
                                 </div>
                             </div>
                         </div>
 
                         {/* Summary & Action */}
-                        <div className="p-4 bg-surface-container-low border-t border-outline-variant flex flex-col gap-4">
-                            <div className="flex justify-between items-center font-label-md text-[14px] text-on-surface-variant">
-                                <span>Total Item</span>
-                                <span className="font-bold">{cart.reduce((s, c) => s + c.qty, 0)} Item</span>
+                        <div className="p-6 bg-zinc-950 border-t border-zinc-800 flex flex-col gap-4">
+                            <div className="flex justify-between items-center font-mono text-[10px] uppercase tracking-widest text-zinc-500">
+                                <span>Items in Cart</span>
+                                <span className="font-bold text-zinc-300">[{cart.reduce((s, c) => s + c.qty, 0)}]</span>
                             </div>
-                            <div className="flex justify-between items-end border-b border-outline-variant pb-2">
-                                <span className="font-headline-md text-[16px] font-bold text-on-surface">Grand Total</span>
-                                <span className="text-[20px] font-bold text-primary tracking-tight">Rp {total.toLocaleString('id-ID')}</span>
+                            <div className="flex justify-between items-end border-b border-zinc-800 pb-4">
+                                <span className="font-bold text-zinc-100 uppercase tracking-tighter">Total</span>
+                                <span className="text-3xl font-black text-orange-500 tracking-tighter">Rp {total.toLocaleString('id-ID')}</span>
                             </div>
-                            <button onClick={handleCheckout} disabled={cart.length === 0} className="w-full bg-primary text-on-primary py-4 rounded-lg font-headline-md text-[20px] font-bold hover:bg-primary/90 active:scale-[0.98] transition-all shadow-md flex items-center justify-center gap-2 mt-2 disabled:opacity-50 disabled:cursor-not-allowed">
-                                Proses Pembayaran
-                                <span className="material-symbols-outlined">arrow_forward</span>
+                            <button onClick={handleCheckout} disabled={cart.length === 0} className="w-full bg-orange-500 text-zinc-950 py-4 font-black uppercase tracking-[0.2em] text-sm hover:bg-orange-400 active:scale-[0.98] transition-all flex items-center justify-center gap-3 mt-2 disabled:opacity-50 disabled:cursor-not-allowed group">
+                                Process Transact
+                                <span className="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
                             </button>
                         </div>
                     </div>
@@ -344,75 +362,79 @@ export default function POSIndex({ auth, merchandises = [] }) {
                 {showCheckoutModal && (
                     <div 
                         onClick={() => setShowCheckoutModal(false)}
-                        className="fixed inset-0 left-0 top-0 w-full h-full z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in"
+                        className="fixed inset-0 left-0 top-0 w-full h-full z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-fade-in"
                     >
                         <div 
                             onClick={(e) => e.stopPropagation()}
-                            className="w-[400px] max-w-[90vw] bg-surface-container-lowest border border-outline-variant p-6 rounded-2xl shadow-xl flex flex-col gap-6 relative text-on-surface"
+                            className="w-[450px] max-w-[90vw] bg-zinc-950 border border-zinc-800 p-8 shadow-2xl flex flex-col gap-8 relative"
                         >
-                            <h3 className="text-xl font-bold text-on-surface">Konfirmasi Pembayaran</h3>
+                            {/* Deco */}
+                            <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-orange-500"></div>
+                            <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-orange-500"></div>
+
+                            <h3 className="text-2xl font-black uppercase tracking-tighter text-zinc-100">Confirm Payment</h3>
                             
-                            <div className="flex flex-col gap-4">
-                                <div className="flex justify-between items-center text-sm text-on-surface-variant pb-2 border-b border-outline-variant">
-                                    <span>Metode Pembayaran</span>
-                                    <span className="font-bold uppercase bg-surface-container px-2 py-0.5 rounded text-xs text-primary">
-                                        {metodePembayaran === 3 ? 'Tunai' : metodePembayaran === 2 ? 'QRIS' : 'Transfer'}
+                            <div className="flex flex-col gap-6">
+                                <div className="flex justify-between items-center pb-4 border-b border-zinc-900">
+                                    <span className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">Payment Gateway</span>
+                                    <span className="font-mono font-bold uppercase border border-orange-500 bg-orange-500/10 px-3 py-1 text-xs text-orange-500 tracking-widest">
+                                        {metodePembayaran === 3 ? 'CASH' : metodePembayaran === 2 ? 'QRIS' : 'TRANSFER'}
                                     </span>
                                 </div>
                                 
-                                <div className="flex justify-between items-end">
-                                    <span className="text-sm text-on-surface-variant">Grand Total</span>
-                                    <span className="text-2xl font-black text-primary">Rp {total.toLocaleString('id-ID')}</span>
+                                <div className="flex justify-between items-end pb-4 border-b border-zinc-900">
+                                    <span className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">Grand Total</span>
+                                    <span className="text-3xl font-black text-orange-500 tracking-tighter">Rp {total.toLocaleString('id-ID')}</span>
                                 </div>
 
                                 {metodePembayaran === 3 ? (
-                                    <div className="flex flex-col gap-2 mt-2">
-                                        <label className="text-sm font-bold text-on-surface">Uang Diberikan</label>
+                                    <div className="flex flex-col gap-3 mt-2">
+                                        <label className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">Cash Given</label>
                                         <div className="flex items-center">
-                                            <span className="bg-surface-container border border-outline-variant border-r-0 px-3 py-2 rounded-l font-bold text-on-surface-variant">Rp</span>
+                                            <span className="bg-zinc-900 border border-zinc-800 border-r-0 px-4 py-3 font-mono font-bold text-zinc-500">Rp</span>
                                             <input 
                                                 value={uangDiberikanModal} 
                                                 onChange={e => setUangDiberikanModal(e.target.value)} 
                                                 type="number" 
                                                 min="0" 
-                                                className="w-full px-4 py-2 bg-surface border border-outline-variant rounded-r focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline font-data-mono font-bold text-[16px] text-on-surface" 
+                                                className="w-full px-4 py-3 bg-zinc-950 border border-zinc-800 focus:border-orange-500 outline-none transition-all placeholder:text-zinc-800 font-mono font-bold text-lg text-zinc-100" 
                                                 placeholder="0" 
                                                 autoFocus
                                             />
                                         </div>
                                         
-                                        <div className="flex justify-between items-end mt-2 pt-2 border-t border-outline-variant">
-                                            <span className="text-sm text-on-surface-variant">Kembalian</span>
+                                        <div className="flex justify-between items-end mt-4 pt-4 border-t border-zinc-900">
+                                            <span className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">Change</span>
                                             {(() => {
                                                 const modalKembalian = Number(uangDiberikanModal) - total;
                                                 return (
-                                                    <span className={`text-xl font-bold ${modalKembalian < 0 ? 'text-error' : 'text-primary'}`}>
-                                                        {modalKembalian < 0 ? 'Kurang ' : ''}Rp {Math.abs(modalKembalian).toLocaleString('id-ID')}
+                                                    <span className={`text-xl font-black tracking-tighter ${modalKembalian < 0 ? 'text-red-500' : 'text-zinc-100'}`}>
+                                                        {modalKembalian < 0 ? 'Insufficient ' : ''}Rp {Math.abs(modalKembalian).toLocaleString('id-ID')}
                                                     </span>
                                                 );
                                             })()}
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="bg-surface-container-low p-3 rounded-lg border border-outline-variant text-sm text-on-surface-variant">
-                                        Pembayaran menggunakan {metodePembayaran === 2 ? 'QRIS' : 'Transfer Bank'}. Pastikan dana sudah diterima sebelum konfirmasi.
+                                    <div className="bg-zinc-900/50 p-4 border border-zinc-800 text-xs font-mono text-zinc-400 uppercase tracking-widest leading-loose">
+                                        Processing via {metodePembayaran === 2 ? 'QRIS' : 'Bank Transfer'}. Please verify gateway receipt before confirming.
                                     </div>
                                 )}
                             </div>
 
-                            <div className="flex justify-end gap-3 mt-4">
+                            <div className="flex justify-end gap-4 mt-4 pt-6 border-t border-zinc-900">
                                 <button 
                                     onClick={() => setShowCheckoutModal(false)} 
-                                    className="px-4 py-2 border border-outline-variant rounded-lg font-medium text-sm text-on-surface-variant hover:bg-surface-container transition-colors cursor-pointer"
+                                    className="px-6 py-3 border border-zinc-800 font-mono text-[10px] font-bold uppercase tracking-widest text-zinc-400 hover:bg-zinc-900 hover:text-zinc-100 transition-colors"
                                 >
-                                    Batal
+                                    Cancel
                                 </button>
                                 <button 
                                     onClick={confirmCheckout} 
                                     disabled={metodePembayaran === 3 && Number(uangDiberikanModal) < total}
-                                    className="px-5 py-2 bg-primary text-on-primary rounded-lg font-bold text-sm hover:bg-primary/90 transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                                    className="px-6 py-3 bg-orange-500 text-zinc-950 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-orange-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    Konfirmasi & Bayar
+                                    Confirm
                                 </button>
                             </div>
                         </div>

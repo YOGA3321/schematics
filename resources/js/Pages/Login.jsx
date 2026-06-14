@@ -116,7 +116,7 @@ export default function Login() {
                     </form>
 
                     <div className="mt-8 pt-8 border-t border-zinc-900 text-center">
-                        <p className="text-zinc-600 text-[10px] font-mono tracking-widest uppercase">System version 4.2.0.27</p>
+                        <p className="text-zinc-600 text-[10px] font-mono tracking-widest uppercase">System version 1.24.0</p>
                     </div>
                 </div>
             </div>

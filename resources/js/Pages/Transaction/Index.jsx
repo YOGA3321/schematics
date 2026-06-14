@@ -19,71 +19,75 @@ export default function Index({ transactions, filters = {}, auth }) {
 
     return (
         <AdminLayout title="Transaction History" auth={auth}>
-            <div className="p-8 flex flex-col gap-8 h-full overflow-y-auto">
-                <div className="flex justify-between items-end">
+            <div className="flex flex-col gap-10 max-w-7xl mx-auto w-full">
+                
+                <div className="flex justify-between items-end border-b border-zinc-900 pb-6">
                     <div>
-                        <h1 className="text-[32px] font-bold text-on-surface tracking-tight">Transaction History</h1>
-                        <p className="text-on-surface-variant mt-2 font-label-md text-[14px]">View all past transactions.</p>
+                        <div className="text-orange-500 font-mono text-[10px] uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse"></span>
+                            Ledger
+                        </div>
+                        <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-zinc-100">Transaction History</h1>
                     </div>
                     
                     <div className="flex gap-4 items-end">
-                        <div className="flex flex-col gap-1">
-                            <label className="text-[12px] font-bold text-on-surface-variant">Tanggal Awal</label>
+                        <div className="flex flex-col gap-2">
+                            <label className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">Start Date</label>
                             <input 
                                 type="date" 
                                 value={startDate} 
                                 onChange={e => setStartDate(e.target.value)}
-                                className="bg-surface-container border border-outline-variant rounded-lg px-3 py-2 text-[14px] text-on-surface outline-none focus:border-primary"
+                                className="bg-zinc-900/50 border border-zinc-800 rounded-none px-4 py-2 font-mono text-sm text-zinc-300 outline-none focus:border-orange-500 transition-colors"
                             />
                         </div>
-                        <div className="flex flex-col gap-1">
-                            <label className="text-[12px] font-bold text-on-surface-variant">Tanggal Akhir</label>
+                        <div className="flex flex-col gap-2">
+                            <label className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">End Date</label>
                             <input 
                                 type="date" 
                                 value={endDate} 
                                 onChange={e => setEndDate(e.target.value)}
-                                className="bg-surface-container border border-outline-variant rounded-lg px-3 py-2 text-[14px] text-on-surface outline-none focus:border-primary"
+                                className="bg-zinc-900/50 border border-zinc-800 rounded-none px-4 py-2 font-mono text-sm text-zinc-300 outline-none focus:border-orange-500 transition-colors"
                             />
                         </div>
-                        <button onClick={applyFilter} className="bg-surface-variant text-on-surface hover:bg-surface-container-high px-4 py-2 rounded-lg font-bold text-[14px] transition-colors">
+                        <button onClick={applyFilter} className="bg-zinc-800 text-zinc-300 hover:text-zinc-100 hover:bg-zinc-700 border border-zinc-700 px-6 py-2 rounded-none font-mono text-sm font-bold uppercase tracking-widest transition-colors h-[38px]">
                             Filter
                         </button>
-                        <button onClick={downloadPDF} className="bg-primary text-on-primary hover:bg-primary/90 px-4 py-2 rounded-lg font-bold text-[14px] transition-colors flex items-center gap-2 shadow-sm">
-                            <span className="material-symbols-outlined text-[18px]">picture_as_pdf</span>
-                            Download PDF
+                        <button onClick={downloadPDF} className="bg-orange-500 text-zinc-950 hover:bg-orange-400 px-6 py-2 rounded-none font-mono text-sm font-bold uppercase tracking-widest transition-colors flex items-center gap-2 h-[38px]">
+                            <span className="material-symbols-outlined text-[16px]">picture_as_pdf</span>
+                            Export
                         </button>
                     </div>
                 </div>
 
-                <div className="bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 flex flex-col min-h-0 flex-1 mb-8">
-                    <div className="overflow-x-auto flex-1">
+                <div className="bg-zinc-900/30 border border-zinc-800 relative mb-12">
+                    <div className="overflow-x-auto p-6 md:p-8">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="border-b border-outline-variant text-on-surface-variant font-label-md text-[14px]">
-                                    <th className="pb-3 font-medium">ID</th>
-                                    <th className="pb-3 font-medium">Time</th>
-                                    <th className="pb-3 font-medium">Buyer</th>
-                                    <th className="pb-3 font-medium">Staff/Cashier</th>
-                                    <th className="pb-3 font-medium">Method</th>
-                                    <th className="pb-3 font-medium">Aksi</th>
+                                <tr className="border-b border-zinc-800 text-zinc-500 font-mono text-[10px] uppercase tracking-widest">
+                                    <th className="pb-4 font-normal">TX_ID</th>
+                                    <th className="pb-4 font-normal">Timestamp</th>
+                                    <th className="pb-4 font-normal">Entity / Buyer</th>
+                                    <th className="pb-4 font-normal">Operator</th>
+                                    <th className="pb-4 font-normal">Gateway</th>
+                                    <th className="pb-4 font-normal text-right">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {transactions.map((tx) => (
-                                    <tr key={tx.id_transaksi} className="border-b border-outline-variant last:border-0 hover:bg-surface-container-low transition-colors text-on-surface">
-                                        <td className="py-4 font-data-mono text-[14px] font-bold text-primary">TRX-{String(tx.id_transaksi).padStart(4, '0')}</td>
-                                        <td className="py-4 text-[14px]">{new Date(tx.waktu_pemesanan).toLocaleString()}</td>
-                                        <td className="py-4 text-[14px]">{tx.pembeli?.nama_lengkap || '-'}</td>
-                                        <td className="py-4 text-[14px]">{tx.staff_finance?.nama_lengkap || '-'}</td>
+                                    <tr key={tx.id_transaksi} className="border-b border-zinc-800/50 hover:bg-zinc-900 transition-colors">
+                                        <td className="py-4 font-mono text-orange-500 font-bold text-xs">TRX-{String(tx.id_transaksi).padStart(4, '0')}</td>
+                                        <td className="py-4 text-xs text-zinc-300 font-mono">{new Date(tx.waktu_pemesanan).toLocaleString()}</td>
+                                        <td className="py-4 text-sm font-bold text-zinc-100">{tx.pembeli?.nama_lengkap || '-'}</td>
+                                        <td className="py-4 text-xs text-zinc-400 font-mono">{tx.staff_finance?.nama_lengkap || '-'}</td>
                                         <td className="py-4">
-                                            <span className="px-3 py-1 bg-surface-container-high rounded-full text-[12px] font-bold text-on-surface-variant">
+                                            <span className="px-2 py-1 bg-zinc-800 text-zinc-300 text-[10px] font-mono uppercase tracking-widest border border-zinc-700">
                                                 {tx.metode_pembayaran?.metode_pembayaran || '-'}
                                             </span>
                                         </td>
-                                        <td className="py-4">
-                                            <Link href={`/transactions/${tx.id_transaksi}`} className="text-primary hover:text-primary/80 font-bold text-[14px] flex items-center gap-1">
-                                                Detail
-                                                <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                                        <td className="py-4 text-right">
+                                            <Link href={`/transactions/${tx.id_transaksi}`} className="text-zinc-500 hover:text-orange-500 font-mono text-[10px] uppercase tracking-widest font-bold flex items-center justify-end gap-1 transition-colors">
+                                                Inspect
+                                                <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
                                             </Link>
                                         </td>
                                     </tr>
@@ -91,8 +95,8 @@ export default function Index({ transactions, filters = {}, auth }) {
                             </tbody>
                         </table>
                         {transactions.length === 0 && (
-                            <div className="py-8 text-center text-on-surface-variant text-[14px]">
-                                No transactions found in the selected period.
+                            <div className="py-12 text-center text-zinc-500 font-mono text-sm uppercase tracking-widest">
+                                No records found.
                             </div>
                         )}
                     </div>

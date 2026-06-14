@@ -113,6 +113,47 @@ export default function LandingPage() {
                     ))}
                 </div>
 
+                {/* Timeline Section */}
+                <section id="timeline" className="w-full max-w-5xl mx-auto py-24 mb-12">
+                    <div className="reveal opacity-0 translate-y-8 transition-all duration-1000">
+                        <div className="text-center mb-24">
+                            <div className="text-orange-500 font-mono text-[10px] uppercase tracking-widest mb-4">Milestones</div>
+                            <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-zinc-100">Timeline</h2>
+                        </div>
+
+                        <div className="relative border-l border-zinc-800 ml-4 md:ml-0 md:pl-0">
+
+                            <div className="mb-16 relative pl-10 md:pl-0 md:flex md:items-center md:justify-between group">
+                                <div className="absolute left-[-5px] md:left-1/2 md:-ml-[5px] w-2.5 h-2.5 bg-zinc-950 border border-orange-500 transform rotate-45 group-hover:bg-orange-500 group-hover:scale-150 transition-all z-10"></div>
+                                <div className="md:w-[45%] md:text-right font-mono text-orange-500 mb-4 md:mb-0 text-[10px] uppercase tracking-widest">August 2027</div>
+                                <div className="md:w-[45%] border border-zinc-800 p-8 bg-zinc-900/50 group-hover:border-orange-500/50 transition-colors">
+                                    <h4 className="text-2xl font-bold uppercase mb-3 text-zinc-100">Early Bird Registration</h4>
+                                    <p className="text-zinc-400 text-sm leading-relaxed">Secure your spot with special pricing for NLC and NPC. Limited slots available for early adapters.</p>
+                                </div>
+                            </div>
+
+                            <div className="mb-16 relative pl-10 md:pl-0 md:flex md:items-center md:justify-between flex-row-reverse group">
+                                <div className="absolute left-[-5px] md:left-1/2 md:-ml-[5px] w-2.5 h-2.5 bg-zinc-950 border border-zinc-600 transform rotate-45 group-hover:bg-orange-500 group-hover:scale-150 transition-all z-10"></div>
+                                <div className="md:w-[45%] font-mono text-zinc-500 mb-4 md:mb-0 text-[10px] uppercase tracking-widest">September 2027</div>
+                                <div className="md:w-[45%] border border-zinc-800 p-8 md:text-right bg-zinc-900/50 group-hover:border-orange-500/50 transition-colors">
+                                    <h4 className="text-2xl font-bold uppercase mb-3 text-zinc-100">Preliminary Rounds</h4>
+                                    <p className="text-zinc-400 text-sm leading-relaxed">Online qualifications for all competitive events. Battle remotely and earn your place in the finals.</p>
+                                </div>
+                            </div>
+
+                            <div className="relative pl-10 md:pl-0 md:flex md:items-center md:justify-between group">
+                                <div className="absolute left-[-5px] md:left-1/2 md:-ml-[5px] w-2.5 h-2.5 bg-zinc-950 border border-zinc-600 transform rotate-45 group-hover:bg-orange-500 group-hover:scale-150 transition-all z-10"></div>
+                                <div className="md:w-[45%] md:text-right font-mono text-zinc-500 mb-4 md:mb-0 text-[10px] uppercase tracking-widest">October 2027</div>
+                                <div className="md:w-[45%] border border-zinc-800 p-8 bg-zinc-900/50 group-hover:border-orange-500/50 transition-colors">
+                                    <h4 className="text-2xl font-bold uppercase mb-3 text-zinc-100">Main Event & NST</h4>
+                                    <p className="text-zinc-400 text-sm leading-relaxed">The grand finals held offline in Surabaya, followed by the National Technology Seminar.</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+
                 {/* Marquee Status bar */}
                 <div className="w-[100vw] relative left-1/2 -translate-x-1/2 border-y border-zinc-800 bg-zinc-900 py-4 overflow-hidden select-none reveal opacity-0 translate-y-8 transition-all duration-1000">
                     <div className="whitespace-nowrap flex gap-12 font-mono text-xs font-black uppercase tracking-[0.2em] animate-[marquee_20s_linear_infinite] text-orange-500">
