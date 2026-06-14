@@ -1,4 +1,79 @@
+CREATE DATABASE IF NOT EXISTS FP1;
 USE FP1;
+
+DROP DATABASE IF EXISTS FP1;
+
+create table Pembeli(
+    ID_Pembeli int AUTO_INCREMENT primary key,
+    Nama_Lengkap varchar(50) not null
+);
+
+create table Peserta_Seminar(
+    ID_Peserta char(7) primary key,
+    Email varchar(25) not null,
+    Nomor_Telepon varchar(14) not null,
+    ID_Pembeli int not null unique,
+    foreign key (ID_Pembeli) references Pembeli(ID_Pembeli) on delete cascade on update cascade
+);
+
+create table Staff_Finance(
+    NRP char(10) primary key,
+    Nama_Lengkap varchar(50) not null,
+    Jenis_Kelamin char(1) not null,
+    Nomor_Telepon varchar(14) not null
+);
+
+create table Staff_Alamat(
+    ID_Alamat INT AUTO_INCREMENT primary key,
+    Alamat text not null,
+    Finance_NRP char(10) not null,
+    foreign key (Finance_NRP) references Staff_Finance(NRP) on delete cascade on update cascade
+);
+
+create table Metode_Pembayaran(
+    ID_Metode int AUTO_INCREMENT primary key,
+    Metode_Pembayaran varchar(20) not null
+);
+
+create table Transaksi (
+    ID_Transaksi char(9) primary key,
+    Waktu_Pemesanan Datetime not null,
+    Total_Merchandise int not null,
+    Total_Harga Decimal(10,2) not null,
+    ID_Pembeli int not null,
+    NRP char(10) not null,
+    ID_Metode int not null,
+    foreign key (ID_Pembeli) references Pembeli(ID_Pembeli) on delete cascade on update cascade,
+    foreign key (NRP) references Staff_Finance(NRP) on delete cascade on update cascade,
+    foreign key (ID_Metode) references Metode_Pembayaran(ID_Metode) on delete cascade on update cascade
+);
+
+create table Event(
+    ID_Event int AUTO_INCREMENT primary key,
+    Nama_Subevent varchar(25) not null
+);
+
+create table Merchandise(
+    ID_Merchandise int AUTO_INCREMENT primary key,
+    Tipe_Merchandise varchar(10) not null,
+    Harga_Merchandise decimal(10,2) not null,
+    Stok int not null,
+    ID_Event int not null,
+    foreign key (ID_Event) references Event(ID_Event) on delete cascade on update cascade
+);
+
+create table Detail_Transaksi(
+    ID_Detail int AUTO_INCREMENT primary key,
+    Jumlah_Barang int not null,
+    Harga_Satuan decimal(10,2) not null,
+    Total decimal(10, 2) not null,
+    ID_Transaksi char(9) not null,
+    ID_Merchandise int not null,
+    foreign key (ID_Transaksi) references Transaksi(ID_Transaksi) on delete cascade on update cascade,
+    foreign key (ID_Merchandise) references Merchandise(ID_Merchandise) on delete cascade on update cascade
+);
+
+--data dummy
 
 INSERT INTO Pembeli (Nama_Lengkap) VALUES
 ('Raka Mahendra'),
@@ -515,3 +590,244 @@ VALUES
 (3, 5000.00, 15000.00, 'TRS000109', 7),
 (1, 60000.00, 60000.00, 'TRS000110', 3),
 (1, 45000.00, 45000.00, 'TRS000110', 4);
+
+-- Prosedur untuk melakukan cek stok sebelum melakukan transaksi
+DELIMITER $$
+CREATE PROCEDURE Cek_Stok(
+    IN p_ID_Merchandise INT,
+    IN p_Jumlah_Barang INT,
+    OUT p_Stok_Cukup BOOLEAN
+)
+BEGIN
+    DECLARE v_Stok INT;
+    
+    SELECT Stok INTO v_Stok FROM Merchandise WHERE ID_Merchandise = p_ID_Merchandise;
+    
+    IF v_Stok >= p_Jumlah_Barang THEN
+        SET p_Stok_Cukup = TRUE;
+    ELSE
+        SET p_Stok_Cukup = FALSE;
+    END IF;
+END$$
+DELIMITER ;
+
+-- Contoh penggunaan ketika melakukan transaksi
+DELIMITER $$
+
+CREATE PROCEDURE Proses_Transaksi(
+    IN p_ID_Transaksi CHAR(9),
+    IN p_ID_Merchandise INT,
+    IN p_Jumlah_Barang INT
+)
+BEGIN
+    DECLARE v_Stok_Cukup BOOLEAN;
+    DECLARE v_Harga DECIMAL(10,2);
+    DECLARE v_Total DECIMAL(10,2);
+    
+    CALL Cek_Stok(p_ID_Merchandise, p_Jumlah_Barang, v_Stok_Cukup);
+    
+    IF v_Stok_Cukup THEN
+        
+        SELECT Harga_Merchandise INTO v_Harga 
+        FROM Merchandise 
+        WHERE ID_Merchandise = p_ID_Merchandise;
+        
+        SET v_Total = v_Harga * p_Jumlah_Barang;
+        
+        INSERT INTO Detail_Transaksi (Jumlah_Barang, Harga_Satuan, Total, ID_Transaksi, ID_Merchandise)
+        VALUES (p_Jumlah_Barang, v_Harga, v_Total, p_ID_Transaksi, p_ID_Merchandise);
+        
+        UPDATE Merchandise 
+        SET Stok = Stok - p_Jumlah_Barang 
+        WHERE ID_Merchandise = p_ID_Merchandise;
+        
+    ELSE
+        SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'stok tidak mencukupi';
+    END IF;
+END$$
+
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS Proses_Transaksi;
+
+-- Contoh penggunaan
+INSERT INTO Transaksi (ID_Transaksi, Waktu_Pemesanan, Total_Merchandise, Total_Harga, ID_Pembeli, NRP, ID_Metode)
+VALUES ('TRS000011', NOW(), 0, 0.00, 1, '5025251187', 1);
+CALL Proses_Transaksi('TRS000011', 2, 3); 
+
+-- trigger untuk cek stok
+DELIMITER $$
+create trigger trg_cek_stok BEFORE INSERT ON Detail_Transaksi
+FOR EACH ROW
+BEGIN
+    declare stok_sekarang int;
+    select Stok into stok_sekarang from Merchandise where ID_Merchandise = NEW.ID_Merchandise;
+
+    IF stok_sekarang < NEW.Jumlah_Barang THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'stok tidak mencukupi';
+    END IF;
+END$$
+DELIMITER ;
+
+-- trigger untuk hitung total detail transaksi
+DELIMITER $$
+create trigger trg_hitung_detail BEFORE INSERT ON Detail_Transaksi
+FOR EACH ROW
+BEGIN
+    set NEW.Harga_Satuan = (select Harga_Merchandise from Merchandise where ID_Merchandise = NEW.ID_Merchandise);
+    set NEW.Total = NEW.Harga_Satuan * NEW.Jumlah_Barang;
+END$$
+DELIMITER ;
+
+--trigger kurangi stok merch
+DELIMITER $$
+create trigger trg_kurangi_stok AFTER INSERT ON Detail_Transaksi
+FOR EACH ROW
+BEGIN
+    update Merchandise set
+    stok = stok - NEW.Jumlah_barang where ID_Merchandise = NEW.ID_Merchandise;
+END$$
+DELIMITER ;
+
+-- trigger hitung total harga & total merch
+DELIMITER $$
+create trigger trg_update_total_transaksi AFTER INSERT ON Detail_Transaksi
+FOR EACH ROW
+BEGIN
+    update Transaksi set
+    Total_Merchandise = (select SUM(Jumlah_Barang) from Detail_Transaksi where ID_Transaksi = NEW.ID_Transaksi),
+    Total_harga = (select SUM(Total) from Detail_Transaksi where ID_Transaksi = NEW.ID_Transaksi)
+    where ID_Transaksi = NEW.ID_Transaksi;
+END$$
+DELIMITER ;
+
+-- contoh penggunaan
+INSERT INTO Detail_Transaksi
+(Jumlah_Barang, ID_Transaksi, ID_Merchandise)
+VALUES
+(2, 'TRS000012', 1);
+
+-- Trigger untuk generate ID Transaksi
+DELIMITER $$
+CREATE TRIGGER trg_generate_id_transaksi 
+BEFORE INSERT ON Transaksi
+FOR EACH ROW
+BEGIN
+    DECLARE max_id INT;
+    DECLARE new_id CHAR(9);
+    
+    SELECT IFNULL(MAX(CAST(SUBSTRING(ID_Transaksi, 4) AS UNSIGNED)), 0) INTO max_id 
+    FROM Transaksi;
+    
+    SET new_id = CONCAT('TRS', LPAD(max_id + 1, 6, '0')); 
+    SET NEW.ID_Transaksi = new_id;
+END$$
+DELIMITER ;
+
+-- contoh penggunaan trigger generate ID Transaksi
+INSERT INTO Transaksi (Waktu_Pemesanan, Total_Merchandise, Total_Harga, ID_Pembeli, NRP, ID_Metode) 
+VALUES (NOW(), 0, 0.00, 1, '5025251187', 1);
+
+-- Trigger untuk generate ID Peserta
+DELIMITER $$
+CREATE TRIGGER trg_generate_id_peserta 
+BEFORE INSERT ON Peserta_Seminar
+FOR EACH ROW
+BEGIN
+    DECLARE max_id INT;
+    DECLARE new_id CHAR(7);
+    
+    SELECT IFNULL(MAX(CAST(SUBSTRING(ID_Peserta, 4) AS UNSIGNED)), 0) INTO max_id 
+    FROM Peserta_Seminar;
+    
+    -- Generate ID baru
+    SET new_id = CONCAT('BST', LPAD(max_id + 1, 4, '0'));
+    SET NEW.ID_Peserta = new_id;
+END$$
+DELIMITER ;
+
+-- contoh penggunaan trigger generate ID Peserta
+INSERT INTO Pembeli (Nama_Lengkap) VALUES ('John Doe');
+INSERT INTO Peserta_Seminar (Email, Nomor_Telepon, ID_Pembeli) VALUES ('john.doe@example.com', '081234567890', 11);
+
+-- Indexing pada waktu pemesanan untuk mempercepat query berdasarkan waktu
+CREATE INDEX idx_waktu_pemesanan ON Transaksi(Waktu_Pemesanan);
+
+-- Indexing pada nama pembeli untuk mempercepat pencarian berdasarkan nama
+CREATE INDEX idx_nama_pembeli ON Pembeli(Nama_Lengkap);
+CREATE INDEX idx_fk_pembeli ON Transaksi(ID_Pembeli);
+
+-- Function hitung pendapatan per event
+DELIMITER $$
+
+CREATE FUNCTION fn_pendapatan_event(
+    p_ID_Event INT
+)
+RETURNS DECIMAL(12,2)
+READS SQL DATA
+DETERMINISTIC
+BEGIN
+    DECLARE v_Total DECIMAL(12,2);
+
+    SELECT IFNULL(SUM(dt.Total),0)
+    INTO v_Total
+    FROM Detail_Transaksi dt
+    JOIN Merchandise m
+        ON dt.ID_Merchandise = m.ID_Merchandise
+    WHERE m.ID_Event = p_ID_Event;
+
+    RETURN v_Total;
+END$$
+
+DELIMITER ;
+
+-- Contoh penggunaan
+SELECT
+    Nama_Subevent,
+    fn_pendapatan_event(ID_Event) AS Pendapatan
+FROM Event;
+
+-- Case Query
+SELECT 
+    M.Tipe_Merchandise,
+    M.Stok AS Sisa_Stok,
+    IFNULL(SUM(DT.Total), 0) AS Total_Pendapatan
+FROM Merchandise M
+LEFT JOIN Detail_Transaksi DT ON M.ID_Merchandise = DT.ID_Merchandise
+GROUP BY 
+    M.ID_Merchandise, 
+    M.Tipe_Merchandise, 
+    M.Stok;
+
+SELECT 
+    SF.Nama_Lengkap AS Nama_Staff_Kasir
+FROM Transaksi T
+JOIN Pembeli P ON T.ID_Pembeli = P.ID_Pembeli
+JOIN Staff_Finance SF ON T.NRP = SF.NRP
+WHERE P.Nama_Lengkap = 'Nadia Putri' 
+  AND T.Waktu_Pemesanan = '2026-05-03 14:10:00';
+
+SELECT 
+    MP.Metode_Pembayaran AS Nama_Metode_Pembayaran,
+    SUM(T.Total_Harga) AS Total_Pendapatan
+FROM Metode_Pembayaran MP
+JOIN Transaksi T ON MP.ID_Metode = T.ID_Metode
+GROUP BY 
+    MP.Metode_Pembayaran
+ORDER BY Total_Pendapatan DESC;
+
+SELECT 
+    P.Nama_Lengkap,
+    PS.Email
+FROM Pembeli P
+JOIN Peserta_Seminar PS ON P.ID_Pembeli = PS.ID_Pembeli;
+
+SELECT 
+    DATE(Waktu_Pemesanan) AS Tanggal_Transaksi,
+    COUNT(ID_Transaksi) AS Jumlah_Transaksi,
+    SUM(Total_Harga) AS Total_Pendapatan
+FROM Transaksi T
+GROUP BY DATE(Waktu_Pemesanan)
+ORDER BY Tanggal_Transaksi ASC;

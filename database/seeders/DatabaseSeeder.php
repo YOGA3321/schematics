@@ -12,9 +12,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $sqlPath = base_path('FP (1).sql');
+        $sqlPath = base_path('FP_DATABASE/DML.sql');
         if (!file_exists($sqlPath)) {
-            $this->command->error("File FP (1).sql tidak ditemukan.");
+            $this->command->error("File FP_DATABASE/DML.sql tidak ditemukan.");
             return;
         }
 

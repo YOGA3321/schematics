@@ -1,7 +1,7 @@
 CREATE DATABASE IF NOT EXISTS FP1;
 USE FP1;
 
--- DROP DATABASE IF EXISTS FP1;
+DROP DATABASE IF EXISTS FP1;
 
 create table Pembeli(
     ID_Pembeli int AUTO_INCREMENT primary key,
@@ -790,9 +790,6 @@ SELECT
 FROM Event;
 
 -- Case Query
-USE FP1;
-
--- Query untuk menampilkan tipe merchandise, sisa stok, dan total pendapatan per merchandise
 SELECT 
     M.Tipe_Merchandise,
     M.Stok AS Sisa_Stok,
@@ -804,7 +801,6 @@ GROUP BY
     M.Tipe_Merchandise, 
     M.Stok;
 
--- Query untuk menampilkan nama staff kasir yang melayani pembeli tertentu pada waktu tertentu
 SELECT 
     SF.Nama_Lengkap AS Nama_Staff_Kasir
 FROM Transaksi T
@@ -813,7 +809,6 @@ JOIN Staff_Finance SF ON T.NRP = SF.NRP
 WHERE P.Nama_Lengkap = 'Nadia Putri' 
   AND T.Waktu_Pemesanan = '2026-05-03 14:10:00';
 
--- Query untuk menampilkan nama metode pembayaran dan total pendapatan per metode pembayaran
 SELECT 
     MP.Metode_Pembayaran AS Nama_Metode_Pembayaran,
     SUM(T.Total_Harga) AS Total_Pendapatan
@@ -823,14 +818,12 @@ GROUP BY
     MP.Metode_Pembayaran
 ORDER BY Total_Pendapatan DESC;
 
--- Query untuk menampilkan nama pembeli dan email peserta seminar
 SELECT 
     P.Nama_Lengkap,
     PS.Email
 FROM Pembeli P
 JOIN Peserta_Seminar PS ON P.ID_Pembeli = PS.ID_Pembeli;
 
--- Query untuk menampilkan total transaksi dan total pendapatan per hari
 SELECT 
     DATE(Waktu_Pemesanan) AS Tanggal_Transaksi,
     COUNT(ID_Transaksi) AS Jumlah_Transaksi,
