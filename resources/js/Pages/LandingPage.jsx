@@ -48,14 +48,14 @@ export default function LandingPage() {
                         National IT Event
                     </div>
                     
-                    <h1 className="text-[12vw] sm:text-[10vw] md:text-[8rem] lg:text-[11rem] leading-[0.8] font-black tracking-tighter uppercase text-zinc-100 mix-blend-difference mb-8">
+                    <h1 className="text-[12vw] sm:text-[10vw] md:text-[8rem] lg:text-[11rem] leading-[0.8] font-black tracking-tighter uppercase text-zinc-100 mix-blend-difference mb-4">
                         BEYOND <br/>
                         <span className="text-transparent relative" style={{ WebkitTextStroke: '2px #f4f4f5' }}>
                             THE EDGE
-                            {/* Accent line */}
-                            <span className="absolute -bottom-4 left-0 w-full h-2 bg-orange-500"></span>
                         </span>
                     </h1>
+                    
+                    <div className="w-48 h-2 bg-orange-500 mx-auto mb-8 shadow-[0_0_20px_rgba(249,115,22,0.6)]"></div>
                     
                     <p className="text-base md:text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed font-medium">
                         Pushing the boundaries of youth technology and logic. Join the largest IT competition hosted by Informatics Engineering ITS.

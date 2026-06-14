@@ -1,7 +1,7 @@
 import React from 'react';
 import AdminLayout from '../../Layouts/AdminLayout';
 
-export default function Index({ participants, auth }) {
+export default function Index({ peserta = [], auth }) {
     return (
         <AdminLayout title="Seminar Participants" auth={auth}>
             <div className="flex flex-col gap-10 max-w-7xl mx-auto w-full">
@@ -28,7 +28,7 @@ export default function Index({ participants, auth }) {
                                 </tr>
                             </thead>
                             <tbody>
-                                {participants.map((p) => (
+                                {peserta.map((p) => (
                                     <tr key={p.id_seminar} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                                         <td className="py-4 font-mono text-orange-500 text-xs font-bold">SEM-{String(p.id_seminar).padStart(4, '0')}</td>
                                         <td className="py-4 text-sm font-bold text-gray-900">{p.pembeli.nama_lengkap}</td>
@@ -38,7 +38,7 @@ export default function Index({ participants, auth }) {
                                 ))}
                             </tbody>
                         </table>
-                        {participants.length === 0 && (
+                        {peserta.length === 0 && (
                             <div className="py-12 text-center text-gray-400 font-mono text-sm uppercase tracking-widest font-bold">
                                 No participants registered yet.
                             </div>
