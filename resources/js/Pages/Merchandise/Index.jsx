@@ -1,78 +1,84 @@
 import React from 'react';
 import AdminLayout from '../../Layouts/AdminLayout';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 
 export default function Index({ merchandises, auth }) {
+    const deleteMerchandise = (id) => {
+        if (confirm('Are you sure you want to delete this merchandise?')) {
+            router.delete(`/merchandise/${id}`);
+        }
+    };
+
     return (
-        <AdminLayout title="Merchandise Catalog" auth={auth}>
-            <div className="flex flex-col gap-10 max-w-7xl mx-auto w-full">
+        <AdminLayout title="Merchandise Inventory" auth={auth}>
+            <div className="flex flex-col gap-10 max-w-7xl mx-auto w-full pb-12">
                 
-                <div className="flex justify-between items-end border-b border-zinc-900 pb-6">
+                <div className="flex justify-between items-end border-b border-gray-200 pb-6">
                     <div>
-                        <div className="text-orange-500 font-mono text-[10px] uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse"></span>
-                            Inventory
+                        <div className="text-orange-500 font-mono text-[10px] uppercase tracking-[0.2em] mb-2 flex items-center gap-2 font-bold">
+                            <span className="w-2 h-2 bg-orange-500 rounded-full animate-pulse shadow-sm shadow-orange-500/50"></span>
+                            Inventory Control
                         </div>
-                        <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-zinc-100">Merchandise</h1>
+                        <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-gray-900">Merchandise</h1>
                     </div>
                     <Link 
                         href="/merchandise/create" 
-                        className="bg-orange-500 hover:bg-orange-400 text-zinc-950 px-6 py-3 font-mono text-sm font-bold uppercase tracking-widest transition-all flex items-center gap-2"
+                        className="bg-orange-500 text-white hover:bg-orange-600 px-6 py-3 rounded-xl font-mono text-xs font-bold uppercase tracking-widest transition-colors flex items-center gap-2 shadow-sm shadow-orange-500/30"
                     >
-                        <span className="material-symbols-outlined text-[18px]">add</span>
-                        Create Item
+                        <span className="material-symbols-outlined text-[16px]">add</span>
+                        New Product
                     </Link>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 pb-12">
-                    {merchandises.map((item) => (
-                        <div key={item.id_merchandise} className="bg-zinc-900/30 border border-zinc-800 flex flex-col group hover:border-orange-500/50 transition-colors relative">
-                            {/* Decorative Corners */}
-                            <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-zinc-700 group-hover:border-orange-500 transition-colors"></div>
-                            <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-zinc-700 group-hover:border-orange-500 transition-colors"></div>
-                            
-                            <div className="h-48 bg-zinc-950 relative flex items-center justify-center p-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
+                    {merchandises.map(item => (
+                        <div 
+                            key={item.id_merchandise} 
+                            className="bg-white border border-gray-200 rounded-2xl overflow-hidden flex flex-col relative transition-all hover:border-orange-300 hover:shadow-md group shadow-sm"
+                        >
+                            <div className="h-48 bg-gray-50 w-full relative overflow-hidden flex items-center justify-center border-b border-gray-100 group-hover:bg-orange-50/50 transition-colors">
                                 {item.foto ? (
-                                    <img 
-                                        src={`/storage/${item.foto}`} 
-                                        alt={item.tipe_merchandise}
-                                        className="w-full h-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-500"
-                                    />
+                                    <img src={`/storage/${item.foto}`} alt={item.tipe_merchandise} className="w-full h-full object-contain" />
                                 ) : (
-                                    <div className="w-full h-full flex items-center justify-center text-zinc-800">
-                                        <span className="material-symbols-outlined text-[48px]">image</span>
-                                    </div>
+                                    <span className="material-symbols-outlined text-gray-300 text-[64px] group-hover:text-orange-300 transition-colors">image</span>
                                 )}
-                                <div className="absolute top-4 right-4 bg-zinc-900 border border-zinc-800 text-zinc-400 text-[10px] font-mono tracking-widest uppercase px-2 py-1">
-                                    {item.event?.nama_subevent}
+                                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm border border-gray-200 text-gray-700 px-3 py-1 font-mono text-[10px] font-bold tracking-widest uppercase rounded-full shadow-sm">
+                                    {item.event?.nama_subevent || 'Umum'}
                                 </div>
                             </div>
-                            
-                            <div className="p-6 flex flex-col flex-1 border-t border-zinc-800">
-                                <h3 className="text-lg font-bold text-zinc-100 mb-2 leading-tight line-clamp-2 min-h-[56px]">{item.tipe_merchandise}</h3>
-                                <p className="text-2xl font-black text-orange-500 mb-6 tracking-tighter">
-                                    Rp {Number(item.harga_merchandise).toLocaleString('id-ID')}
-                                </p>
+                            <div className="p-6 flex flex-col gap-2 flex-1">
+                                <h3 className="font-bold text-xl text-gray-900 leading-tight">{item.tipe_merchandise}</h3>
+                                <p className="font-mono text-[10px] text-gray-400 uppercase tracking-widest mb-2">SKU-0{item.id_merchandise}</p>
                                 
-                                <div className="flex justify-between items-center text-sm font-mono border-t border-zinc-800 pt-4 mt-auto">
-                                    <span className="text-zinc-500 uppercase tracking-widest text-[10px]">Stock</span>
-                                    <span className={`px-2 py-1 text-[10px] font-bold tracking-widest uppercase border ${item.stok > 10 ? 'bg-zinc-800 text-zinc-300 border-zinc-700' : 'bg-red-500/10 text-red-500 border-red-500/50'}`}>
-                                        {item.stok} units
-                                    </span>
+                                <div className="mt-auto pt-4 flex justify-between items-end border-t border-gray-100 mb-6">
+                                    <span className="font-black text-orange-600 text-2xl tracking-tighter">Rp {Number(item.harga_merchandise).toLocaleString('id-ID')}</span>
+                                    <span className={`font-mono text-xs font-bold uppercase ${item.stok < 5 ? 'text-red-500' : 'text-gray-500'}`}>Stock: {item.stok}</span>
                                 </div>
-                                
-                                <div className="mt-4 pt-4 border-t border-zinc-800">
+
+                                <div className="grid grid-cols-2 gap-2 opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-6 left-6 right-6">
                                     <Link 
-                                        href={`/merchandise/${item.id_merchandise}/edit`} 
-                                        className="w-full bg-zinc-800 hover:bg-zinc-700 hover:text-orange-500 text-zinc-300 font-mono text-[10px] font-bold uppercase tracking-widest px-4 py-3 transition-colors flex justify-center items-center gap-2"
+                                        href={`/merchandise/${item.id_merchandise}/edit`}
+                                        className="bg-gray-50 text-gray-700 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-200 border border-gray-200 py-2 rounded-xl text-center font-mono text-[10px] font-bold uppercase tracking-widest transition-colors flex justify-center items-center gap-1 shadow-sm"
                                     >
-                                        <span className="material-symbols-outlined text-[16px]">edit</span>
-                                        Configure
+                                        <span className="material-symbols-outlined text-[14px]">edit</span>
+                                        Edit
                                     </Link>
+                                    <button 
+                                        onClick={() => deleteMerchandise(item.id_merchandise)}
+                                        className="bg-gray-50 text-gray-700 hover:bg-red-50 hover:text-red-600 hover:border-red-200 border border-gray-200 py-2 rounded-xl text-center font-mono text-[10px] font-bold uppercase tracking-widest transition-colors flex justify-center items-center gap-1 shadow-sm"
+                                    >
+                                        <span className="material-symbols-outlined text-[14px]">delete</span>
+                                        Delete
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     ))}
+                    {merchandises.length === 0 && (
+                        <div className="col-span-full py-12 text-center text-gray-400 font-mono text-sm uppercase tracking-widest font-bold bg-white border border-gray-200 rounded-2xl border-dashed">
+                            No merchandise found in the database.
+                        </div>
+                    )}
                 </div>
             </div>
         </AdminLayout>

@@ -1,46 +1,46 @@
 import React from 'react';
 import AdminLayout from '../../Layouts/AdminLayout';
 
-export default function Index({ peserta, auth }) {
+export default function Index({ participants, auth }) {
     return (
-        <AdminLayout title="Peserta Seminar" auth={auth}>
+        <AdminLayout title="Seminar Participants" auth={auth}>
             <div className="flex flex-col gap-10 max-w-7xl mx-auto w-full">
                 
-                <div className="flex justify-between items-end border-b border-zinc-900 pb-6">
+                <div className="flex justify-between items-end border-b border-gray-200 pb-6">
                     <div>
-                        <div className="text-orange-500 font-mono text-[10px] uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse"></span>
-                            Participants
+                        <div className="text-orange-500 font-mono text-[10px] uppercase tracking-[0.2em] mb-2 flex items-center gap-2 font-bold">
+                            <span className="w-2 h-2 bg-orange-500 rounded-full animate-pulse shadow-sm shadow-orange-500/50"></span>
+                            Registry
                         </div>
-                        <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-zinc-100">Seminar Registry</h1>
+                        <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-gray-900">Participants</h1>
                     </div>
                 </div>
 
-                <div className="bg-zinc-900/30 border border-zinc-800 relative mb-12">
+                <div className="bg-white border border-gray-200 rounded-2xl shadow-sm relative mb-12 overflow-hidden">
                     <div className="overflow-x-auto p-6 md:p-8">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="border-b border-zinc-800 text-zinc-500 font-mono text-[10px] uppercase tracking-widest">
-                                    <th className="pb-4 font-normal">Registry ID</th>
-                                    <th className="pb-4 font-normal">Entity Name</th>
+                                <tr className="border-b border-gray-200 text-gray-400 font-mono text-[10px] uppercase tracking-widest font-bold">
+                                    <th className="pb-4 font-normal">REF_ID</th>
+                                    <th className="pb-4 font-normal">Full Name</th>
                                     <th className="pb-4 font-normal">Email Address</th>
-                                    <th className="pb-4 font-normal">Contact</th>
+                                    <th className="pb-4 font-normal">Phone</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {peserta.map((p) => (
-                                    <tr key={p.id_peserta || p.ID_Peserta} className="border-b border-zinc-800/50 hover:bg-zinc-900 transition-colors">
-                                        <td className="py-4 font-mono text-orange-500 font-bold text-xs">NST-{String(p.id_peserta || p.ID_Peserta).padStart(4, '0')}</td>
-                                        <td className="py-4 text-sm font-bold text-zinc-100">{p.pembeli?.nama_lengkap || p.pembeli?.Nama_Lengkap || '-'}</td>
-                                        <td className="py-4 text-xs text-zinc-300 font-mono">{p.email || p.Email}</td>
-                                        <td className="py-4 text-xs text-zinc-400 font-mono">{p.nomor_telepon || p.Nomor_Telepon}</td>
+                                {participants.map((p) => (
+                                    <tr key={p.id_seminar} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                                        <td className="py-4 font-mono text-orange-500 text-xs font-bold">SEM-{String(p.id_seminar).padStart(4, '0')}</td>
+                                        <td className="py-4 text-sm font-bold text-gray-900">{p.pembeli.nama_lengkap}</td>
+                                        <td className="py-4 text-xs text-gray-600 font-mono">{p.email}</td>
+                                        <td className="py-4 text-xs text-gray-600 font-mono">{p.nomor_telepon}</td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
-                        {peserta.length === 0 && (
-                            <div className="py-12 text-center text-zinc-500 font-mono text-sm uppercase tracking-widest">
-                                No records found.
+                        {participants.length === 0 && (
+                            <div className="py-12 text-center text-gray-400 font-mono text-sm uppercase tracking-widest font-bold">
+                                No participants registered yet.
                             </div>
                         )}
                     </div>

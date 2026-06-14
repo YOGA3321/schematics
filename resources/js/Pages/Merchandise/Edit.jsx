@@ -32,81 +32,79 @@ export default function Edit({ merchandise, events, auth }) {
     return (
         <AdminLayout title="Edit Merchandise" auth={auth}>
             <div className="flex flex-col gap-10 max-w-4xl mx-auto w-full pb-12">
-                <div className="flex flex-col gap-4 border-b border-zinc-900 pb-6">
-                    <Link href="/merchandise" className="text-zinc-500 hover:text-orange-500 font-mono text-[10px] uppercase tracking-widest font-bold flex items-center gap-2 mb-4 w-fit transition-colors">
+                <div className="flex flex-col gap-4 border-b border-gray-200 pb-6">
+                    <Link href="/merchandise" className="text-gray-500 hover:text-orange-500 font-mono text-[10px] uppercase tracking-widest font-bold flex items-center gap-2 mb-4 w-fit transition-colors">
                         <span className="material-symbols-outlined text-[14px]">arrow_back</span>
                         Back to Catalog
                     </Link>
                     <div>
-                        <div className="text-orange-500 font-mono text-[10px] uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse"></span>
+                        <div className="text-orange-500 font-mono text-[10px] uppercase tracking-[0.2em] mb-2 flex items-center gap-2 font-bold">
+                            <span className="w-2 h-2 bg-orange-500 rounded-full animate-pulse shadow-sm shadow-orange-500/50"></span>
                             Inventory Control
                         </div>
-                        <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-zinc-100">Edit Merchandise</h1>
+                        <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-gray-900">Edit Merchandise</h1>
                     </div>
                 </div>
 
-                <div className="bg-zinc-900/30 border border-zinc-800 relative">
-                    <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-orange-500"></div>
-                    <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-orange-500"></div>
+                <div className="bg-white border border-gray-200 rounded-2xl shadow-sm relative">
                     
                     <form onSubmit={submit} className="p-8 space-y-8 relative z-10">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="flex flex-col gap-2">
-                                <label className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">Merchandise Type <span className="text-orange-500">*</span></label>
+                                <label className="font-mono text-[10px] uppercase tracking-widest text-gray-500 font-bold">Merchandise Type <span className="text-orange-500">*</span></label>
                                 <input 
                                     type="text" 
                                     value={data.tipe_merchandise}
                                     onChange={e => setData('tipe_merchandise', e.target.value)}
-                                    className="w-full bg-zinc-950 border border-zinc-800 px-4 py-3 font-mono text-sm text-zinc-100 focus:border-orange-500 outline-none transition-all placeholder:text-zinc-700"
+                                    className="w-full bg-gray-50 border border-gray-200 px-4 py-3 font-mono text-sm text-gray-900 rounded-xl focus:bg-white focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all placeholder:text-gray-400 shadow-sm"
                                     placeholder="e.g. Tshirt"
                                 />
-                                {errors.tipe_merchandise && <div className="text-red-500 text-[10px] font-mono uppercase tracking-widest mt-1">{errors.tipe_merchandise}</div>}
+                                {errors.tipe_merchandise && <div className="text-red-500 text-[10px] font-mono uppercase tracking-widest mt-1 font-bold">{errors.tipe_merchandise}</div>}
                             </div>
 
                             <div className="flex flex-col gap-2">
-                                <label className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">Price (Rp) <span className="text-orange-500">*</span></label>
+                                <label className="font-mono text-[10px] uppercase tracking-widest text-gray-500 font-bold">Price (Rp) <span className="text-orange-500">*</span></label>
                                 <input 
                                     type="number" 
                                     value={data.harga_merchandise}
                                     onChange={e => setData('harga_merchandise', e.target.value)}
-                                    className="w-full bg-zinc-950 border border-zinc-800 px-4 py-3 font-mono text-sm text-zinc-100 focus:border-orange-500 outline-none transition-all placeholder:text-zinc-700"
+                                    className="w-full bg-gray-50 border border-gray-200 px-4 py-3 font-mono text-sm text-gray-900 rounded-xl focus:bg-white focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all placeholder:text-gray-400 shadow-sm"
                                     placeholder="e.g. 85000"
                                 />
-                                {errors.harga_merchandise && <div className="text-red-500 text-[10px] font-mono uppercase tracking-widest mt-1">{errors.harga_merchandise}</div>}
+                                {errors.harga_merchandise && <div className="text-red-500 text-[10px] font-mono uppercase tracking-widest mt-1 font-bold">{errors.harga_merchandise}</div>}
                             </div>
 
                             <div className="flex flex-col gap-2">
-                                <label className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">Stock Quantity <span className="text-orange-500">*</span></label>
+                                <label className="font-mono text-[10px] uppercase tracking-widest text-gray-500 font-bold">Stock Quantity <span className="text-orange-500">*</span></label>
                                 <input 
                                     type="number" 
                                     value={data.stok}
                                     onChange={e => setData('stok', e.target.value)}
-                                    className="w-full bg-zinc-950 border border-zinc-800 px-4 py-3 font-mono text-sm text-zinc-100 focus:border-orange-500 outline-none transition-all placeholder:text-zinc-700"
+                                    className="w-full bg-gray-50 border border-gray-200 px-4 py-3 font-mono text-sm text-gray-900 rounded-xl focus:bg-white focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all placeholder:text-gray-400 shadow-sm"
                                     placeholder="e.g. 100"
                                 />
-                                {errors.stok && <div className="text-red-500 text-[10px] font-mono uppercase tracking-widest mt-1">{errors.stok}</div>}
+                                {errors.stok && <div className="text-red-500 text-[10px] font-mono uppercase tracking-widest mt-1 font-bold">{errors.stok}</div>}
                             </div>
 
                             <div className="flex flex-col gap-2">
-                                <label className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">Event Category <span className="text-orange-500">*</span></label>
+                                <label className="font-mono text-[10px] uppercase tracking-widest text-gray-500 font-bold">Event Category <span className="text-orange-500">*</span></label>
                                 <select 
                                     value={data.id_event}
                                     onChange={e => setData('id_event', e.target.value)}
-                                    className="w-full bg-zinc-950 border border-zinc-800 px-4 py-3 font-mono text-sm text-zinc-100 focus:border-orange-500 outline-none transition-all"
+                                    className="w-full bg-gray-50 border border-gray-200 px-4 py-3 font-mono text-sm text-gray-900 rounded-xl focus:bg-white focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all shadow-sm"
                                 >
                                     <option value="">Select an Event</option>
                                     {events.map(ev => (
                                         <option key={ev.id_event} value={ev.id_event}>{ev.nama_subevent}</option>
                                     ))}
                                 </select>
-                                {errors.id_event && <div className="text-red-500 text-[10px] font-mono uppercase tracking-widest mt-1">{errors.id_event}</div>}
+                                {errors.id_event && <div className="text-red-500 text-[10px] font-mono uppercase tracking-widest mt-1 font-bold">{errors.id_event}</div>}
                             </div>
                         </div>
 
                         <div className="flex flex-col gap-2">
-                            <label className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">Product Image</label>
-                            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-zinc-800 border-dashed hover:border-orange-500 transition-colors cursor-pointer relative bg-zinc-950">
+                            <label className="font-mono text-[10px] uppercase tracking-widest text-gray-500 font-bold">Product Image</label>
+                            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-200 border-dashed hover:border-orange-400 transition-colors cursor-pointer relative bg-gray-50 rounded-xl shadow-inner">
                                 <input 
                                     type="file" 
                                     onChange={handleImageChange}
@@ -116,34 +114,34 @@ export default function Edit({ merchandise, events, auth }) {
                                 <div className="space-y-2 text-center">
                                     {preview ? (
                                         <div className="relative w-full max-w-xs mx-auto h-48">
-                                            <img src={preview} alt="Preview" className="w-full h-full object-contain filter grayscale hover:grayscale-0 transition-all duration-500" />
+                                            <img src={preview} alt="Preview" className="w-full h-full object-contain filter hover:brightness-110 transition-all duration-500" />
                                         </div>
                                     ) : (
                                         <>
-                                            <span className="material-symbols-outlined text-[48px] text-zinc-700">image</span>
-                                            <div className="flex font-mono text-[10px] uppercase tracking-widest text-zinc-500 justify-center">
-                                                <span className="font-bold text-orange-500 hover:text-orange-400">Upload a file</span>
+                                            <span className="material-symbols-outlined text-[48px] text-gray-300">image</span>
+                                            <div className="flex font-mono text-[10px] uppercase tracking-widest text-gray-500 justify-center">
+                                                <span className="font-bold text-orange-500 hover:text-orange-600">Upload a file</span>
                                                 <p className="pl-1">or drag and drop</p>
                                             </div>
-                                            <p className="font-mono text-[10px] text-zinc-600 mt-2">PNG, JPG, GIF up to 2MB</p>
+                                            <p className="font-mono text-[10px] text-gray-400 mt-2 font-bold">PNG, JPG, GIF up to 2MB</p>
                                         </>
                                     )}
                                 </div>
                             </div>
-                            {errors.foto && <div className="text-red-500 text-[10px] font-mono uppercase tracking-widest mt-1">{errors.foto}</div>}
+                            {errors.foto && <div className="text-red-500 text-[10px] font-mono uppercase tracking-widest mt-1 font-bold">{errors.foto}</div>}
                         </div>
 
-                        <div className="flex justify-end gap-4 border-t border-zinc-900 pt-6">
+                        <div className="flex justify-end gap-4 border-t border-gray-200 pt-6">
                             <Link 
                                 href="/merchandise"
-                                className="px-8 py-4 font-mono text-[10px] font-bold uppercase tracking-widest border border-zinc-800 text-zinc-400 hover:bg-zinc-900 hover:text-zinc-100 transition-colors"
+                                className="px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest border border-gray-200 text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-colors rounded-xl shadow-sm"
                             >
                                 Cancel
                             </Link>
                             <button 
                                 type="submit" 
                                 disabled={processing}
-                                className="bg-orange-500 text-zinc-950 px-8 py-4 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-orange-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                className="bg-orange-500 text-white px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 rounded-xl shadow-sm shadow-orange-500/30"
                             >
                                 {processing ? 'Processing...' : 'Update Product'}
                             </button>
