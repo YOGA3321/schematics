@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,58 +12,22 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $sqlPath = base_path('FP (1).sql');
+        $sqlPath = base_path('FP_DATABASE/DML.sql');
         if (!file_exists($sqlPath)) {
-            $this->command->error("File FP (1).sql tidak ditemukan.");
+            $this->command->error("File FP_DATABASE/DML.sql tidak ditemukan.");
             return;
         }
 
         $sql = file_get_contents($sqlPath);
 
-        // Remove comments
-        $sql = preg_replace('/--.*/', '', $sql);
-        $sql = preg_replace('/\/\*.*?\*\//s', '', $sql);
+        // Remove USE FP1; to make it db agnostic
+        $sql = preg_replace('/USE\s+[a-zA-Z0-9_]+;/i', '', $sql);
 
-        // Match all INSERT INTO queries.
-        // We only parse the insert statements from the first part of the SQL file,
-        // before any stored procedures, triggers, or functions are defined.
-        $parts = preg_split('/CREATE\s+(PROCEDURE|TRIGGER|FUNCTION)/i', $sql, 2);
-        $insertSqlBlock = $parts[0];
-
-        preg_match_all('/INSERT\s+INTO\s+[^;]+;/i', $insertSqlBlock, $matches);
-
-        $tableMap = [
-            'Pembeli' => 'pembeli',
-            'Peserta_Seminar' => 'peserta_seminar',
-            'Staff_Finance' => 'staff_finance',
-            'Staff_Alamat' => 'staff_alamat',
-            'Metode_Pembayaran' => 'metode_pembayaran',
-            'Event' => 'event',
-            'Merchandise' => 'merchandise',
-            'Transaksi' => 'transaksi',
-            'Detail_Transaksi' => 'detail_transaksi',
-        ];
-
-        $insertedCount = 0;
-        foreach ($matches[0] as $query) {
-            $query = trim($query);
-            if (empty($query)) {
-                continue;
-            }
-
-            // Replace table names with lowercase equivalents for case-sensitive databases
-            foreach ($tableMap as $oldTable => $newTable) {
-                $query = preg_replace('/\b' . preg_quote($oldTable, '/') . '\b/', $newTable, $query);
-            }
-
-            try {
-                DB::unprepared($query);
-                $insertedCount++;
-            } catch (\Exception $e) {
-                $this->command->error("Gagal menjalankan query: " . substr($query, 0, 100) . "... Error: " . $e->getMessage());
-            }
+        try {
+            DB::unprepared($sql);
+            $this->command->info("Berhasil mengimpor data dari FP_DATABASE/DML.sql.");
+        } catch (\Exception $e) {
+            $this->command->error("Gagal menjalankan query: " . $e->getMessage());
         }
-
-        $this->command->info("Berhasil mengimpor {$insertedCount} kelompok data INSERT INTO dari FP (1).sql.");
     }
 }
