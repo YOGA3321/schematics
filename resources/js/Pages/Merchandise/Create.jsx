@@ -111,7 +111,7 @@ export default function Create({ events, auth }) {
                                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                                     accept="image/*"
                                 />
-                                <div className="space-y-2 text-center">
+                                <div className="space-y-2 text-center pointer-events-none">
                                     {preview ? (
                                         <div className="relative w-full max-w-xs mx-auto h-48">
                                             <img src={preview} alt="Preview" className="w-full h-full object-contain filter hover:brightness-110 transition-all duration-500" />

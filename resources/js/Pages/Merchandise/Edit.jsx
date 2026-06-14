@@ -12,8 +12,11 @@ export default function Edit({ merchandise, events, auth }) {
         _method: 'PUT'
     });
 
-    const [preview, setPreview] = useState(merchandise.foto ? `/storage/${merchandise.foto}` : null);
+    const getValidFoto = (foto) => {
+        return (foto && foto !== '-' && foto !== 'null') ? `/storage/${foto}` : null;
+    };
 
+    const [preview, setPreview] = useState(getValidFoto(merchandise.foto));
     const submit = (e) => {
         e.preventDefault();
         post(`/merchandise/${merchandise.id_merchandise}`);
@@ -23,9 +26,10 @@ export default function Edit({ merchandise, events, auth }) {
         const file = e.target.files[0];
         setData('foto', file);
         if (file) {
-            setPreview(URL.createObjectURL(file));
+            const objectUrl = URL.createObjectURL(file);
+            setPreview(objectUrl);
         } else {
-            setPreview(merchandise.foto ? `/storage/${merchandise.foto}` : null);
+            setPreview(getValidFoto(merchandise.foto));
         }
     };
 
@@ -112,7 +116,7 @@ export default function Edit({ merchandise, events, auth }) {
                                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                                     accept="image/*"
                                 />
-                                <div className="space-y-2 text-center">
+                                <div className="space-y-2 text-center pointer-events-none">
                                     {preview ? (
                                         <div className="relative w-full max-w-xs mx-auto h-48">
                                             <img src={preview} alt="Preview" className="w-full h-full object-contain filter hover:brightness-110 transition-all duration-500" />
