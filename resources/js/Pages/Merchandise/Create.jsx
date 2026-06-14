@@ -91,8 +91,9 @@ export default function Create({ events, auth }) {
                                     value={data.id_event}
                                     onChange={e => setData('id_event', e.target.value)}
                                     className="w-full bg-gray-50 border border-gray-200 px-4 py-3 font-mono text-sm text-gray-900 rounded-xl focus:bg-white focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all shadow-sm"
+                                    required
                                 >
-                                    <option value="">Select an Event</option>
+                                    <option value="" disabled>Select an Event</option>
                                     {events.map(ev => (
                                         <option key={ev.id_event} value={ev.id_event}>{ev.nama_subevent}</option>
                                     ))}

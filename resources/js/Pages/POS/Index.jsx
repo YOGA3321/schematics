@@ -4,7 +4,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import AdminLayout from '../../Layouts/AdminLayout';
 
-export default function POSIndex({ auth, merchandises = [] }) {
+export default function POSIndex({ auth, merchandises = [], events = [] }) {
     const [cart, setCart] = useState([]);
     const [isSeminar, setIsSeminar] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
@@ -48,10 +48,10 @@ export default function POSIndex({ auth, merchandises = [] }) {
     ];
 
     const displayItems = normalizedItems.filter(item => {
-        const matchSearch = item.nama_merchandise.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        const matchesSearch = item.nama_merchandise.toLowerCase().includes(searchQuery.toLowerCase()) || 
                             item.sku.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchFilter = activeFilter === 'Semua' || item.asal_subevent === activeFilter;
-        return matchSearch && matchFilter;
+        const matchesFilter = activeFilter === 'Semua' || item.asal_subevent === activeFilter;
+        return matchesSearch && matchesFilter;
     });
 
     const addToCart = (item) => {
@@ -163,10 +163,7 @@ export default function POSIndex({ auth, merchandises = [] }) {
     return (
         <AdminLayout title="Schematics POS - Terminal" auth={auth}>
             <div className="flex flex-1 w-full h-full overflow-hidden border border-gray-200 bg-white shadow-sm rounded-2xl">
-                {/* Product Panel (2/3) */}
                 <main className="flex-1 flex flex-col min-w-0 bg-gray-50/50 relative">
-                    
-                    {/* Search & Filters */}
                     <div className="p-6 pb-4 border-b border-gray-200 relative z-10 flex flex-col gap-4 bg-white">
                         <div className="flex justify-between items-end">
                             <div>
@@ -176,9 +173,6 @@ export default function POSIndex({ auth, merchandises = [] }) {
                                 </div>
                                 <h1 className="text-2xl font-black uppercase tracking-tighter text-gray-900">Penjualan</h1>
                             </div>
-                            <button className="bg-gray-50 border border-gray-200 p-3 text-gray-500 hover:text-orange-600 hover:border-orange-200 hover:bg-orange-50 rounded-xl transition-all">
-                                <span className="material-symbols-outlined text-[24px]">barcode_scanner</span>
-                            </button>
                         </div>
 
                         <div className="flex items-center gap-4">
@@ -194,14 +188,25 @@ export default function POSIndex({ auth, merchandises = [] }) {
                             </div>
                         </div>
 
-                        <div className="flex gap-2 overflow-x-auto no-scrollbar pt-2">
-                            {['Semua', 'BST', 'NPC', 'NLC'].map(filter => (
-                                <button key={filter} onClick={() => setActiveFilter(filter)} className={`px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-widest flex-shrink-0 transition-colors border rounded-full shadow-sm ${activeFilter === filter ? 'bg-orange-500 text-white border-orange-500' : 'bg-white border-gray-200 text-gray-500 hover:text-gray-900 hover:border-gray-300'}`}>{filter}</button>
+                        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
+                            <button 
+                                onClick={() => setActiveFilter('Semua')}
+                                className={`px-5 py-2 font-mono text-[10px] font-bold uppercase tracking-widest rounded-full transition-all flex-shrink-0 ${activeFilter === 'Semua' ? 'bg-orange-500 text-white shadow-md shadow-orange-500/20' : 'bg-white border border-gray-200 text-gray-500 hover:border-orange-300 hover:text-orange-600'}`}
+                            >
+                                SEMUA
+                            </button>
+                            {events && events.map(ev => (
+                                <button 
+                                    key={ev.id_event}
+                                    onClick={() => setActiveFilter(ev.nama_subevent)}
+                                    className={`px-5 py-2 font-mono text-[10px] font-bold uppercase tracking-widest rounded-full transition-all flex-shrink-0 ${activeFilter === ev.nama_subevent ? 'bg-orange-500 text-white shadow-md shadow-orange-500/20' : 'bg-white border border-gray-200 text-gray-500 hover:border-orange-300 hover:text-orange-600'}`}
+                                >
+                                    {ev.nama_subevent}
+                                </button>
                             ))}
                         </div>
                     </div>
 
-                    {/* Product Grid */}
                     <div className="flex-1 overflow-y-auto p-6 grid grid-cols-2 lg:grid-cols-3 gap-4 content-start relative z-10 bg-gray-50/50">
                         {displayItems.map(item => (
                             <button 
@@ -217,11 +222,11 @@ export default function POSIndex({ auth, merchandises = [] }) {
                                     <div className="absolute top-3 left-3 z-10 bg-red-50 border border-red-200 text-red-600 px-2 py-1 font-mono text-[10px] font-bold tracking-widest uppercase animate-pulse rounded">LOW: {item.stok}</div>
                                 ) : null}
                                 
-                                <div className="h-40 shrink-0 bg-gray-50 w-full relative overflow-hidden flex items-center justify-center border-b border-gray-100 group-hover:bg-orange-50/50 transition-colors">
+                                <div className="aspect-[4/3] w-full relative overflow-hidden flex items-center justify-center border-b border-gray-100 bg-gray-100/50">
                                     {item.foto ? (
                                         <img src={`/storage/${item.foto}`} alt={item.nama_merchandise} className="w-full h-full object-cover" />
                                     ) : (
-                                        <span className="material-symbols-outlined text-gray-300 text-[48px] group-hover:text-orange-300 transition-colors">inventory_2</span>
+                                        <span className="material-symbols-outlined text-gray-300 text-[48px]">inventory_2</span>
                                     )}
                                 </div>
                                 <div className="p-4 flex flex-col gap-1 flex-1">
@@ -229,7 +234,7 @@ export default function POSIndex({ auth, merchandises = [] }) {
                                         <h3 className="font-bold text-sm text-gray-900 leading-tight">{item.nama_merchandise}</h3>
                                         <span className="bg-gray-100 px-2 py-0.5 text-gray-600 text-[9px] font-mono font-bold uppercase shrink-0 rounded-full">{item.asal_subevent}</span>
                                     </div>
-                                    <p className="font-mono text-[10px] text-gray-400 uppercase tracking-widest mb-4">{item.sku || `SKU-0${item.id}`}</p>
+                                    <p className="font-mono text-[10px] text-gray-400 uppercase tracking-widest mb-4">{item.sku}</p>
                                     <div className="mt-auto pt-3 flex justify-between items-end border-t border-gray-100">
                                         <span className="font-black text-orange-600 text-lg tracking-tighter">Rp {item.harga.toLocaleString('id-ID')}</span>
                                         <span className={`font-mono text-[10px] font-bold uppercase ${item.stok < 5 ? 'text-red-500' : 'text-gray-400'}`}>QTY: {item.stok}</span>
@@ -240,9 +245,7 @@ export default function POSIndex({ auth, merchandises = [] }) {
                     </div>
                 </main>
 
-                {/* Right Panel: Cart & Checkout (1/3) */}
                 <aside className="w-[500px] bg-white border-l border-gray-200 flex flex-col flex-shrink-0 relative z-20">
-                    {/* Cart Header */}
                     <div className="p-6 border-b border-gray-100 flex flex-col gap-4 bg-gray-50/80 backdrop-blur-sm">
                         <div className="flex justify-between items-center">
                             <h2 className="text-xl font-black uppercase tracking-tight text-gray-900 flex items-center gap-2">
@@ -260,7 +263,6 @@ export default function POSIndex({ auth, merchandises = [] }) {
                         </div>
                     </div>
 
-                    {/* Cart Items List */}
                     <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-3 bg-white">
                         {cart.length === 0 ? (
                             <div className="flex-1 flex flex-col items-center justify-center text-gray-300 opacity-80">
@@ -305,7 +307,6 @@ export default function POSIndex({ auth, merchandises = [] }) {
                         )}
                     </div>
 
-                    {/* Summary & Action */}
                     <div className="p-6 bg-white border-t border-gray-200 flex flex-col gap-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-10 mt-auto">
                         <div className="flex justify-between items-center font-mono text-[10px] uppercase tracking-widest text-gray-500 font-bold">
                             <span>Items in Cart</span>
@@ -322,7 +323,6 @@ export default function POSIndex({ auth, merchandises = [] }) {
                     </div>
                 </aside>
 
-                {/* Checkout Confirmation Modal */}
                 {showCheckoutModal && (
                     <div 
                         onClick={() => setShowCheckoutModal(false)}
@@ -359,7 +359,6 @@ export default function POSIndex({ auth, merchandises = [] }) {
                                     )}
                                 </div>
 
-                                {/* Payment Gateway */}
                                 <div className="flex flex-col gap-2">
                                     <label className="font-mono text-[10px] uppercase tracking-widest text-gray-500 font-bold">Payment Gateway</label>
                                     <div className="grid grid-cols-3 gap-2">

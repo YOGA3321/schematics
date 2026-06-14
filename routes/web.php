@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use App\Http\Controllers\EventController;
 
 Route::get('/', function () {
     return Inertia::render('LandingPage');
@@ -41,8 +42,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/pos', function () {
         $merchandise = \App\Models\Merchandise::with('event')->get();
+        $events = \App\Models\Event::all();
         return Inertia::render('POS/Index', [
-            'merchandises' => $merchandise
+            'merchandises' => $merchandise,
+            'events' => $events
         ]);
     })->name('pos');
     
