@@ -265,9 +265,18 @@ export default function POSIndex({ auth, merchandises = [] }) {
                             cart.map(item => (
                                 <div key={item.id} className="bg-white border border-gray-200 p-4 flex flex-col gap-3 relative group hover:border-orange-300 hover:shadow-md transition-all rounded-xl">
                                     <div className="flex justify-between items-start">
-                                        <div className="pr-4 flex-1">
-                                            <h4 className="font-bold text-sm text-gray-900 leading-tight mb-1">{item.nama_merchandise}</h4>
-                                            <p className="text-xs font-mono text-gray-500 font-bold">Rp {item.harga.toLocaleString('id-ID')}</p>
+                                        <div className="flex items-center gap-3 flex-1">
+                                            <div className="w-12 h-12 bg-gray-50 rounded-lg border border-gray-100 flex items-center justify-center overflow-hidden shrink-0">
+                                                {item.foto ? (
+                                                    <img src={`/storage/${item.foto}`} alt={item.nama_merchandise} className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <span className="material-symbols-outlined text-gray-300 text-[20px]">inventory_2</span>
+                                                )}
+                                            </div>
+                                            <div className="pr-4 flex-1">
+                                                <h4 className="font-bold text-sm text-gray-900 leading-tight mb-1">{item.nama_merchandise}</h4>
+                                                <p className="text-xs font-mono text-gray-500 font-bold">Rp {item.harga.toLocaleString('id-ID')}</p>
+                                            </div>
                                         </div>
                                         <button onClick={() => removeFromCart(item.id)} className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors">
                                             <span className="material-symbols-outlined text-[18px]">close</span>
@@ -290,72 +299,20 @@ export default function POSIndex({ auth, merchandises = [] }) {
                         )}
                     </div>
 
-                    {/* Customer & Payment Form */}
-                    <div className="border-t border-gray-200 bg-gray-50 flex flex-col">
-                        <div className="p-6 flex flex-col gap-6 max-h-[350px] overflow-y-auto no-scrollbar">
-                            
-                            <div className="flex flex-col gap-2">
-                                <label className="font-mono text-[10px] uppercase tracking-widest text-gray-500 font-bold">Customer Name <span className="text-orange-500">*</span></label>
-                                <input value={namaPembeli} onChange={e => setNamaPembeli(e.target.value)} className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl font-mono text-sm focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all placeholder:text-gray-400 text-gray-900 shadow-sm" placeholder="Enter name..." required type="text" />
-                            </div>
-
-                            <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
-                                <label className="flex items-center justify-between cursor-pointer">
-                                    <span className="font-mono text-xs font-bold uppercase text-gray-700">Register Seminar?</span>
-                                    <div className="relative">
-                                        <input className="sr-only peer" type="checkbox" checked={isSeminar} onChange={(e) => setIsSeminar(e.target.checked)} />
-                                        <div className="w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-orange-500 transition-colors shadow-inner"></div>
-                                        <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5 shadow-sm"></div>
-                                    </div>
-                                </label>
-                                {isSeminar && (
-                                    <div className="flex flex-col gap-4 mt-4 pt-4 border-t border-gray-100">
-                                        <div>
-                                            <label className="font-mono text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-2 block">Email Address</label>
-                                            <input value={email} onChange={e => setEmail(e.target.value)} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-mono text-sm focus:border-orange-500 focus:bg-white outline-none transition-all placeholder:text-gray-400 text-gray-900" placeholder="user@domain.com" type="email" />
-                                        </div>
-                                        <div>
-                                            <label className="font-mono text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-2 block">Phone Number</label>
-                                            <input value={nomorTelepon} onChange={e => setNomorTelepon(e.target.value)} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-mono text-sm focus:border-orange-500 focus:bg-white outline-none transition-all placeholder:text-gray-400 text-gray-900" placeholder="08..." type="tel" />
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-
-                            <div className="flex flex-col gap-2">
-                                <label className="font-mono text-[10px] uppercase tracking-widest text-gray-500 font-bold">Payment Gateway</label>
-                                <div className="grid grid-cols-3 gap-2">
-                                    {[
-                                        { id: 3, label: 'CASH' },
-                                        { id: 2, label: 'QRIS' },
-                                        { id: 1, label: 'TRF' }
-                                    ].map(method => (
-                                        <label key={method.id} className="cursor-pointer">
-                                            <input checked={metodePembayaran === method.id} onChange={() => setMetodePembayaran(method.id)} className="sr-only peer" name="payment" type="radio" value={method.id} />
-                                            <div className="border border-gray-200 bg-white rounded-xl py-3 text-center font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500 peer-checked:border-orange-500 peer-checked:bg-orange-50 peer-checked:text-orange-700 transition-all shadow-sm hover:border-gray-300">
-                                                {method.label}
-                                            </div>
-                                        </label>
-                                    ))}
-                                </div>
-                            </div>
+                    {/* Summary & Action */}
+                    <div className="p-6 bg-white border-t border-gray-200 flex flex-col gap-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-10 mt-auto">
+                        <div className="flex justify-between items-center font-mono text-[10px] uppercase tracking-widest text-gray-500 font-bold">
+                            <span>Items in Cart</span>
+                            <span className="text-gray-900 bg-gray-100 px-2 py-0.5 rounded-full">{cart.reduce((s, c) => s + c.qty, 0)}</span>
                         </div>
-
-                        {/* Summary & Action */}
-                        <div className="p-6 bg-white border-t border-gray-200 flex flex-col gap-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-10">
-                            <div className="flex justify-between items-center font-mono text-[10px] uppercase tracking-widest text-gray-500 font-bold">
-                                <span>Items in Cart</span>
-                                <span className="text-gray-900 bg-gray-100 px-2 py-0.5 rounded-full">{cart.reduce((s, c) => s + c.qty, 0)}</span>
-                            </div>
-                            <div className="flex justify-between items-end border-b border-gray-100 pb-4">
-                                <span className="font-black text-gray-900 uppercase tracking-tighter">Total</span>
-                                <span className="text-3xl font-black text-orange-600 tracking-tighter">Rp {total.toLocaleString('id-ID')}</span>
-                            </div>
-                            <button onClick={handleCheckout} disabled={cart.length === 0} className="w-full bg-orange-500 text-white rounded-xl py-4 font-black uppercase tracking-widest text-sm hover:bg-orange-600 active:scale-[0.98] transition-all flex items-center justify-center gap-3 mt-2 disabled:opacity-50 disabled:cursor-not-allowed group shadow-lg shadow-orange-500/30">
-                                Process Transact
-                                <span className="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                            </button>
+                        <div className="flex justify-between items-end border-b border-gray-100 pb-4">
+                            <span className="font-black text-gray-900 uppercase tracking-tighter">Total</span>
+                            <span className="text-3xl font-black text-orange-600 tracking-tighter">Rp {total.toLocaleString('id-ID')}</span>
                         </div>
+                        <button onClick={handleCheckout} disabled={cart.length === 0} className="w-full bg-orange-500 text-white rounded-xl py-4 font-black uppercase tracking-widest text-sm hover:bg-orange-600 active:scale-[0.98] transition-all flex items-center justify-center gap-3 mt-2 disabled:opacity-50 disabled:cursor-not-allowed group shadow-lg shadow-orange-500/30">
+                            Checkout Items
+                            <span className="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                        </button>
                     </div>
                 </aside>
 
@@ -367,20 +324,61 @@ export default function POSIndex({ auth, merchandises = [] }) {
                     >
                         <div 
                             onClick={(e) => e.stopPropagation()}
-                            className="w-[450px] max-w-[90vw] bg-white border border-gray-200 rounded-3xl p-8 shadow-2xl flex flex-col gap-8 relative"
+                            className="w-[600px] max-w-[95vw] bg-white border border-gray-200 rounded-3xl p-8 shadow-2xl flex flex-col gap-8 relative max-h-[90vh] overflow-y-auto no-scrollbar"
                         >
 
-                            <h3 className="text-2xl font-black uppercase tracking-tighter text-gray-900">Confirm Payment</h3>
+                            <h3 className="text-2xl font-black uppercase tracking-tighter text-gray-900 border-b border-gray-100 pb-4">Process Transaction</h3>
                             
                             <div className="flex flex-col gap-6">
-                                <div className="flex justify-between items-center pb-4 border-b border-gray-100">
-                                    <span className="font-mono text-[10px] uppercase tracking-widest text-gray-500 font-bold">Payment Gateway</span>
-                                    <span className="font-mono font-bold uppercase border border-orange-200 bg-orange-50 rounded-full px-3 py-1 text-xs text-orange-600 tracking-widest">
-                                        {metodePembayaran === 3 ? 'CASH' : metodePembayaran === 2 ? 'QRIS' : 'TRANSFER'}
-                                    </span>
+                                {/* Form Info Pembeli pindahan dari Cart */}
+                                <div className="flex flex-col gap-2">
+                                    <label className="font-mono text-[10px] uppercase tracking-widest text-gray-500 font-bold">Customer Name <span className="text-orange-500">*</span></label>
+                                    <input value={namaPembeli} onChange={e => setNamaPembeli(e.target.value)} className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl font-mono text-sm focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all placeholder:text-gray-400 text-gray-900 shadow-sm" placeholder="Enter name..." required autoFocus type="text" />
+                                </div>
+
+                                <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 shadow-sm">
+                                    <label className="flex items-center justify-between cursor-pointer">
+                                        <span className="font-mono text-xs font-bold uppercase text-gray-700">Register Seminar?</span>
+                                        <div className="relative">
+                                            <input className="sr-only peer" type="checkbox" checked={isSeminar} onChange={(e) => setIsSeminar(e.target.checked)} />
+                                            <div className="w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-orange-500 transition-colors shadow-inner"></div>
+                                            <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5 shadow-sm"></div>
+                                        </div>
+                                    </label>
+                                    {isSeminar && (
+                                        <div className="flex flex-col gap-4 mt-4 pt-4 border-t border-gray-200">
+                                            <div>
+                                                <label className="font-mono text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-2 block">Email Address</label>
+                                                <input value={email} onChange={e => setEmail(e.target.value)} className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl font-mono text-sm focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all placeholder:text-gray-400 text-gray-900" placeholder="user@domain.com" type="email" />
+                                            </div>
+                                            <div>
+                                                <label className="font-mono text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-2 block">Phone Number</label>
+                                                <input value={nomorTelepon} onChange={e => setNomorTelepon(e.target.value)} className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl font-mono text-sm focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all placeholder:text-gray-400 text-gray-900" placeholder="08..." type="tel" />
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Payment Gateway */}
+                                <div className="flex flex-col gap-2">
+                                    <label className="font-mono text-[10px] uppercase tracking-widest text-gray-500 font-bold">Payment Gateway</label>
+                                    <div className="grid grid-cols-3 gap-2">
+                                        {[
+                                            { id: 3, label: 'CASH' },
+                                            { id: 2, label: 'QRIS' },
+                                            { id: 1, label: 'TRF' }
+                                        ].map(method => (
+                                            <label key={method.id} className="cursor-pointer">
+                                                <input checked={metodePembayaran === method.id} onChange={() => setMetodePembayaran(method.id)} className="sr-only peer" name="payment" type="radio" value={method.id} />
+                                                <div className="border border-gray-200 bg-white rounded-xl py-3 text-center font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500 peer-checked:border-orange-500 peer-checked:bg-orange-50 peer-checked:text-orange-700 transition-all shadow-sm hover:border-gray-300">
+                                                    {method.label}
+                                                </div>
+                                            </label>
+                                        ))}
+                                    </div>
                                 </div>
                                 
-                                <div className="flex justify-between items-end pb-4 border-b border-gray-100">
+                                <div className="flex justify-between items-end pb-4 border-b border-t pt-4 border-gray-100">
                                     <span className="font-mono text-[10px] uppercase tracking-widest text-gray-500 font-bold">Grand Total</span>
                                     <span className="text-3xl font-black text-orange-600 tracking-tighter">Rp {total.toLocaleString('id-ID')}</span>
                                 </div>
@@ -397,7 +395,6 @@ export default function POSIndex({ auth, merchandises = [] }) {
                                                 min="0" 
                                                 className="w-full px-4 py-3 bg-white border-0 focus:ring-2 focus:ring-inset focus:ring-orange-500 outline-none transition-all placeholder:text-gray-300 font-mono font-bold text-lg text-gray-900" 
                                                 placeholder="0" 
-                                                autoFocus
                                             />
                                         </div>
                                         
@@ -420,7 +417,7 @@ export default function POSIndex({ auth, merchandises = [] }) {
                                 )}
                             </div>
 
-                            <div className="flex justify-end gap-4 mt-4 pt-6 border-t border-gray-100">
+                            <div className="flex justify-end gap-4 mt-2 pt-6 border-t border-gray-100">
                                 <button 
                                     onClick={() => setShowCheckoutModal(false)} 
                                     className="px-6 py-3 border border-gray-200 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-colors shadow-sm"
@@ -429,10 +426,10 @@ export default function POSIndex({ auth, merchandises = [] }) {
                                 </button>
                                 <button 
                                     onClick={confirmCheckout} 
-                                    disabled={metodePembayaran === 3 && Number(uangDiberikanModal) < total}
+                                    disabled={!namaPembeli || (metodePembayaran === 3 && Number(uangDiberikanModal) < total)}
                                     className="px-6 py-3 bg-orange-500 rounded-xl text-white font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-orange-500/30"
                                 >
-                                    Confirm
+                                    Confirm Order
                                 </button>
                             </div>
                         </div>
