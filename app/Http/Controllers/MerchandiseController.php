@@ -33,7 +33,7 @@ class MerchandiseController extends Controller
             'harga_merchandise' => 'required|numeric|min:0',
             'stok' => 'required|integer|min:0',
             'id_event' => 'required|exists:event,id_event',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048'
         ]);
 
         if ($request->hasFile('foto')) {
@@ -65,7 +65,7 @@ class MerchandiseController extends Controller
             'harga_merchandise' => 'required|numeric|min:0',
             'stok' => 'required|integer|min:0',
             'id_event' => 'required|exists:event,id_event',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048'
         ]);
 
         if ($request->hasFile('foto')) {

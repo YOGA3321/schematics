@@ -119,7 +119,7 @@ export default function Edit({ merchandise, events, auth }) {
                                 <div className="pointer-events-none relative z-0">
                                     {preview ? (
                                         <div className="w-full h-48 flex justify-center items-center">
-                                            <img src={preview} alt="Preview" className="max-h-full max-w-full object-contain filter hover:brightness-110 transition-all duration-500 rounded-lg" />
+                                            <img src={preview} alt="Preview" className="w-full h-full object-contain filter hover:brightness-110 transition-all duration-500 rounded-lg" />
                                         </div>
                                     ) : (
                                         <div className="flex flex-col items-center justify-center space-y-2">
@@ -128,7 +128,7 @@ export default function Edit({ merchandise, events, auth }) {
                                                 <span className="font-bold text-orange-500 hover:text-orange-600">Upload a file</span>
                                                 <p className="pl-1">or drag and drop</p>
                                             </div>
-                                            <p className="font-mono text-[10px] text-gray-400 mt-2 font-bold">PNG, JPG, GIF up to 2MB</p>
+                                            <p className="font-mono text-[10px] text-gray-400 mt-2 font-bold">WEBP, PNG, JPG, GIF up to 2MB</p>
                                         </div>
                                     )}
                                 </div>
