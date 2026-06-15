@@ -9,7 +9,7 @@ Schematics POS adalah sistem Point-Of-Sale (POS) dan pendaftaran terintegrasi ya
 - **Pendaftaran Seminar**: Manajemen pendaftaran peserta seminar.
 - **Performa Optimal**: Menggunakan *server-side pagination* dan sistem *indexing database* tingkat lanjut untuk menangani jutaan data tanpa penurunan performa.
 
-## Strategi Database Indexing (Untuk Presentasi)
+## Strategi Database Indexing
 
 Untuk memastikan aplikasi tetap cepat dan responsif saat menahan beban berat (misal: jutaan data transaksi), kami mengimplementasikan Strategi Indexing Database yang komprehensif:
 
