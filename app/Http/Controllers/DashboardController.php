@@ -12,10 +12,13 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        // === PENGAMBILAN DATA INDEXING ===
+        // Mengambil data agregat (count, sum) untuk ringkasan dashboard
         $totalTransactions = Transaksi::count();
         $totalRevenue = Transaksi::sum('total_harga');
         $totalMerchSold = Transaksi::sum('total_merchandise');
         
+        // Mengambil 5 data transaksi terbaru beserta relasinya
         $recentTransactions = Transaksi::with(['pembeli', 'metodePembayaran'])
             ->orderBy('waktu_pemesanan', 'desc')
             ->take(5)

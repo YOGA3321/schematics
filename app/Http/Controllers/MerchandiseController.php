@@ -12,6 +12,8 @@ class MerchandiseController extends Controller
 {
     public function index()
     {
+        // === PENGAMBILAN DATA INDEXING ===
+        // Mengambil semua data merchandise beserta relasi ke tabel event (Eager Loading) untuk tabel daftar Merchandise
         $merchandises = Merchandise::with('event')->get();
         return Inertia::render('Merchandise/Index', [
             'merchandises' => $merchandises

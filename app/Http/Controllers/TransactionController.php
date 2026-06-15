@@ -10,6 +10,8 @@ class TransactionController extends Controller
 {
     public function index(Request $request)
     {
+        // === PENGAMBILAN DATA INDEXING ===
+        // Menyiapkan query untuk mengambil transaksi beserta relasi terkait untuk tabel daftar Transaksi
         $query = Transaksi::with(['pembeli', 'metodePembayaran', 'staffFinance'])
             ->orderBy('waktu_pemesanan', 'desc');
 

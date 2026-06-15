@@ -29,6 +29,24 @@ We have explicitly created a dedicated migration `2026_06_08_064824_add_indexes_
 
 By combining these indexing strategies with **Server-Side Pagination** on the backend controllers (`paginate(15)`), the server memory and response times are kept highly efficient regardless of database size.
 
+### 3. How Laravel Retrieves Data via Indexing (Under the Hood)
+
+In the Laravel backend (specifically within `app/Http/Controllers` and `ProcessTransactionAction.php`), Eloquent ORM seamlessly translates our PHP code into optimized SQL queries that utilize the database indexes. Here is how it works:
+
+| Laravel Method | How it Uses Indexing | Example in Code |
+|----------------|----------------------|-----------------|
+| **`find($id)`** | Performs a direct `O(1)` lookup using the Primary Key index. Bypasses sequential scanning for immediate, real-time data retrieval. | `Merchandise::find($id)` |
+| **`with('relation')`** | Solves the N+1 query problem using **Eager Loading**. It runs a single `WHERE IN (...)` query that heavily utilizes Foreign Key indexes to fetch related models instantly. | `Transaksi::with(['pembeli'])` |
+| **`lockForUpdate()`** | Uses the Primary Key index to apply a secure **Row-Level Lock** during sensitive stock deductions, preventing race conditions without locking the entire table. | `Merchandise::lockForUpdate()->find($id)` |
+| **`paginate(15)`** | Combines index-based ordering (like `ORDER BY created_at`) with SQL `LIMIT` and `OFFSET` to efficiently load only a small slice of data into memory at a time. | `PesertaSeminar::paginate(15)` |
+
+**The Data Retrieval Workflow (Step-by-Step):**
+1. **Request Received**: The frontend requests the Transaction list page.
+2. **Query Preparation**: The Controller builds the query `Transaksi::with(...)->orderBy('waktu_pemesanan', 'desc')`.
+3. **Index Hit**: The database engine sees the `orderBy` and uses our custom `idx_waktu_pemesanan` index to instantly sort the pointers without scanning the actual row data.
+4. **Relational Index Hit**: The `with()` command fetches relationships using the foreign key indexes (`id_pembeli`, `id_metode`).
+5. **Memory Efficiency**: `paginate()` ensures the database only returns exactly 15 indexed rows to the application memory.
+
 ## Technology Stack
 
 - **Backend**: Laravel (PHP)

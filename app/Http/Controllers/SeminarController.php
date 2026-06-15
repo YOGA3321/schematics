@@ -10,6 +10,8 @@ class SeminarController extends Controller
 {
     public function index()
     {
+        // === PENGAMBILAN DATA INDEXING ===
+        // Mengambil data peserta seminar beserta relasi data pembelinya, dengan pembatasan 15 baris per halaman (Pagination)
         $peserta = PesertaSeminar::with('pembeli')->paginate(15);
         return Inertia::render('Seminar/Index', [
             'peserta' => $peserta

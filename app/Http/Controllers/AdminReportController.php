@@ -16,6 +16,8 @@ class AdminReportController extends Controller
 
     public function exportPdf()
     {
+        // === PENGAMBILAN DATA INDEXING === 
+        // Mengambil semua data transaksi beserta relasinya (pembeli, staff, metode) untuk di-export ke PDF
         $transaksis = Transaksi::with(['pembeli', 'staffFinance', 'metodePembayaran'])->get();
         
         $pdf = Pdf::loadView('exports.transaksi_pdf', compact('transaksis'));

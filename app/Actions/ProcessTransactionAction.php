@@ -54,6 +54,10 @@ class ProcessTransactionAction
             // 4. Create Detail Transaksi records
             // This will trigger trg_cek_stok, trg_hitung_detail, trg_kurangi_stok, and trg_update_total_transaksi
             foreach ($cartItems as $item) {
+                // === BLOCK PENGAMBILAN DATA INDEXING ===
+                // Mengambil data spesifik Merchandise melalui Primary Key (Index) yaitu id_merchandise.
+                // Fungsi find() mencari berdasarkan Index ini, dan lockForUpdate() memastikan datanya
+                // aman dari race condition (perubahan dari transaksi lain).
                 $merch = Merchandise::lockForUpdate()->find($item['id_merchandise']);
                 if (!$merch) {
                     throw new Exception("Merchandise tidak ditemukan.");
@@ -82,6 +86,9 @@ class ProcessTransactionAction
 
             // Dispatch Event for Realtime Updates with the new stock amounts
             foreach ($cartItems as $item) {
+                // === BLOCK PENGAMBILAN DATA INDEXING ===
+                // Mengambil ulang data spesifik Merchandise menggunakan pencarian index (id_merchandise)
+                // untuk mendapatkan stok terbaru dan mem-broadcast update tersebut ke sisi frontend.
                 $merch = Merchandise::find($item['id_merchandise']);
                 broadcast(new MerchandiseStockUpdated($merch->id_merchandise, $merch->stok))->toOthers();
             }

@@ -13,6 +13,8 @@ class StaffController extends Controller
 {
     public function index()
     {
+        // === PENGAMBILAN DATA INDEXING ===
+        // Mengambil seluruh data staff beserta alamat mereka untuk ditampilkan di halaman tabel daftar Staff
         $staff = StaffFinance::with('alamat')->get();
         return Inertia::render('Staff/Index', [
             'staff' => $staff

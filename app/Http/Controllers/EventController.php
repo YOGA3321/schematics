@@ -10,6 +10,8 @@ class EventController extends Controller
 {
     public function index()
     {
+        // === PENGAMBILAN DATA INDEXING ===
+        // Mengambil semua data event dan diurutkan berdasarkan waktu pembuatan terbaru untuk ditampilkan di tabel daftar Event
         $events = Event::orderBy('created_at', 'desc')->get();
         return Inertia::render('Event/Index', [
             'events' => $events
